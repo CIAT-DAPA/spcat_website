@@ -68,9 +68,11 @@ function Map({
             ))}
         </div>
       </div>
+
       <MapContainer
         center={[14.88, -35, 76]}
         zoom={3}
+        maxBounds={[[90, -180.000], [-90, 180.000]]}
         scrollWheelZoom={true}
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
