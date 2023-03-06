@@ -1,7 +1,9 @@
 import './about.css'
+import Footer from '../footer/Footer';
 const About=()=>{
     return(
-        <div className="container">
+        <>
+         <div className="container">
             <h1 className="text-center title">Background</h1>
             <p>
             Traditional farmer varieties (“landraces”) are a foundation of subsistence agriculture and are among the most important genetic resources for contemporary plant breeding (Camacho Villa et al., 2005). Major international ex situ collections have been established following collecting missions especially during the 1970s-90s to collect landrace diversity led by the IBPGR/IPGRI, particularly from the primary regions of diversity of crops worldwide, also called Vavilov centers (Khoury et al. 2016). In the period 1974–2012, such efforts resulted in over 225,000 plant samples of ca. 4,300 species collected during more than 500 collecting missions (Thormann et al., 2015). As a result, the 11 international genebanks managed by CGIAR centers are among the largest, most diverse, and most widely used of the world’s ex situ collections, with ~700K accessions currently conserved (CGIAR Genebank Platform, 2019), complementing the important national collections conserved around the world.
@@ -16,6 +18,9 @@ const About=()=>{
              <p>3. Ramirez‐Villegas, J., Khoury, C.K., Achicanoy, H.A., Mendez, A.C., Diaz, M.V., Sosa, C.C., Debouck, D.G., Kehel, Z., Guarino, L., 2020. A gap analysis modelling framework to prioritize collecting for ex situ conservation of crop landraces. Divers. Distrib. 26, 730–742. doi:10.1111/ddi.13046</p>
              <p>4. Thormann, I., Fiorino, E., Halewood, M. & Engels, J. M. M. 2015. Plant genetic resources collections and associated information as a baseline resource for genetic diversity studies: an assessment of the IBPGR-supported collections. Genet. Resour. Crop Evol. 62, 1279–1293.</p>
         </div>
+        <Footer/>
+        </>
+       
     )
 }
 export default About;
