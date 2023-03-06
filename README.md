@@ -26,4 +26,4 @@ Module where you can see general information about the project, references and p
 
 ### Administration Module
 
-Modulo adminstrativo donde se podran dminstrar los paises y accesiones.
+Administrative module where you can manage the countries and accessions.
