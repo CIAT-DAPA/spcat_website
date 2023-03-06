@@ -14,7 +14,7 @@ const About=()=>{
             </p>
             <h2>References</h2>
              <p> 1. Camacho Villa, T. C., Maxted, N., Scholten, M. & Ford-Lloyd, B. 2005. Defining and identifying crop landraces. Plant Genet. Resour. Charact. Util. 3, 373–384.</p>
-             <p>2. CGIAR Genebank Platform. 2019. 2019 Annual Report: CGIAR Genebank Platform. <a href="https://storage.googleapis.com/cgiarorg/2020/07/2019-Genebank-Platform-Annual-Report.pdf">https://storage.googleapis.com/cgiarorg/2020/07/2019-Genebank-Platform-Annual-Report.pdf</a> . Khoury, C. K. et al. 2016. Origins of food crops connect countries worldwide. Proc. R. Soc. B Biol. Sci. 283, 20160792.</p>
+             <p>2. CGIAR Genebank Platform. 2019. 2019 Annual Report: CGIAR Genebank Platform. <a href="https://storage.googleapis.com/cgiarorg/2020/07/2019-Genebank-Platform-Annual-Report.pdf">Ver enlace</a> . Khoury, C. K. et al. 2016. Origins of food crops connect countries worldwide. Proc. R. Soc. B Biol. Sci. 283, 20160792.</p>
              <p>3. Ramirez‐Villegas, J., Khoury, C.K., Achicanoy, H.A., Mendez, A.C., Diaz, M.V., Sosa, C.C., Debouck, D.G., Kehel, Z., Guarino, L., 2020. A gap analysis modelling framework to prioritize collecting for ex situ conservation of crop landraces. Divers. Distrib. 26, 730–742. doi:10.1111/ddi.13046</p>
              <p>4. Thormann, I., Fiorino, E., Halewood, M. & Engels, J. M. M. 2015. Plant genetic resources collections and associated information as a baseline resource for genetic diversity studies: an assessment of the IBPGR-supported collections. Genet. Resour. Crop Evol. 62, 1279–1293.</p>
         </div>

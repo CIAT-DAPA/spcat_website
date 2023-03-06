@@ -5,3 +5,26 @@
 .rotate-270{
     transform: rotate(270deg)
 }
+.input{
+    border-radius: 10px;
+    height: 35px;
+    margin: 10px;
+    
+}
+.input:focus{
+   
+    border-color: blue;
+}
+button{
+    border: none;
+
+}
+.icons{
+   
+}
+
+
+.icons:hover{
+    cursor: pointer;
+    visibility: visible;
+}

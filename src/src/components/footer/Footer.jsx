@@ -4,27 +4,29 @@ import LogoCT from '../../assets/img/crop-trust-logo.png'
 import LogoI from '../../assets/img/Icarda-logo.png'
 const Footer=()=>{
     return(
-        <div className="container">
-            <h1 className="text-center">Powered by</h1>
-            <div className="container d-flex">
-                <div className='ci'>
+        <div className="container ">
+            <div>
+            <h1 className="text-center mt-5">Powered by</h1>
+            </div>
+            <div className="container d-flex row">
+                <div className='ci col-md-4'>
                     <a href="https://ciat.cgiar.org/?lang=es" target="_blank">
-                    <img src={LogoC} alt="" />
+                    <img className='img-logo' src={LogoC} alt="" />
                     </a>
                     <p className='text-center'> <strong>CIAT</strong></p>
                     <p className='text-center'>Palmira,Colombia</p>
                     
                 </div>
-                <div className='ic'>
+                <div className='ic col-md-4'>
                 <a href="https://www.icarda.org" target="_blank">
-                <img src='https://www.icarda.org/themes/custom/icarda/logo.svg' alt="" />
+                <img  className='img-logo'src='https://www.icarda.org/themes/custom/icarda/logo.svg' alt="" />
                 </a>
                     <p className='text-center'> <strong>ICARDA</strong></p>
                     <p className='text-center'>Rabat,Morocco</p>
                 </div>
-                <div className='ct'>
+                <div className='ct col-md-4'>
                     <a href="https://www.croptrust.org" target='_blank'>
-                    <img  src={LogoCT} alt="" />
+                    <img className='img-logo' src={LogoCT} alt="" />
                     </a>
                     <p className='text-center '> <strong>Crop Thrust</strong></p>
                     <p className='text-center'>Bonn,Germany</p>
