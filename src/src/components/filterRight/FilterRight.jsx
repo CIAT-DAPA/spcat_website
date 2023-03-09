@@ -26,7 +26,7 @@ function FilterRight() {
     newDestinations[index] = event.target.value;
     setDestinations(newDestinations);
   }
-
+//h
   function handleAdd() {
     setDestinations([...destinations, ""]);
   }
