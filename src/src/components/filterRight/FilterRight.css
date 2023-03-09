@@ -11,9 +11,9 @@
     margin: 10px;
     
 }
-.input:focus{
+input:target{
    
-    border-color: blue;
+    border-color: red !important;
 }
 button{
     border: none;
@@ -22,9 +22,27 @@ button{
 .icons{
    
 }
-
+.p-destino{
+    visibility: hidden;
+}
 
 .icons:hover{
     cursor: pointer;
     visibility: visible;
+}
+.icons:hover + .p-destino{
+    visibility: visible;
+}
+.arrow-button{
+    position: absolute;
+   right: -7px;
+   z-index: 5000;
+   top: 50%;
+}
+.right-container{
+    position:absolute;
+    height: 90%;
+}
+.search{
+    border-radius: 7px;
 }

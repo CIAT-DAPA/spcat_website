@@ -3,7 +3,7 @@ import Map from '../../components/map/Map';
 import './MapTools.css'
 import { Col, Row } from 'react-bootstrap'
 import { useState } from 'react';
-import FilterRight from '../../components/filterRight/FilterRight';
+import FilterRight from '../../components/filterRight/FilterRight.jsx';
 
 function MapTools() {
 

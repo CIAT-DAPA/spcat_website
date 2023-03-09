@@ -3,6 +3,8 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+
 import { Button, Card, Collapse } from "react-bootstrap";
 import './FilterRight.css'
 
@@ -39,13 +41,15 @@ function FilterRight() {
 
   return (
     <>
-      <Button
+    <div className="right-container">
+      <Button className="arrow-button"
         onClick={() => setIsVisible(!isVisible)}
         aria-controls="example-collapse-text"
         aria-expanded={isVisible}
       >
         <FontAwesomeIcon icon={faCaretDown} className={`text-light ${isVisible ? 'rotate-270' : 'rotate-90'}`} />
-      </Button>
+      </Button></div>
+      
       <div style={{ minHeight: '150px' }}>
         <Collapse in={isVisible} dimension="width">
           <div id="example-collapse-text">
@@ -60,15 +64,31 @@ function FilterRight() {
           />
           {destinations.length > 1 && ( 
             <>
-            <FontAwesomeIcon className="text-danger icons" onClick={() => handleDelete(index)} icon={faCircleXmark} />
+            
+            <FontAwesomeIcon className="text-danger icons" onClick={() => handleDelete(index)} icon={faCircleXmark}   />
             </>
              
              
           )}
         </div>
       ))}
-          <FontAwesomeIcon className="text-success icons" onClick={handleAdd} icon={faCirclePlus}/>
-      <button type="submit">Buscar ruta</button>
+      <div className="d-flex">
+      <FontAwesomeIcon className="text-success icons" onClick={handleAdd} icon={faCirclePlus}/>
+          <p className="p-destino">Agregar Destino</p>
+      </div>
+         
+      <div className="text-center">
+      <button 
+      
+      className="Text-right search" type="submit">Buscar ruta
+      <FontAwesomeIcon icon={faMagnifyingGlass}></FontAwesomeIcon>
+
+       </button>
+  
+ 
+    
+
+      </div>
     </form>
           </div>
         </Collapse>

@@ -47,7 +47,7 @@ function CheckFilter({ onDataChange, title, onChange, crop }) {
             <FontAwesomeIcon icon={faMagnifyingGlass}></FontAwesomeIcon>
           </span>
           <input
-            className="form-control w-100 rounded-0 rounded-top border"
+            className="form-control w-100 rounded-0 rounded-top border "
             placeholder="Search by name..."
             value={searchValue}
             onChange={handleSearchInputChange}
