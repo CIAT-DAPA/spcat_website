@@ -46,3 +46,18 @@ button{
 .search{
     border-radius: 7px;
 }
+.route-title{
+margin-top: 10px;
+margin-left: 10px;
+}
+.search-icon{
+    padding-left: 10px;
+}
+.title-icon-container{
+    display: flex;
+    justify-content: space-between;
+}
+.icon-info{
+    margin-top: 15px;
+    cursor: pointer;
+}

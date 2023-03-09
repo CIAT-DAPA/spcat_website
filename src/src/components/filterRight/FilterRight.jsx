@@ -2,8 +2,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import RouteReport from "../RouteReport/RouteReport";
 
 import { Button, Card, Collapse } from "react-bootstrap";
 import './FilterRight.css'
@@ -11,6 +13,10 @@ import './FilterRight.css'
 import icon from '../../assets/icons/remove.png'
 
 function FilterRight() {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  
   const [isVisible, setIsVisible] = useState(false);
   
   const [destinations, setDestinations] = useState([""]);
@@ -41,6 +47,7 @@ function FilterRight() {
 
   return (
     <>
+   
     <div className="right-container">
       <Button className="arrow-button"
         onClick={() => setIsVisible(!isVisible)}
@@ -51,8 +58,16 @@ function FilterRight() {
       </Button></div>
       
       <div style={{ minHeight: '150px' }}>
+      
         <Collapse in={isVisible} dimension="width">
+          
           <div id="example-collapse-text">
+          <div className="title-icon-container">
+      <h5 className="route-title">Route</h5>
+      <RouteReport show={show} handleClose={handleClose}/>
+      <FontAwesomeIcon onClick={handleShow} className="icon-info text-info" icon={faCircleInfo} />
+
+    </div>
           <form onSubmit={handleSubmit}>
       {destinations.map((destination, index) => (
         <div key={index}>
@@ -81,7 +96,8 @@ function FilterRight() {
       <button 
       
       className="Text-right search" type="submit">Buscar ruta
-      <FontAwesomeIcon icon={faMagnifyingGlass}></FontAwesomeIcon>
+      <FontAwesomeIcon className="search-icon" icon={faMagnifyingGlass}></FontAwesomeIcon>
+      
 
        </button>
   
