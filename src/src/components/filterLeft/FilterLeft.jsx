@@ -2,10 +2,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Row, Form, Container, Col, Button } from "react-bootstrap";
 import CheckFilter from "../checkFilter/CheckFilter";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
-function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems }) {
-  const majorCrops = [...Array(15)].map((_, i) => `Major Crop ${i}`);
+function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,crops }) {
+  //const majorCrops = [...Array(15)].map((_, i) => `Major Crop ${i}`);
+  
+  //const majorCrops = crops.map((crp) => crp.app_name);
+  const [majorCrops,setMajorCrops]=useState([])
+  useEffect(()=>{
+    if(crops && crops.length>0){
+      const majorCropst = crops.map((crp) => crp.app_name);
+      setMajorCrops([...majorCropst])
+    console.log(majorCropst)
+      
+    }
+    
+  },[crops])
+  //console.log(crops)
+  
   const landraceCrops = [...Array(30)].map((_, i) => `Landrace Crop ${i}`);
 
   const [shouldAddToMap, setShouldAddToMap] = useState(false);
@@ -39,6 +53,7 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems }) {
     setCarouselLandraceItems(carouselLandraceItemsNow);
     setShouldAddToMap(false);
   }
+  
 
   return (
     <Container className="mt-3">
@@ -46,19 +61,26 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems }) {
         <Col className="col-3">Country</Col>
         <Col>
           <Form.Select aria-label="Default select example">
-            <option>Select a country</option>
-            <option value="1">Colombia</option>
-            <option value="2">Colombia</option>
-            <option value="3">Colombia</option>
+            {
+              response.map((dat)=>{
+                return <option>
+                  <img  width='15' height='15' src="https://flagcdn.com/us.svg"/>
+                  {dat.name}
+                </option>
+              })
+            }
           </Form.Select>
         </Col>
       </Row>
-      <CheckFilter
+      
+      {majorCrops && majorCrops.length > 0 && (
+        <CheckFilter
         title="Major Crops"
         onDataChange={handleDataMajorCropChange}
         onChange={shouldReset}
         crop={majorCrops}
       ></CheckFilter>
+      )}
       {carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (
         <CheckFilter
           title="Landrace Crops"

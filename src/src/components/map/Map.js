@@ -1,8 +1,9 @@
 import React from "react";
 import { CloseButton } from "react-bootstrap";
-import { MapContainer, TileLayer, ZoomControl } from "react-leaflet";
+import { MapContainer, TileLayer, ZoomControl,WMSTileLayer,LayersControl } from "react-leaflet";
 import "./Map.css";
-
+import L from "leaflet";
+const {BaseLayer}=LayersControl;
 function Map({
   carouselMajorItems,
   setCarouselMajorItems,
@@ -18,9 +19,9 @@ function Map({
     const itemToRemove = carouselLandraceItems.splice(index, 1)[0];
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
-
-  return (
-    <div className="mapDiv mx-0 p-0">
+ 
+  return (  
+    <div   className="mapDiv mx-0 p-0">
       <div className="div-filter-map">
         <div className="px-4 py-2">
           {carouselMajorItems && carouselMajorItems.length > 0 && <h6>Major items</h6>}
@@ -68,8 +69,7 @@ function Map({
             ))}
         </div>
       </div>
-
-      <MapContainer
+              <MapContainer id="mapid"
         center={[14.88, -35, 76]}
         zoom={3}
         maxBounds={[[90, -180.000], [-90, 180.000]]}
@@ -79,7 +79,16 @@ function Map({
       >
         <ZoomControl position="topright"></ZoomControl>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <WMSTileLayer
+          url="http://localhost:8080/geoserver/otrico/wms"
+          layers="otrico:g1_pearl_millet_india_new_2"
+          format="image/png"
+          transparent={true}
+        />
+                     
       </MapContainer>
+
+      
     </div>
   );
 }

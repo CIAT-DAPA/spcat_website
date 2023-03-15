@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 
 function CheckFilter({ onDataChange, title, onChange, crop }) {
 
-  const [tableItems, setTableItems] = useState(crop);
+  const [tableItems, setTableItems] = useState([]);
   const [carouselItems, setCarouselItems] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
@@ -36,7 +36,13 @@ function CheckFilter({ onDataChange, title, onChange, crop }) {
     setTableItems([...tableItems, ...carouselItems].sort());
     setCarouselItems([])
   }, [onChange])
-
+  useEffect(()=>{
+    if(crop && crop.length>0){
+      setTableItems([...crop].sort())
+      
+    }
+    console.log(crop)
+  },[crop])
 
   return (
     <div className="mt-1 mb-4">
