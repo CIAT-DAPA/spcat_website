@@ -10,7 +10,7 @@ import axios from 'axios'
 
 
 function MapTools() {
-const url= 'http://127.0.0.1:5000/countries'
+const url= 'http://127.0.0.1:5000/api/v1/countries'
 const [response, setResponse] = useState([]);
 useEffect(()=>{
     const getCountries =async ()=>{
@@ -26,7 +26,7 @@ useEffect(()=>{
     getCountries();
 
 },[])
-const urlCrops='http://localhost:5000/crops';
+const urlCrops='http://127.0.0.1:5000/api/v1/crops';
 const [crops, setCrops] = useState([]);
 useEffect(()=>{
     const getCrops =async ()=>{

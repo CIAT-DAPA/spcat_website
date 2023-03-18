@@ -4,11 +4,12 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { Carousel, CloseButton } from "react-bootstrap";
 import { useState, useEffect } from "react";
 
-function CheckFilter({ onDataChange, title, onChange, crop }) {
+function CheckFilter({ onDataChange, title, onChange, crop,crops }) {
 
   const [tableItems, setTableItems] = useState([]);
   const [carouselItems, setCarouselItems] = useState([]);
   const [searchValue, setSearchValue] = useState("");
+  const[basaName,setBaseName]=useState([]);
 
   const handleAddToCarousel = (index) => {
     const itemToAdd = tableItems.splice(index, 1)[0];
@@ -41,9 +42,9 @@ function CheckFilter({ onDataChange, title, onChange, crop }) {
       setTableItems([...crop].sort())
       
     }
-    console.log(crop)
+    //console.log(crop)
   },[crop])
-
+//console.log(crops)
   return (
     <div className="mt-1 mb-4">
       {title}
@@ -72,7 +73,7 @@ function CheckFilter({ onDataChange, title, onChange, crop }) {
                   <td className="text-center">
                     <img
                       alt=""
-                      src="https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/banana.png"
+                      src={require(`../../assets/icons/yam.png`)}
                       width="20"
                     />{" "}
                     {item}

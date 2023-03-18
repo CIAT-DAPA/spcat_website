@@ -1,6 +1,6 @@
-import React from "react";
+import {React, useState} from "react";
 import { CloseButton } from "react-bootstrap";
-import { MapContainer, TileLayer, ZoomControl,WMSTileLayer,LayersControl } from "react-leaflet";
+import { MapContainer, TileLayer, ZoomControl,WMSTileLayer,LayersControl, Marker, Popup } from "react-leaflet";
 import "./Map.css";
 import L from "leaflet";
 const {BaseLayer}=LayersControl;
@@ -19,7 +19,11 @@ function Map({
     const itemToRemove = carouselLandraceItems.splice(index, 1)[0];
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
- 
+  const [markerPosition, setMarkerPosition] = useState(null);
+
+  const handleMapClick = (event) => {
+    setMarkerPosition(event.latlng);
+  };
   return (  
     <div   className="mapDiv mx-0 p-0">
       <div className="div-filter-map">
@@ -69,19 +73,23 @@ function Map({
             ))}
         </div>
       </div>
-              <MapContainer id="mapid"
+              <MapContainer id="mapid"  onClick={(e) => setMarkerPosition(e.latlng)}
+              
         center={[14.88, -35, 76]}
         zoom={3}
         maxBounds={[[90, -180.000], [-90, 180.000]]}
         scrollWheelZoom={true}
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
+        
       >
         <ZoomControl position="topright"></ZoomControl>
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <TileLayer  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        {markerPosition && <Marker position={markerPosition}></Marker>}
+        
           <WMSTileLayer
-          url="http://localhost:8080/geoserver/otrico/wms"
-          layers="otrico:g1_pearl_millet_india_new_2"
+          url="https://isa.ciat.cgiar.org/geoserver2/gap_analysis/wms"
+          layers="gap_analysis:g3_pearl_millet_sin_na"
           format="image/png"
           transparent={true}
         />

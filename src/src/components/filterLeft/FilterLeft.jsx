@@ -63,10 +63,8 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,c
           <Form.Select aria-label="Default select example">
             {
               response.map((dat)=>{
-                return <option>
-                  <img  width='15' height='15' src="https://flagcdn.com/us.svg"/>
-                  {dat.name}
-                </option>
+                 
+                  return <option>{dat.name}</option>;
               })
             }
           </Form.Select>
@@ -79,6 +77,7 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,c
         onDataChange={handleDataMajorCropChange}
         onChange={shouldReset}
         crop={majorCrops}
+        crops={crops}
       ></CheckFilter>
       )}
       {carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (

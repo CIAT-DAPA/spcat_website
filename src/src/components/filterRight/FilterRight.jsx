@@ -10,7 +10,7 @@ import RouteReport from "../RouteReport/RouteReport";
 import { Button, Card, Collapse } from "react-bootstrap";
 import './FilterRight.css'
 
-import icon from '../../assets/icons/remove.png'
+//import icon from '../../assets/icons/remove.png'
 
 function FilterRight() {
   const [show, setShow] = useState(false);
