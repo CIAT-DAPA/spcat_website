@@ -3,10 +3,10 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import RouteReport from "../RouteReport/RouteReport";
-
+import { DataContext } from "../../context/context";
 import { Button, Card, Collapse } from "react-bootstrap";
 import './FilterRight.css'
 
@@ -16,7 +16,7 @@ function FilterRight() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  
+  const  {context, setContext}= useContext(DataContext);
   const [isVisible, setIsVisible] = useState(false);
   
   const [destinations, setDestinations] = useState([""]);
@@ -40,6 +40,7 @@ function FilterRight() {
   function handleSubmit(event) {
     event.preventDefault();
     // Aquí podrías enviar la información a un servidor o manejarla de alguna otra forma
+    setContext(destinations)
     console.log(destinations);
   }
   

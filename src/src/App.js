@@ -5,12 +5,12 @@ import Menu from './components/menu/Menu';
 import MapTools from './pages/mapTools/MapTools';
 import About from './components/about/about';
 import RouteReport from './components/RouteReport/RouteReport';
-
-
+import { DataContextProvider } from './context/context';
 
 function App() {
   return (
-    <Router>
+    <DataContextProvider>
+      <Router>
       <Menu />
       <RouteReport/>
 
@@ -20,6 +20,8 @@ function App() {
         <Route path="/about" element={<About />} />
       </Routes>
     </Router>
+    </DataContextProvider>
+    
   );
 }
 

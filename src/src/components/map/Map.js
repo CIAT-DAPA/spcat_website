@@ -89,7 +89,7 @@ function Map({
         
           <WMSTileLayer
           url="https://isa.ciat.cgiar.org/geoserver2/gap_analysis/wms"
-          layers="gap_analysis:g3_pearl_millet_sin_na"
+          layers="gap_analysis:g2_pearl_millet_sin_NA"
           format="image/png"
           transparent={true}
         />

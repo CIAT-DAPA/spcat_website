@@ -1,7 +1,9 @@
 import './about.css'
 import Footer from '../footer/Footer';
+import {React,useContext} from 'react';
 const About=()=>{
     return(
+        
         <>
          <div className="container">
             <h1 className="text-center title">Background</h1>
