@@ -5,6 +5,7 @@ import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { useState, useContext } from "react";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import RouteReport from "../RouteReport/RouteReport";
 import { DataContext } from "../../context/context";
 import { Button, Card, Collapse } from "react-bootstrap";
@@ -43,7 +44,12 @@ function FilterRight() {
     setContext(destinations)
     console.log(destinations);
   }
-  
+  function handleAddToList(index) {
+    const newContext = [...context, destinations[index]];
+    setContext(newContext);
+    console.log(newContext);
+  }
+
 
 
   return (
@@ -78,6 +84,8 @@ function FilterRight() {
             onChange={(event) => handleChange(event, index)}
             placeholder={`Destino #${index + 1}`}
           />
+      <FontAwesomeIcon onClick={handleAddToList} className="text-success icons" icon={faLocationDot}/>
+
           {destinations.length > 1 && ( 
             <>
             

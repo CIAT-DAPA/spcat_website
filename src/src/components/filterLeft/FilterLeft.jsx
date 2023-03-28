@@ -2,8 +2,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Row, Form, Container, Col, Button } from "react-bootstrap";
 import CheckFilter from "../checkFilter/CheckFilter";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { useRef, useState, useEffect } from "react";
-
+import { useRef, useState, useEffect,useContext } from "react";
+import axios from "axios";
+import { DataContext } from "../../context/context";
 function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,crops }) {
   //const majorCrops = [...Array(15)].map((_, i) => `Major Crop ${i}`);
   
@@ -13,21 +14,24 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,c
     if(crops && crops.length>0){
       const majorCropst = crops.map((crp) => crp.app_name);
       setMajorCrops([...majorCropst])
-    console.log(majorCropst)
-      
     }
     
   },[crops])
-  //console.log(crops)
   
-  const landraceCrops = [...Array(30)].map((_, i) => `Landrace Crop ${i}`);
+  const  {data, setData}= useContext(DataContext);
 
   const [shouldAddToMap, setShouldAddToMap] = useState(false);
-  const [carouselMajorItemsNow, setCarouselMajorItemsNow] = useState(null);
-  const [carouselLandraceItemsNow, setCarouselLandraceItemsNow] =
-    useState(null);
+  const [carouselMajorItemsNow, setCarouselMajorItemsNow] = useState([]); //items del carusel en el momento
+  const [carouselLandraceItemsNow, setCarouselLandraceItemsNow] =useState(null); //items de grupos de cultivo en el carrousel
+  const [countryIso, setCountryIso] = useState(''); //iso del pais seleccionado
   const [shouldReset, setShouldReset] = useState(false);
   const fileInputRef = useRef(null);
+  const [filteredCrops, setFilteredCrops] = useState([]); //cultivos ssleciionados 
+
+const [groupNames, setGroupNames] = useState([]); 
+const[allgroupscrop, setAllGroupCrop]=useState([])
+const [accessionData, setAccessionData] = useState([]);
+
 
   const handleDataMajorCropChange = (newData) => {
     setCarouselMajorItemsNow(newData);
@@ -40,12 +44,22 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,c
   const handleAddToMap = () => {
     setShouldReset(!shouldReset);
     setShouldAddToMap(true);
+    setData(accessionData)
   };
 
+  const handleCountryChange = (e) => {
+    const selectedCountry = response.find(
+      (country) => country.name === e.target.value
+    );
+    setCountryIso(selectedCountry.iso_2);
+  };
+
+ 
+  //console.log(countryIso)
   const handleFileInputChange = (event) => {
     const selectedFile = event.target.files[0];
     // acciones con el archivo subido
-    console.log(selectedFile);
+    //console.log(selectedFile);
   };
 
   if (shouldAddToMap) {
@@ -53,20 +67,76 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,c
     setCarouselLandraceItems(carouselLandraceItemsNow);
     setShouldAddToMap(false);
   }
-  
+ console.log(carouselLandraceItemsNow)
+
+  useEffect(() => {
+    const filteredData = crops.filter((item) => carouselMajorItemsNow.includes(item.app_name));
+    setFilteredCrops(filteredData);
+  }, [crops, carouselMajorItemsNow]);
+
+//console.log(filteredCrops)
+//console.log(carouselMajorItemsNow[0])
+useEffect(() => {
+  if (filteredCrops.length === 1) {
+    const cropId = filteredCrops[0].id;
+    axios.get(`http://localhost:5000/api/v1/groupsbyids?id=${cropId}`)
+      .then(response => {
+        setAllGroupCrop(response.data)
+        
+        const groupNames = response.data.map(group => group.group_name);
+        setGroupNames(groupNames);
+      })
+      .catch(error => {
+        //console.log(error);
+      });
+      if(allgroupscrop.length>0){
+        const ids = allgroupscrop.map(obj => obj.id);
+      //console.log(ids)
+      const endpointaccesions = `http://localhost:5000/api/v1/accessionsbyidgroup?id=${ids.join('%')}`;
+      axios.get(endpointaccesions)
+      .then(response => {
+        // 4. Manejar la respuesta de la solicitud HTTP
+        setAccessionData(response.data);
+      })
+      .catch(error => {
+        console.log('Error en la solicitud HTTP:', error);
+      });
+      }
+      
+      
+  } else {
+    setGroupNames([]);
+  }
+}, [filteredCrops]);
+useEffect(()=>{
+  if(allgroupscrop.length>0){
+    const ids = allgroupscrop.map(obj => obj.id);
+  console.log(ids)
+  const endpointaccesions = `http://localhost:5000/api/v1/accessionsbyidgroup?id=${ids.join('%')}`;
+  axios.get(endpointaccesions)
+  .then(response => {
+    // 4. Manejar la respuesta de la solicitud HTTP
+    setAccessionData(response.data);
+  })
+  .catch(error => {
+    console.log('Error en la solicitud HTTP:', error);
+  });
+  }
+},[allgroupscrop])
+//console.log(groupNames)
+//console.log(allgroupscrop)
+//console.log(filteredCrops)
+//console.log(data)
 
   return (
     <Container className="mt-3">
       <Row className="align-items-center mb-3">
         <Col className="col-3">Country</Col>
         <Col>
-          <Form.Select aria-label="Default select example">
-            {
-              response.map((dat)=>{
-                 
-                  return <option>{dat.name}</option>;
-              })
-            }
+          <Form.Select aria-label="Default select example" onChange={handleCountryChange}>
+          {response.map(country => (
+          <option key={country.id} value={country.name}>{country.name}</option>
+        ))}
           </Form.Select>
         </Col>
       </Row>
@@ -77,7 +147,7 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,c
         onDataChange={handleDataMajorCropChange}
         onChange={shouldReset}
         crop={majorCrops}
-        crops={crops}
+        
       ></CheckFilter>
       )}
       {carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (
@@ -85,7 +155,7 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,c
           title="Landrace Crops"
           onDataChange={handleDataLandraceCropChange}
           onChange={shouldReset}
-          crop={landraceCrops}
+          crop={groupNames}
         ></CheckFilter>
       )}
       <div className="d-flex flex-column align-items-center gap-2 mt-3">

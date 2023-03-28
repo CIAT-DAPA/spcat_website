@@ -44,7 +44,7 @@ function CheckFilter({ onDataChange, title, onChange, crop,crops }) {
     }
     //console.log(crop)
   },[crop])
-//console.log(crops)
+
   return (
     <div className="mt-1 mb-4">
       {title}
@@ -71,9 +71,10 @@ function CheckFilter({ onDataChange, title, onChange, crop,crops }) {
               .map((item, i) => (
                 <tr key={i} onClick={() => handleAddToCarousel(i)}>
                   <td className="text-center">
+                    
                     <img
                       alt=""
-                      src={require(`../../assets/icons/yam.png`)}
+                     /*  src={require(`../../assets/icons/${item.split(' ')[0].toLowerCase()}.png`)} */
                       width="20"
                     />{" "}
                     {item}
@@ -92,7 +93,7 @@ function CheckFilter({ onDataChange, title, onChange, crop,crops }) {
             <div className="btn border border-top-0 px-3 py-1 rounded-3 me-1 hoverable" onClick={() => handleRemoveFromCarousel(i)} key={i}>
               <img
                 alt=""
-                src="https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/banana.png"
+                /* src={require(`../../assets/icons/${item.split(' ')[0].toLowerCase()}.png`)} */
                 width="20"
               />{" "}
               {item}
