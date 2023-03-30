@@ -4,8 +4,10 @@ export function DataContextProvider(props){
     const [context, setContext]= useState('');
     const [data, setData]= useState([]);
     const [layerc, setLayerc]= useState('');
+    const [elevationsg, setElevationsg]= useState([]);
+    const [distance, setDistance]= useState([]);
     return(
-        <DataContext.Provider value={{context,setContext,data,setData,layerc,setLayerc}} >
+        <DataContext.Provider value={{context,setContext,data,setData,layerc,setLayerc,elevationsg,setElevationsg,distance, setDistance}} >
             {props.children}
             </DataContext.Provider>
     )

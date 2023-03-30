@@ -36,16 +36,18 @@ function Map({
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
 
-  let markerPosition = [4.4419, -75.2327];
-  var markerPositionv = ["2.9342", "-75.2858"];
-  markerPositionv = [1.2136, -77.2811];
+  
   const google = window.google;
   const { context } = useContext(DataContext);
   const { data } = useContext(DataContext);
+  const { elevationsg, setElevationsg } = useContext(DataContext);
+  const { distance, setDistance } = useContext(DataContext);
+
   const { layerc } = useContext(DataContext);
   const [prueba, setPrueba] = useState([]);
   const [lugares, setLugares] = useState([]);
   const [wmsTileLayer, setWMSTileLayer] = useState(null);
+  const[elevations,setElevations]=useState([])
   useEffect(() => {
     // Aquí puedes hacer cualquier acción que necesites cada vez que cambie layerc
     // En este caso, no haremos nada especial
@@ -67,22 +69,19 @@ function Map({
 
   let url = "https://maps.googleapis.com/maps/api/directions/json?";
 
-  // Creamos una lista vacía para almacenar las ubicaciones
-  /* let ubicaciones = []; */
-  const cities = [
-    [4.710989, -74.072092], //Bogotá
-    [3.451647, -76.531982], //Cali
-    [6.244203, -75.581211], //Medellín
-  ];
-  // Agregar un evento load al objeto window
-  window.addEventListener("load", () => {
-    // Crear un objeto DirectionsService
-  });
-  useEffect(() => {
-    if (context.length > 0) {
-      const directionsService = new google.maps.DirectionsService();
-      const puntos = context.map((punto) => ({ location: punto }));
+
+// Agregar un evento load al objeto window
+window.addEventListener("load", () => {
+  // Crear un objeto DirectionsService
+  
+});
+useEffect(()=>{
+  if(context.length>0){
+    const directionsService = new google.maps.DirectionsService();
+    const elevationService = new google.maps.ElevationService();
+    const puntos=  context.map(punto => ({location: punto}));
       // Crear una solicitud de dirección
+      
       const request = {
         origin: puntos[0].location,
         destination: puntos[puntos.length - 1].location,
@@ -95,11 +94,40 @@ function Map({
         if (status === google.maps.DirectionsStatus.OK) {
           // Obtener las coordenadas de la ruta
           const route = response.routes[0];
-          const coordinates = route.overview_path.map((point) => [
-            point.lat(),
-            point.lng(),
-          ]);
+          
+          const coordinates = route.overview_path.map(point => [point.lat(), point.lng()]);
 
+          const coordenadasApi = coordinates.map((coordenadas) => {
+            return {
+              lat: coordenadas[0],
+              lng: coordenadas[1]
+            };
+          });
+          console.log(coordenadasApi)
+          const distance = route.legs.reduce((acc, leg) => acc + leg.distance.value, 0);
+          setDistance(distance/1000)
+console.log(`Distancia total: ${distance/1000} km`);  
+
+          elevationService.getElevationAlongPath(
+            {
+              path: coordenadasApi,
+              samples: 256
+            },
+            (results, status) => {
+              if (status === google.maps.ElevationStatus.OK) {
+                // Obtener las elevaciones de los puntos de la ruta
+                console.log(results)
+                const elevations = results.map(result => result.elevation);
+      
+                // Las elevaciones están en metros
+                setElevations(elevations);
+                setElevationsg(elevations)
+              } else {
+                console.error(`Error al obtener la elevación: ${status}`);
+              }
+            }
+          );
+    
           // Las coordenadas están en formato [latitud, longitud]
 
           setLugares(coordinates);
@@ -107,8 +135,10 @@ function Map({
           console.error(`Error al obtener la dirección: ${status}`);
         }
       });
-    }
-  }, [context]);
+  }
+  
+},[context])
+console.log(elevations)
 
   const [ubicaciones, setUbicaciones] = useState([]);
   // Iteramos sobre el array de ciudades y obtenemos las coordenadas de cada una
@@ -285,16 +315,16 @@ function Map({
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
         {layerc && (
-          <WMSTileLayer
-            key={`layer-${layerc}`}
-            url="https://isa.ciat.cgiar.org/geoserver2/gap_analysis/wms"
-            layers={`gap_analysis:${layerc}`}
-            format="image/png"
-            transparent={true}
-          />
-        )}
-        <Polyline color="lime" positions={lugares} />
-        {/* <Marker  position={[4.71096, -74.07221000000001]}>
+  <WMSTileLayer 
+    key={`layer-${layerc}`}
+    url="https://isa.ciat.cgiar.org/geoserver2/gap_analysis/wms"
+    layers={`gap_analysis:${layerc}`}
+    format="image/png"
+    transparent={true}
+  />
+)}
+<Polyline color="lime" positions={lugares} weight={5} />
+{/* <Marker  position={[4.71096, -74.07221000000001]}>
             <Popup>
               Institution: <br /> Source:{" "}
             </Popup>
