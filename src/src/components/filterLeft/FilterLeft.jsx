@@ -5,10 +5,12 @@ import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState, useEffect,useContext } from "react";
 import axios from "axios";
 import { DataContext } from "../../context/context";
+import { layerGroup } from "leaflet";
 function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,crops }) {
   //const majorCrops = [...Array(15)].map((_, i) => `Major Crop ${i}`);
   
   //const majorCrops = crops.map((crp) => crp.app_name);
+  //cultivos que  se listaran
   const [majorCrops,setMajorCrops]=useState([])
   useEffect(()=>{
     if(crops && crops.length>0){
@@ -19,6 +21,7 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,c
   },[crops])
   
   const  {data, setData}= useContext(DataContext);
+  const  {layerc, setLayerc}= useContext(DataContext);
 
   const [shouldAddToMap, setShouldAddToMap] = useState(false);
   const [carouselMajorItemsNow, setCarouselMajorItemsNow] = useState([]); //items del carusel en el momento
@@ -31,6 +34,8 @@ function FilterLeft({ setCarouselMajorItems, setCarouselLandraceItems,response,c
 const [groupNames, setGroupNames] = useState([]); 
 const[allgroupscrop, setAllGroupCrop]=useState([])
 const [accessionData, setAccessionData] = useState([]);
+const[accesionDataByCrop, setAccesionDataByCrop]=useState([])
+const[layer,setLayer]=useState([])
 
 
   const handleDataMajorCropChange = (newData) => {
@@ -41,11 +46,7 @@ const [accessionData, setAccessionData] = useState([]);
     setCarouselLandraceItemsNow(newData);
   };
 
-  const handleAddToMap = () => {
-    setShouldReset(!shouldReset);
-    setShouldAddToMap(true);
-    setData(accessionData)
-  };
+ 
 
   const handleCountryChange = (e) => {
     const selectedCountry = response.find(
@@ -75,58 +76,101 @@ const [accessionData, setAccessionData] = useState([]);
   }, [crops, carouselMajorItemsNow]);
 
 //console.log(filteredCrops)
-//console.log(carouselMajorItemsNow[0])
+console.log(filteredCrops)
 useEffect(() => {
   if (filteredCrops.length === 1) {
+    
     const cropId = filteredCrops[0].id;
     axios.get(`http://localhost:5000/api/v1/groupsbyids?id=${cropId}`)
       .then(response => {
         setAllGroupCrop(response.data)
-        
+        setLayer(countryIso+'_'+filteredCrops[0].name) 
         const groupNames = response.data.map(group => group.group_name);
         setGroupNames(groupNames);
+        
       })
       .catch(error => {
-        //console.log(error);
+        console.log(error);
       });
-      if(allgroupscrop.length>0){
-        const ids = allgroupscrop.map(obj => obj.id);
-      //console.log(ids)
-      const endpointaccesions = `http://localhost:5000/api/v1/accessionsbyidgroup?id=${ids.join('%')}`;
-      axios.get(endpointaccesions)
-      .then(response => {
-        // 4. Manejar la respuesta de la solicitud HTTP
-        setAccessionData(response.data);
-      })
-      .catch(error => {
-        console.log('Error en la solicitud HTTP:', error);
-      });
-      }
-      
       
   } else {
     setGroupNames([]);
   }
 }, [filteredCrops]);
+
+
+//console.log(layer)
+console.log(allgroupscrop)
+
+const gruposencarrousell= allgroupscrop.filter(grupo=>carouselLandraceItemsNow.includes(grupo.group_name)) //filre los grupos que estan em el crrousell
+const idss = gruposencarrousell.map(obj => obj.id).join(',');
+console.log(idss)
+// ['Spring', 'Winter']   los grupos 
+
 useEffect(()=>{
-  if(allgroupscrop.length>0){
-    const ids = allgroupscrop.map(obj => obj.id);
-  console.log(ids)
-  const endpointaccesions = `http://localhost:5000/api/v1/accessionsbyidgroup?id=${ids.join('%')}`;
+  
+    if(idss.length>0){
+      const endpointaccesions = `http://localhost:5000/api/v1/accessionsbyidgroup?id=${idss}`;
   axios.get(endpointaccesions)
   .then(response => {
     // 4. Manejar la respuesta de la solicitud HTTP
-    setAccessionData(response.data);
+    setAccessionData(response.data)
   })
   .catch(error => {
     console.log('Error en la solicitud HTTP:', error);
   });
+    }
+  
+  
+  
+},[idss])
+
+console.log(countryIso)
+console.log(layer)
+const idsCropss = filteredCrops.map(obj => obj.id).join(',');
+console.log(idsCropss)
+
+useEffect(()=>{
+  if(idsCropss.length>1){
+   setAccessionData([])
+   setData([])
+   console.log(data)
+    const endopointAccesionsByCrop= `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}`
+    axios.get(endopointAccesionsByCrop)
+  .then(response => {
+    // 4. Manejar la respuesta de la solicitud HTTP
+    //setAccesionDataByCrop(response.data)
+    console.log(response)
+    if(response.data[0]?.accessions){
+    console.log(response.data.length)
+      
+      setAccessionData(response.data.flatMap(crop => crop.accessions))
+    }else{
+      console.log(response.data.length)
+      console.log('unooo')
+      setAccessionData(response.data)
+    }
+    
+  })
+
   }
-},[allgroupscrop])
-//console.log(groupNames)
-//console.log(allgroupscrop)
-//console.log(filteredCrops)
-//console.log(data)
+},[idsCropss])
+
+console.log(accessionData)
+//console.log(layer)
+const handleAddToMap = () => {
+  setShouldReset(!shouldReset);
+  setShouldAddToMap(true);
+  setData(accessionData)
+  setLayerc(layer)
+  
+ 
+};
+
+if(filteredCrops.length==0){
+  console.log('se vacio esto')
+}
+
 
   return (
     <Container className="mt-3">

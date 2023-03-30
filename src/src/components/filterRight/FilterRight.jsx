@@ -10,10 +10,11 @@ import RouteReport from "../RouteReport/RouteReport";
 import { DataContext } from "../../context/context";
 import { Button, Card, Collapse } from "react-bootstrap";
 import './FilterRight.css'
-
+import { useJsApiLoader,GoogleMap,Autocomplete } from '@react-google-maps/api';
 //import icon from '../../assets/icons/remove.png'
 
 function FilterRight() {
+ 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -21,11 +22,15 @@ function FilterRight() {
   const [isVisible, setIsVisible] = useState(false);
   
   const [destinations, setDestinations] = useState([""]);
+  const [places,setPlaces]=useState('')
 
+  
+  
   function handleChange(event, index) {
     const newDestinations = [...destinations];
     newDestinations[index] = event.target.value;
     setDestinations(newDestinations);
+    console.log(newDestinations)
   }
 //h
   function handleAdd() {
@@ -37,20 +42,37 @@ function FilterRight() {
     newDestinations.splice(index, 1);
     setDestinations(newDestinations);
   }
+  
+  const handleAutocompleteChange = (event, value, index) => {
+    const newDestinations = [...destinations];
+    newDestinations[index] = value;
+    setDestinations(newDestinations);
+    
+  };
 
   function handleSubmit(event) {
     event.preventDefault();
     // Aquí podrías enviar la información a un servidor o manejarla de alguna otra forma
     setContext(destinations)
-    console.log(destinations);
+    setPlaces(destinations)
+    console.log(destinations)
   }
+ 
+  
   function handleAddToList(index) {
     const newContext = [...context, destinations[index]];
     setContext(newContext);
     console.log(newContext);
   }
 
-
+  let key='AIzaSyARbwF61yXA-0aEOfeDYanC-IpgfxMQL-w'
+  const{isLoaded}=useJsApiLoader({
+    googleMapsApiKey:key,
+    libraries:['places']
+  })
+if(!isLoaded){
+ return <div>no carga</div>
+}
 
   return (
     <>
@@ -78,12 +100,16 @@ function FilterRight() {
           <form onSubmit={handleSubmit}>
       {destinations.map((destination, index) => (
         <div key={index}>
+         
+            
           <input className="input"
             type="text"
             value={destination}
             onChange={(event) => handleChange(event, index)}
             placeholder={`Destino #${index + 1}`}
           />
+         
+          
       <FontAwesomeIcon onClick={handleAddToList} className="text-success icons" icon={faLocationDot}/>
 
           {destinations.length > 1 && ( 

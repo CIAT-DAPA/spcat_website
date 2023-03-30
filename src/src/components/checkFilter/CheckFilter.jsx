@@ -74,7 +74,7 @@ function CheckFilter({ onDataChange, title, onChange, crop,crops }) {
                     
                     <img
                       alt=""
-                     /*  src={require(`../../assets/icons/${item.split(' ')[0].toLowerCase()}.png`)} */
+                      /* src={require(`../../assets/icons/${item.split(' ')[0].toLowerCase()}.png`)} */
                       width="20"
                     />{" "}
                     {item}
