@@ -1,7 +1,18 @@
 import { React, useState, useEffect, useContext } from "react";
 import { CloseButton } from "react-bootstrap";
 import { DataContext } from "../../context/context";
-import {MapContainer,TileLayer,ZoomControl,WMSTileLayer,LayersControl,Marker,Popup,Polyline,useMap,useMapEvents,} from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  ZoomControl,
+  WMSTileLayer,
+  LayersControl,
+  Marker,
+  Popup,
+  Polyline,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
 import "./Map.css";
 import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
@@ -54,51 +65,50 @@ function Map({
     );
   }, [layerc]); */
 
-  
   let url = "https://maps.googleapis.com/maps/api/directions/json?";
 
   // Creamos una lista vacía para almacenar las ubicaciones
   /* let ubicaciones = []; */
   const cities = [
-  [4.710989, -74.072092], //Bogotá
-  [3.451647, -76.531982], //Cali
-  [6.244203, -75.581211] //Medellín
-];
-// Agregar un evento load al objeto window
-window.addEventListener("load", () => {
-  // Crear un objeto DirectionsService
-  
-});
-useEffect(()=>{
-  if(context.length>0){
-    const directionsService = new google.maps.DirectionsService();
-    const puntos=  context.map(punto => ({location: punto}));
+    [4.710989, -74.072092], //Bogotá
+    [3.451647, -76.531982], //Cali
+    [6.244203, -75.581211], //Medellín
+  ];
+  // Agregar un evento load al objeto window
+  window.addEventListener("load", () => {
+    // Crear un objeto DirectionsService
+  });
+  useEffect(() => {
+    if (context.length > 0) {
+      const directionsService = new google.maps.DirectionsService();
+      const puntos = context.map((punto) => ({ location: punto }));
       // Crear una solicitud de dirección
       const request = {
         origin: puntos[0].location,
         destination: puntos[puntos.length - 1].location,
         travelMode: google.maps.TravelMode.DRIVING,
-        waypoints: puntos.slice(1, -1)
+        waypoints: puntos.slice(1, -1),
       };
-    
+
       // Enviar la solicitud de dirección a la API de Google Maps
       directionsService.route(request, (response, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
           // Obtener las coordenadas de la ruta
           const route = response.routes[0];
-          const coordinates = route.overview_path.map(point => [point.lat(), point.lng()]);
-    
+          const coordinates = route.overview_path.map((point) => [
+            point.lat(),
+            point.lng(),
+          ]);
+
           // Las coordenadas están en formato [latitud, longitud]
-          
-          setLugares(coordinates)
+
+          setLugares(coordinates);
         } else {
           console.error(`Error al obtener la dirección: ${status}`);
         }
       });
-  }
-  
-},[context])
-
+    }
+  }, [context]);
 
   const [ubicaciones, setUbicaciones] = useState([]);
   // Iteramos sobre el array de ciudades y obtenemos las coordenadas de cada una
@@ -174,7 +184,7 @@ useEffect(()=>{
 
   return (
     <div className="mapDiv mx-0 p-0">
-      <div className="div-filter-map">
+      <div className="div-filter-map" style={{backgroundColor:'transparent', zIndex:'1000', position:'relative'}}>
         <div className="px-4 py-2">
           {carouselMajorItems && carouselMajorItems.length > 0 && (
             <h6>Major items</h6>
@@ -235,7 +245,7 @@ useEffect(()=>{
           [-90, 180.0],
         ]}
         scrollWheelZoom={true}
-        style={{ height: "100%", width: "100%" }}
+        style={{ height: "100%", width: "100%", position:'fixed', top: '58px' }}
         zoomControl={false}
       >
         {data &&
@@ -275,16 +285,16 @@ useEffect(()=>{
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
         {layerc && (
-  <WMSTileLayer 
-    key={`layer-${layerc}`}
-    url="https://isa.ciat.cgiar.org/geoserver2/gap_analysis/wms"
-    layers={`gap_analysis:${layerc}`}
-    format="image/png"
-    transparent={true}
-  />
-)}
-<Polyline color="lime" positions={lugares} />
-{/* <Marker  position={[4.71096, -74.07221000000001]}>
+          <WMSTileLayer
+            key={`layer-${layerc}`}
+            url="https://isa.ciat.cgiar.org/geoserver2/gap_analysis/wms"
+            layers={`gap_analysis:${layerc}`}
+            format="image/png"
+            transparent={true}
+          />
+        )}
+        <Polyline color="lime" positions={lugares} />
+        {/* <Marker  position={[4.71096, -74.07221000000001]}>
             <Popup>
               Institution: <br /> Source:{" "}
             </Popup>

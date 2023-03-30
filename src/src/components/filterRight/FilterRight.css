@@ -43,9 +43,9 @@ button{
     position:absolute;
     height: 90%;
 }
-.search{
+/* .search{
     border-radius: 7px;
-}
+} */
 .route-title{
 margin-top: 10px;
 margin-left: 10px;
@@ -60,4 +60,8 @@ margin-left: 10px;
 .icon-info{
     margin-top: 15px;
     cursor: pointer;
+}
+
+.row-destino{
+    --bs-gutter-x:0px !important;
 }

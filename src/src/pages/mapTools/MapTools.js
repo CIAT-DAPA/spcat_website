@@ -55,7 +55,7 @@ useEffect(()=>{
         <Col className='mx-0 px-0'>
             <Map carouselMajorItems={carouselMajorItems} setCarouselMajorItems={setCarouselMajorItems} carouselLandraceItems={carouselLandraceItems} setCarouselLandraceItems={setCarouselLandraceItems}></Map>
         </Col>
-        <Col className='col-auto'>
+        <Col className='col-auto' style={{zIndex:'1000'}}>
             <FilterRight></FilterRight>
         </Col>
     </Row>
