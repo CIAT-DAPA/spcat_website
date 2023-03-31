@@ -39,6 +39,8 @@ function Map({
   
   const google = window.google;
   const { context } = useContext(DataContext);
+  const [ubicaciones, setUbicaciones] = useState([]);
+
   const { data } = useContext(DataContext);
   const { elevationsg, setElevationsg } = useContext(DataContext);
   const { distance, setDistance } = useContext(DataContext);
@@ -57,7 +59,6 @@ function Map({
     // En este caso, no haremos nada especial
   }, [layerc]);
 
-  console.log(data);
   // Array con las ciudades
   /* useEffect(() => {
     // Actualiza el estado de wmsTileLayer cuando layer cambia
@@ -81,10 +82,35 @@ window.addEventListener("load", () => {
 });
 useEffect(()=>{
   if(context.length>0){
+    
     const directionsService = new google.maps.DirectionsService();
     const elevationService = new google.maps.ElevationService();
     const puntos=  context.map(punto => ({location: punto}));
-      // Crear una solicitud de dirección
+    const geocoder = new google.maps.Geocoder();
+const contextWithCoords = [];
+
+const getCoordsForCity = (city) => {
+  return new Promise((resolve, reject) => {
+    geocoder.geocode({address: city}, (results, status) => {
+      if (status === google.maps.GeocoderStatus.OK) {
+        const location = results[0].geometry.location;
+        const coords = {latitude: location.lat(), longitude: location.lng()};
+        resolve({...coords, location: new google.maps.LatLng(coords.latitude, coords.longitude)});
+      } else {
+        reject(new Error(`Geocode failed: ${status}`));
+      }
+    });
+  });
+};
+
+Promise.all(context.map(city => getCoordsForCity(city)))
+  .then(coordsArray => {
+    setUbicaciones(coordsArray);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
       
       const request = {
         origin: puntos[0].location,
@@ -115,13 +141,10 @@ useEffect(()=>{
               lng: coordenadas[1]
             };
           });
-          console.log(coordenadasApi)
-          console.log(`Tiempo total de viaje: ${hours} horas y ${minutes} minutos`);
           setTime([hours,minutes])
-          console.log(url)
           const distance = route.legs.reduce((acc, leg) => acc + leg.distance.value, 0);
           setDistance(distance/1000)
-          console.log(`Distancia total: ${distance/1000} km`);  
+ 
           const distances = [];
           for (let i = 0; i < coordenadasApi.length - 1; i++) {
             const from = new google.maps.LatLng(coordenadasApi[i]);
@@ -132,7 +155,7 @@ useEffect(()=>{
             );
             distances.push(distance);
           }
-          console.log(distances);
+
           setDistances(distances);
 
           elevationService.getElevationAlongPath(
@@ -166,78 +189,49 @@ useEffect(()=>{
   }
   
 },[context])
-console.log(elevations)
-
-  const [ubicaciones, setUbicaciones] = useState([]);
+console.log(ubicaciones)
   // Iteramos sobre el array de ciudades y obtenemos las coordenadas de cada una
   /* const response = await fetch(`${baseURLCategories}${genre}${opts}`, ); */
-  useEffect(() => {
-    if (context.length > 0) {
-      context.forEach(function (ciudad) {
-        // Creamos una consulta para obtener las coordenadas de la ciudad
-        let query = {
-          address: ciudad,
-          key: "AIzaSyARbwF61yXA-0aEOfeDYanC-IpgfxMQL-w",
-        };
-        // Hacemos la petición a la API de Geocodificación de Google Maps
-        axios
-          .get("https://maps.googleapis.com/maps/api/geocode/json", {
-            params: query,
-          })
-          .then(function (response) {
+  /* useEffect(() => {
+    if (context.length > 1) {
+      let GEOCODE_API_URL='https://maps.googleapis.com/maps/api/geocode/json'
+      const fetchCoordinates = async () => {
+        const newUbicaciones = [];
+  
+        for (const ciudad of context) {
+          try {
+            // Creamos una consulta para obtener las coordenadas de la ciudad
+            const query = {
+              address: ciudad,
+              key: 'KEY',
+            };
+            // Hacemos la petición a la API de Geocodificación de Google Maps
+            const response = await axios.get(GEOCODE_API_URL, { params: query });
+  
             // Obtenemos las coordenadas de la ciudad
-            let location = response.data.results[0].geometry.location;
+            const { lat, lng } = response.data.results[0].geometry.location;
+  
             // Agregamos las coordenadas a la lista de ubicaciones
-            setUbicaciones((prevUbicaciones) => [
-              ...prevUbicaciones,
-              { lat: location.lat, lng: location.lng },
-            ]);
+            newUbicaciones.push({ lat, lng });
 
-            // Si ya hemos obtenido las coordenadas de todas las ciudades, construimos la consulta para obtener la ruta
-            if (ubicaciones.length === context.length) {
-              let query = {
-                origin: ubicaciones[0],
-                destination: ubicaciones[ubicaciones.length - 1],
-                waypoints: ubicaciones
-                  .slice(1, ubicaciones.length - 1)
-                  .join("|"),
-                key: "AIzaSyARbwF61yXA-0aEOfeDYanC-IpgfxMQL-w",
-              };
-              // Hacemos la petición a la API de Direcciones de Google Maps
-              axios
-                .get(url, { params: query })
-                .then(function (response) {
-                  // Obtenemos los pasos de la ruta y los imprimimos
-                  let pasos = response.data.routes[0].legs[0].steps;
-                  pasos.forEach(function (paso) {
-                    console.log(paso.html_instructions);
-                  });
-                })
-                .catch(function (error) {
-                  console.log("Error al obtener la ruta: " + error.message);
-                });
-            }
-          })
-          .catch(function (error) {
-            console.log(
-              "Error al obtener las coordenadas de " +
-                ciudad +
-                ": " +
-                error.message
-            );
-          });
-      });
-    } else {
-      console.log("aun no hay nada");
+
+          } catch (error) {
+            console.log(`Error al obtener las coordenadas de ${ciudad}: ${error.message}`);
+          }
+        }
+  
+        // Actualizamos el estado de las ubicaciones solo con la última coordenada
+        setUbicaciones(newUbicaciones);
+      }
+  
+      fetchCoordinates();
     }
-  }, [context]);
-
+  }, [context]); */
   const customIcon = L.icon({
     iconUrl: "https://img.icons8.com/material-outlined/256/marker.png",
     iconSize: [35, 35], // tamaño del icono
   });
 
-  console.log(layerc);
   const accessionsArreglo = prueba.map((objeto) => objeto.accessions);
 
   return (
@@ -332,9 +326,9 @@ console.log(elevations)
 ))} */}
 
         {ubicaciones.map((marker, index) => (
-          <Marker key={index} position={[marker.lat, marker.lng]}>
+          <Marker key={index} position={[marker.latitude, marker.longitude]}>
             <Popup>
-              Institution: <br /> Source:{" "}
+              Destino: {index + 1 }
             </Popup>
           </Marker>
         ))}
