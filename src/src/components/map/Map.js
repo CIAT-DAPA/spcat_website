@@ -42,6 +42,10 @@ function Map({
   const { data } = useContext(DataContext);
   const { elevationsg, setElevationsg } = useContext(DataContext);
   const { distance, setDistance } = useContext(DataContext);
+  const { time, setTime } = useContext(DataContext);
+  const { travel, setTravel } = useContext(DataContext);
+  const { elevationProm, setElevationProm} = useContext(DataContext);
+  const [distances, setDistances] = useState([]);
 
   const { layerc } = useContext(DataContext);
   const [prueba, setPrueba] = useState([]);
@@ -96,7 +100,15 @@ useEffect(()=>{
           const route = response.routes[0];
           
           const coordinates = route.overview_path.map(point => [point.lat(), point.lng()]);
-
+   
+          const duration = response.routes[0].legs.reduce(
+            (total, leg) => total + leg.duration.value,
+            0
+          );
+          const hours = Math.floor(duration / 3600);
+          const minutes = Math.floor((duration % 3600) / 60);
+          const url = `https://www.google.com/maps/dir/?api=1&origin=${puntos[0].location}&destination=${puntos[puntos.length - 1].location}&waypoints=${puntos.slice(1, -1).map(punto => punto.location).join('|')}&travelmode=driving`;
+          setTravel(url)
           const coordenadasApi = coordinates.map((coordenadas) => {
             return {
               lat: coordenadas[0],
@@ -104,9 +116,24 @@ useEffect(()=>{
             };
           });
           console.log(coordenadasApi)
+          console.log(`Tiempo total de viaje: ${hours} horas y ${minutes} minutos`);
+          setTime([hours,minutes])
+          console.log(url)
           const distance = route.legs.reduce((acc, leg) => acc + leg.distance.value, 0);
           setDistance(distance/1000)
-console.log(`Distancia total: ${distance/1000} km`);  
+          console.log(`Distancia total: ${distance/1000} km`);  
+          const distances = [];
+          for (let i = 0; i < coordenadasApi.length - 1; i++) {
+            const from = new google.maps.LatLng(coordenadasApi[i]);
+            const to = new google.maps.LatLng(coordenadasApi[i + 1]);
+            const distance = google.maps.geometry.spherical.computeDistanceBetween(
+              from,
+              to
+            );
+            distances.push(distance);
+          }
+          console.log(distances);
+          setDistances(distances);
 
           elevationService.getElevationAlongPath(
             {
@@ -118,9 +145,10 @@ console.log(`Distancia total: ${distance/1000} km`);
                 // Obtener las elevaciones de los puntos de la ruta
                 console.log(results)
                 const elevations = results.map(result => result.elevation);
-      
                 // Las elevaciones están en metros
-                setElevations(elevations);
+                const promelevation = (elevations.reduce((acumulador, numero) => acumulador + numero, 0)/elevations.length).toFixed(2);
+                console.log(`el promedio es ${promelevation}`)
+                setElevationProm(promelevation)
                 setElevationsg(elevations)
               } else {
                 console.error(`Error al obtener la elevación: ${status}`);

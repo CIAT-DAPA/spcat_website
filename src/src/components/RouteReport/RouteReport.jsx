@@ -2,7 +2,7 @@ import React, { useState,useContext } from "react";
 import { Modal, Button } from "react-bootstrap";
 import ReactApexChart from "react-apexcharts";
 import { DataContext } from "../../context/context";
-
+import './RouteReport.css'
 const RouteReport = ({show,handleClose}) => {
   /* const [show, setShow] = useState(false);
 
@@ -11,6 +11,8 @@ const RouteReport = ({show,handleClose}) => {
  */
   const { elevationsg } = useContext(DataContext);
   const { distance } = useContext(DataContext);
+  const { time } = useContext(DataContext);
+  const {elevationProm} = useContext(DataContext);
 
   const series = [
     {
@@ -42,15 +44,24 @@ const RouteReport = ({show,handleClose}) => {
     <>
       
 
-      <Modal show={show} onHide={handleClose} centered size="lg">
+      <Modal dialogClassName="modal-height" scrollable={true} show={show} onHide={handleClose} >
         <Modal.Header closeButton>
-          <Modal.Title className="text-center">Reporte de rutas</Modal.Title>
+          <Modal.Title className="text-center">Route Summary</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ height: '400px' }}>
+        <Modal.Body >
           <p>
-           {distance} kms
+          Average distance {distance} kms
           </p>
+          <p>Estimated travel time {time[0]} hours and {time[1]} minutes</p>
+          <p>Average travel altitude {elevationProm} mts</p>
+
           <ReactApexChart
+            options={options}
+            series={series}
+            type="line"
+            height={350}
+          />
+           <ReactApexChart
             options={options}
             series={series}
             type="line"

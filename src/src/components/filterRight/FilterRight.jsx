@@ -3,6 +3,7 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { faCar } from "@fortawesome/free-solid-svg-icons";
 import { useState, useContext } from "react";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -11,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import RouteReport from "../RouteReport/RouteReport";
 import { DataContext } from "../../context/context";
+
 import { Button, Card, Col, Collapse, Row } from "react-bootstrap";
 import "./FilterRight.css";
 import {
@@ -26,6 +28,8 @@ function FilterRight() {
   const handleShow = () => setShow(true);
   const { context, setContext } = useContext(DataContext);
   const [isVisible, setIsVisible] = useState(false);
+  const { travel } = useContext(DataContext);
+
 
   const [destinations, setDestinations] = useState([""]);
   const [places, setPlaces] = useState("");
@@ -167,7 +171,27 @@ function FilterRight() {
                     icon={faMagnifyingGlass}
                   ></FontAwesomeIcon>
                 </Button>
+
+                
               </div>
+              <div className="text-center mt-3">
+  {travel.length>0 &&
+    <Button 
+      variant="primary"
+      className="text-white"
+      type="submit"
+      href={travel}
+      target='_blank'
+    >
+      Navegar a Destino
+      <FontAwesomeIcon
+        className="search-icon"
+        icon={faCar}
+      ></FontAwesomeIcon>
+    </Button>
+  }
+ 
+</div>
             </form>
           </div>
         </Collapse>
