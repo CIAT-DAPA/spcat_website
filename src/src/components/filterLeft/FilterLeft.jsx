@@ -83,7 +83,6 @@ function FilterLeft({
   }, [crops, carouselMajorItemsNow]);
 
   //console.log(filteredCrops)
-  console.log(filteredCrops);
   useEffect(() => {
     if (filteredCrops.length === 1) {
       const cropId = filteredCrops[0].id;
@@ -104,17 +103,19 @@ function FilterLeft({
   }, [filteredCrops]);
 
   //console.log(layer)
-  console.log(allgroupscrop);
 
   const gruposencarrousell = allgroupscrop.filter((grupo) =>
     carouselLandraceItemsNow.includes(grupo.group_name)
   ); //filre los grupos que estan em el crrousell
   const idss = gruposencarrousell.map((obj) => obj.id).join(",");
-  console.log(idss);
   // ['Spring', 'Winter']   los grupos
-
+console.log(idss)
   useEffect(() => {
     if (idss.length > 0) {
+      setLayer([])
+      const nuevoEstado = carouselLandraceItemsNow.map(elemento => `${layer}_${elemento}`);
+      setLayer(nuevoEstado)
+      console.log(layer)
       const endpointaccesions = `http://localhost:5000/api/v1/accessionsbyidgroup?id=${idss}`;
       axios
         .get(endpointaccesions)
@@ -128,36 +129,27 @@ function FilterLeft({
     }
   }, [idss]);
 
-  console.log(countryIso);
-  console.log(layer);
   const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
-  console.log(idsCropss);
 
   useEffect(() => {
     if (idsCropss.length > 1) {
       setAccessionData([]);
       setData([]);
-      console.log(data);
       const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}`;
       axios.get(endopointAccesionsByCrop).then((response) => {
         // 4. Manejar la respuesta de la solicitud HTTP
         //setAccesionDataByCrop(response.data)
-        console.log(response);
         if (response.data[0]?.accessions) {
-          console.log(response.data.length);
 
           setAccessionData(response.data.flatMap((crop) => crop.accessions));
         } else {
-          console.log(response.data.length);
-          console.log("unooo");
           setAccessionData(response.data);
         }
       });
     }
   }, [idsCropss]);
 
-  console.log(accessionData);
-  //console.log(layer)
+  console.log(layer)
   const handleAddToMap = () => {
     setShouldReset(!shouldReset);
     setShouldAddToMap(true);
@@ -165,9 +157,7 @@ function FilterLeft({
     setLayerc(layer);
   };
 
-  if (filteredCrops.length == 0) {
-    console.log("se vacio esto");
-  }
+
 
   const renderTooltip = (props) => (
     <Tooltip >{props}</Tooltip>
