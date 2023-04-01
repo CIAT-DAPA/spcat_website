@@ -196,6 +196,7 @@ console.log(idss)
           crop={majorCrops}
         ></CheckFilter>
       )}
+      
       {carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (
         <CheckFilter
           title="Landrace Crops"
@@ -207,6 +208,14 @@ console.log(idss)
         ></CheckFilter>
       )}
       {carouselMajorItemsNow && carouselMajorItemsNow.length > 1 && (
+        <CheckFilter
+          title="Landrace Crops"
+          onDataChange={handleDataLandraceCropChange}
+          onChange={shouldReset}
+          crop={[]}
+        ></CheckFilter>
+      )}
+      {carouselMajorItemsNow && carouselMajorItemsNow.length ==0 && (
         <CheckFilter
           title="Landrace Crops"
           onDataChange={handleDataLandraceCropChange}
