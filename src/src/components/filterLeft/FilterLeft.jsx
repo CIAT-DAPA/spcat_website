@@ -185,6 +185,14 @@ console.log(idss)
           crop={groupNames}
         ></CheckFilter>
       )}
+      {carouselMajorItemsNow && carouselMajorItemsNow.length > 1 && (
+        <CheckFilter
+          title="Landrace Crops"
+          onDataChange={handleDataLandraceCropChange}
+          onChange={shouldReset}
+          crop={[]}
+        ></CheckFilter>
+      )}
       <div className="d-flex flex-column align-items-center gap-2 mt-3">
         <Button
           variant="primary"
