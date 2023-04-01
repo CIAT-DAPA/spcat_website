@@ -79,7 +79,7 @@ function FilterLeft({
     if (filteredCrops.length === 1) {
       const cropId = filteredCrops[0].id;
       axios
-        .get(`http://localhost:5000/api/v1/groupsbyids?id=${cropId}`)
+        .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
         .then((response) => {
           setAllGroupCrop(response.data);
           setLayer(countryIso + "_" + filteredCrops[0].name);

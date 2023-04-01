@@ -1,5 +1,5 @@
 .container-page {
-    height: 100vh;
+    height: calc(100vh - 64px);
     /* position: fixed; */
     background-image: url(../../assets/img/bg.jpg);
     background-size: cover;

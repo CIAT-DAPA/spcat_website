@@ -239,7 +239,7 @@ console.log(ubicaciones)
       <div className="div-filter-map" style={{backgroundColor:'transparent', zIndex:'1000', position:'relative'}}>
         <div className="px-4 py-2">
           {carouselMajorItems && carouselMajorItems.length > 0 && (
-            <h6>Major items</h6>
+            <h6>Major crops</h6>
           )}
           {carouselMajorItems &&
             carouselMajorItems.map((item, i) => (
