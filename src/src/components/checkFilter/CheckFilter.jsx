@@ -1,10 +1,10 @@
 import "./CheckFilter.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { Carousel, CloseButton } from "react-bootstrap";
+import { Carousel, CloseButton, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useState, useEffect } from "react";
 
-function CheckFilter({ onDataChange, title, onChange, crop,crops }) {
+function CheckFilter({ onDataChange, title, onChange, crop,crops, toolTipTitle, toolTipDescription }) {
 
   const [tableItems, setTableItems] = useState([]);
   const [carouselItems, setCarouselItems] = useState([]);
@@ -45,9 +45,15 @@ function CheckFilter({ onDataChange, title, onChange, crop,crops }) {
     //console.log(crop)
   },[crop])
 
+  const renderTooltip = (props) => (
+    <Tooltip >{props}</Tooltip>
+  );
+
   return (
     <div className="mt-1 mb-4">
-      {title}
+      {title} <OverlayTrigger placement="top" overlay={renderTooltip(toolTipDescription)}>
+            <span class="badge rounded-pill bg-primary ms-1">{toolTipTitle}</span>
+          </OverlayTrigger>
       <div className="mb-0 d-flex justify-content-between align-items-center">
         <div className="position-relative w-100">
           <span className="position-absolute search">

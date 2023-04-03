@@ -1,5 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Row, Form, Container, Col, Button } from "react-bootstrap";
+import {
+  Row,
+  Form,
+  Container,
+  Col,
+  Button,
+  Tooltip,
+  OverlayTrigger,
+} from "react-bootstrap";
 import CheckFilter from "../checkFilter/CheckFilter";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState, useEffect, useContext } from "react";
@@ -161,10 +169,19 @@ function FilterLeft({
     console.log("se vacio esto");
   }
 
+  const renderTooltip = (props) => (
+    <Tooltip >{props}</Tooltip>
+  );
+
   return (
     <Container className="mt-3">
       <Row className="align-items-center mb-3">
-        <Col className="col-3">Country</Col>
+        <Col className="col-4 d-flex align-items-center">
+          Country{" "}
+          <OverlayTrigger placement="top" overlay={renderTooltip("Step 1: Select your country")}>
+            <span class="badge rounded-pill bg-primary ms-1">Step 1</span>
+          </OverlayTrigger>
+        </Col>
         <Col>
           <Form.Select
             aria-label="Default select example"
@@ -179,9 +196,11 @@ function FilterLeft({
         </Col>
       </Row>
 
-      {majorCrops && majorCrops.length > 0 && (
+      {majorCrops && (
         <CheckFilter
           title="Major Crops"
+          toolTipTitle="Step 2"
+          toolTipDescription="Step 2: Select your crops"
           onDataChange={handleDataMajorCropChange}
           onChange={shouldReset}
           crop={majorCrops}
@@ -190,6 +209,8 @@ function FilterLeft({
       {carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (
         <CheckFilter
           title="Landrace Crops"
+          toolTipTitle="Step 3"
+          toolTipDescription="Step 3: Select your landrace crops"
           onDataChange={handleDataLandraceCropChange}
           onChange={shouldReset}
           crop={groupNames}
