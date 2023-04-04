@@ -10,6 +10,7 @@ import {
   Marker,
   Popup,
   Polyline,
+  Tooltip,
   useMap,
   useMapEvents,
 } from "react-leaflet";
@@ -19,6 +20,8 @@ import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import L from "leaflet";
 import axios from "axios";
 import icon from "../../assets/icons/banana.png";
+import Papa from 'papaparse';
+
 const { BaseLayer } = LayersControl;
 function Map({
   carouselMajorItems,
@@ -26,19 +29,26 @@ function Map({
   carouselLandraceItems,
   setCarouselLandraceItems,
 }) {
+
+ 
+
   const handleRemoveFromMajorCarousel = (index) => {
     const itemToRemove = carouselMajorItems.splice(index, 1)[0];
     setCarouselMajorItems([...carouselMajorItems]);
   };
 
+
   const handleRemoveFromLandraceCarousel = (index) => {
     const itemToRemove = carouselLandraceItems.splice(index, 1)[0];
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
+  const position = { lat: 4.570868, lng: -74.297333 };
+  console.log(carouselMajorItems)
+  console.log(carouselLandraceItems)
 
-  
   const google = window.google;
   const { context } = useContext(DataContext);
+  const { iso } = useContext(DataContext);
   const [ubicaciones, setUbicaciones] = useState([]);
 
   const { data } = useContext(DataContext);
@@ -48,31 +58,98 @@ function Map({
   const { travel, setTravel } = useContext(DataContext);
   const { elevationProm, setElevationProm} = useContext(DataContext);
   const [distances, setDistances] = useState([]);
+  const [layerr, setLayerr] = useState([]);
 
   const { layerc } = useContext(DataContext);
   const [prueba, setPrueba] = useState([]);
   const [lugares, setLugares] = useState([]);
   const [wmsTileLayer, setWMSTileLayer] = useState(null);
   const[elevations,setElevations]=useState([])
+  const [tooltipInfo, setTooltipInfo] = useState(null);
   useEffect(() => {
     // Aquí puedes hacer cualquier acción que necesites cada vez que cambie layerc
     // En este caso, no haremos nada especial
   }, [layerc]);
 
-  // Array con las ciudades
-  /* useEffect(() => {
-    // Actualiza el estado de wmsTileLayer cuando layer cambia
-    setWMSTileLayer(
-      <WMSTileLayer 
-        url="http://localhost:8080/geoserver/otrico/wms"
-        layers={`otrico:${layerc}`}
-        format="image/png"
-        transparent={true}
-      />
-    );
-  }, [layerc]); */
-
   let url = "https://maps.googleapis.com/maps/api/directions/json?";
+  const urlCrops='http://127.0.0.1:5000/api/v1/crops';
+const [crops, setCrops] = useState([]);
+const [accessions, setAccessions] = useState([]);
+useEffect(()=>{
+    const getCrops =async ()=>{
+        try{
+            const responde= await axios.get(urlCrops)
+            setCrops(responde.data)
+            
+        }catch(error){
+            console.log(error)
+        }
+        
+    }
+    getCrops();
+
+},[])
+
+const[filteredCrops,setFilteredCrops]=useState([])
+console.log(carouselMajorItems)
+useEffect(() => {
+  if (carouselMajorItems !== null) {
+    const filteredData = crops.filter((item) =>
+      carouselMajorItems.includes(item.app_name)
+      
+    );
+    setFilteredCrops(filteredData);
+  }
+}, [crops, carouselMajorItems]);
+
+console.log(filteredCrops)
+
+  useEffect(() => {
+    if ( carouselMajorItems !== null && carouselMajorItems.length === 1 && carouselLandraceItems.length==0) {
+      const cropId = filteredCrops[0].id;
+      setLayerr(`${iso}_${filteredCrops[0].ext_id}`)
+      console.log(cropId)
+
+      axios
+        .get(`http://localhost:5000/api/v1/accessionsbyidcrop?id=${cropId}&iso=${iso}`)
+        .then((response) => {
+          console.log(response)
+          setAccessions(response.data.flatMap((crop) => crop.accessions));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else if(carouselMajorItems!=null && carouselMajorItems.length==0) {
+      setAccessions([])
+    }
+
+    
+  }, [filteredCrops]);
+  console.log(accessions)
+  console.log(layerr)
+
+  const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
+console.log(idsCropss)
+console.log(iso)
+
+  useEffect(() => {
+    if ( carouselMajorItems !== null && carouselMajorItems.length >1 && carouselLandraceItems.length==0) {
+      setAccessions([])
+      const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`
+
+      axios.get(endopointAccesionsByCrop).then((response) => {
+        // 4. Manejar la respuesta de la solicitud HTTP
+        //setAccesionDataByCrop(response.data)
+        if (response.data[0]?.accessions) {
+
+          setAccessions(response.data.flatMap((crop) => crop.accessions));
+        } else {
+          setAccessions(response.data);
+        }
+      });
+    }
+    
+  }, [filteredCrops]);
 
 
 // Agregar un evento load al objeto window
@@ -110,8 +187,7 @@ Promise.all(context.map(city => getCoordsForCity(city)))
   .catch(error => {
     console.error(error);
   });
-
-      
+  
       const request = {
         origin: puntos[0].location,
         destination: puntos[puntos.length - 1].location,
@@ -190,51 +266,50 @@ Promise.all(context.map(city => getCoordsForCity(city)))
   
 },[context])
 console.log(ubicaciones)
-  // Iteramos sobre el array de ciudades y obtenemos las coordenadas de cada una
-  /* const response = await fetch(`${baseURLCategories}${genre}${opts}`, ); */
-  /* useEffect(() => {
-    if (context.length > 1) {
-      let GEOCODE_API_URL='https://maps.googleapis.com/maps/api/geocode/json'
-      const fetchCoordinates = async () => {
-        const newUbicaciones = [];
-  
-        for (const ciudad of context) {
-          try {
-            // Creamos una consulta para obtener las coordenadas de la ciudad
-            const query = {
-              address: ciudad,
-              key: 'KEY',
-            };
-            // Hacemos la petición a la API de Geocodificación de Google Maps
-            const response = await axios.get(GEOCODE_API_URL, { params: query });
-  
-            // Obtenemos las coordenadas de la ciudad
-            const { lat, lng } = response.data.results[0].geometry.location;
-  
-            // Agregamos las coordenadas a la lista de ubicaciones
-            newUbicaciones.push({ lat, lng });
 
-
-          } catch (error) {
-            console.log(`Error al obtener las coordenadas de ${ciudad}: ${error.message}`);
-          }
-        }
-  
-        // Actualizamos el estado de las ubicaciones solo con la última coordenada
-        setUbicaciones(newUbicaciones);
-      }
-  
-      fetchCoordinates();
-    }
-  }, [context]); */
+    
   const customIcon = L.icon({
     iconUrl: "https://img.icons8.com/material-outlined/256/marker.png",
     iconSize: [35, 35], // tamaño del icono
   });
 
   const accessionsArreglo = prueba.map((objeto) => objeto.accessions);
+  
+  
 
+  const [clickedMarkerIndices, setClickedMarkerIndices] = useState(new Set());
+  const [selectedMarkers, setSelectedMarkers] = useState([]);
+  const[datatoExport,setDataToExport]=useState([])
+  useEffect(()=>{
+    if(selectedMarkers.length>0){
+      setDataToExport(selectedMarkers.map((dat)=>dat.tooltipInfo))
+    }
+  },[selectedMarkers])
+  
+  //console.log(selectedMarkers)
+ // console.log(datatoExport)
+
+    
+  const handleClick = (index, tooltipInfo) => {
+    const newSet = new Set(clickedMarkerIndices);
+    if (newSet.has(index)) {
+      newSet.delete(index);
+      setSelectedMarkers(selectedMarkers.filter((marker) => marker.index !== index));
+    } else {
+      newSet.add(index);
+      setSelectedMarkers([...selectedMarkers, { index, tooltipInfo }]);
+    }
+    setClickedMarkerIndices(newSet);
+    console.log('marker clicked', index);
+  };
+  
+
+
+  //console.log(data)
   return (
+   
+    
+
     <div className="mapDiv mx-0 p-0">
       <div className="div-filter-map" style={{backgroundColor:'transparent', zIndex:'1000', position:'relative'}}>
         <div className="px-4 py-2">
@@ -300,30 +375,76 @@ console.log(ubicaciones)
         style={{ height: "100%", width: "100%", position:'fixed', top: '58px' }}
         zoomControl={false}
       >
-        {data &&
-          data.length > 0 &&
-          data.map((marker, index) =>
+         <Marker
+          eventHandlers={{
+            click: (e) => {
+              console.log('marker clicked', e)
+            },
+          }}
+        position={position}
+        onMouseOver={e => {
+          e.target.openPopup();
+        }}
+        onMouseOut={e => {
+          e.target.closePopup();
+        }}
+      >
+        <Tooltip>I appear on mouse over</Tooltip>
+      </Marker>
+        {accessions &&
+          accessions.length > 0 &&
+          accessions.map((marker, index) =>
             marker.latitude && marker.longitude ? (
               <Marker
+              eventHandlers={{
+                click: (e) => {
+                  handleClick(index, {
+                    Id:marker.id,
+                    AccecionID: marker.accession_id,
+
+                    SpeciesName: marker.species_name,
+                    Ext_id: marker.ext_id,
+                    Crop: marker.crop,
+                    Latitude: marker.latitude,
+                    Longitude: marker.longitude,
+                    Institution: marker.institution_name,
+                    Source: marker.source_database,
+
+                  });
+                  const newSet = new Set(clickedMarkerIndices);
+                  if (newSet.has(index)) {
+                    newSet.delete(index);
+                  } else {
+                    newSet.add(index);
+                  }
+                  setClickedMarkerIndices(newSet);
+                  console.log('marker clicked', e);
+                },
+              }}
                 key={index}
                 position={[marker.latitude, marker.longitude]}
-                icon={customIcon}
+                icon={
+                  clickedMarkerIndices.has(index)
+                    ? L.icon({
+                        iconUrl: "https://img.icons8.com/arcade/256/place-marker.png",
+                        iconSize: [35, 35],
+                      })
+                    : customIcon
+                }
+                onMouseOver={(e) => {
+                  e.target.openPopup();
+                }}
+                onMouseOut={(e) => {
+                  e.target.closePopup();
+                }}
               >
-                <Popup>
-                  Institution: {marker.institution_name} <br /> Source:{" "}
-                  {marker.source_database}
-                </Popup>
+                <Tooltip direction="top" offset={[0, -30]}>
+                  Institution: {marker.institution_name} <br /> Source:{marker.source_database} id: {marker.ext_id}
+                  <p>  <strong>Click si quiere guardar esta accesion para exportar</strong> </p>
+                </Tooltip>
               </Marker>
             ) : null
           )}
-
-        {/* {accessionsArreglo && accessionsArreglo.length > 0 && accessionsArreglo[0].map((marker, index) => (
-  (marker.latitude && marker.longitude) ? (
-    <Marker key={index} position={[marker.latitude, marker.longitude]} icon={customIcon}>
-      <Popup>Institution: {marker.institution_name} <br /> Source: {marker.source_database}</Popup>
-    </Marker>
-  ) : null
-))} */}
 
         {ubicaciones.map((marker, index) => (
           <Marker key={index} position={[marker.latitude, marker.longitude]}>
@@ -346,13 +467,12 @@ console.log(ubicaciones)
   />
 )}
 <Polyline color="lime" positions={lugares} weight={5} />
-{/* <Marker  position={[4.71096, -74.07221000000001]}>
-            <Popup>
-              Institution: <br /> Source:{" "}
-            </Popup>
-          </Marker> */}
+
       </MapContainer>
+      
     </div>
+
+    
   );
 }
 

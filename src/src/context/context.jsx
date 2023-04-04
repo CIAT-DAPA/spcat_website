@@ -9,8 +9,9 @@ export function DataContextProvider(props){
     const [time, setTime]= useState([]);
     const [travel, setTravel]= useState([]);
     const [elevationProm, setElevationProm]= useState([]);
+    const [iso, setIso]= useState([]);
     return(
-        <DataContext.Provider value={{context,setContext,data,setData,layerc,setLayerc,elevationsg,setElevationsg,distance, setDistance,time, setTime,travel, setTravel,elevationProm, setElevationProm}} >
+        <DataContext.Provider value={{context,setContext,data,setData,layerc,setLayerc,elevationsg,setElevationsg,distance, setDistance,time, setTime,travel, setTravel,elevationProm, setElevationProm,iso, setIso}} >
             {props.children}
             </DataContext.Provider>
     )

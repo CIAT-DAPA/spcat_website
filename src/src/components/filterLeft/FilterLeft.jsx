@@ -11,6 +11,8 @@ import {
 import CheckFilter from "../checkFilter/CheckFilter";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState, useEffect, useContext } from "react";
+import CountryModal from "../modalcountry/modalc";
+
 import axios from "axios";
 import { DataContext } from "../../context/context";
 import { layerGroup } from "leaflet";
@@ -30,6 +32,7 @@ function FilterLeft({
 
   const { data, setData } = useContext(DataContext);
   const { layerc, setLayerc } = useContext(DataContext);
+  const { iso, setIso } = useContext(DataContext);
 
   const [shouldAddToMap, setShouldAddToMap] = useState(false);
   const [carouselMajorItemsNow, setCarouselMajorItemsNow] = useState([]); //items del carusel en el momento
@@ -46,6 +49,13 @@ function FilterLeft({
   const [accesionDataByCrop, setAccesionDataByCrop] = useState([]);
   const [layer, setLayer] = useState([]);
 
+
+  const [showc, setShowc] = useState(false); // estado para controlar la visualización del Modal
+
+  const handleClosec = () => {
+    setShowc(false);
+  }; // función para ocultar el Modal
+
   const handleDataMajorCropChange = (newData) => {
     setCarouselMajorItemsNow(newData);
   };
@@ -59,6 +69,7 @@ function FilterLeft({
       (country) => country.name === e.target.value
     );
     setCountryIso(selectedCountry.iso_2);
+    setIso(selectedCountry.iso_2);
   };
 
   //console.log(countryIso)
@@ -73,8 +84,8 @@ function FilterLeft({
     setCarouselLandraceItems(carouselLandraceItemsNow);
     setShouldAddToMap(false);
   }
-  console.log(carouselLandraceItemsNow);
-
+  //console.log(carouselLandraceItemsNow);
+console.log(countryIso)
   useEffect(() => {
     const filteredData = crops.filter((item) =>
       carouselMajorItemsNow.includes(item.app_name)
@@ -82,7 +93,7 @@ function FilterLeft({
     setFilteredCrops(filteredData);
   }, [crops, carouselMajorItemsNow]);
 
-  //console.log(filteredCrops)
+  console.log(filteredCrops)
   useEffect(() => {
     if (filteredCrops.length === 1) {
       const cropId = filteredCrops[0].id;
@@ -91,9 +102,10 @@ function FilterLeft({
         .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
         .then((response) => {
           setAllGroupCrop(response.data);
+          console.log(allgroupscrop)
           setLayer(countryIso + "_" + filteredCrops[0].name);
-          const groupNames = response.data.map((group) => group.group_name);
-          setGroupNames(groupNames);
+          const groupsArray = response.data[0].groups.map(group => group.group_name);
+          setGroupNames(groupsArray);
         })
         .catch((error) => {
           console.log(error);
@@ -103,14 +115,14 @@ function FilterLeft({
     }
   }, [filteredCrops]);
 
-  //console.log(layer)
+  console.log(groupNames)
 
   const gruposencarrousell = allgroupscrop.filter((grupo) =>
     carouselLandraceItemsNow.includes(grupo.group_name)
   ); //filre los grupos que estan em el crrousell
   const idss = gruposencarrousell.map((obj) => obj.id).join(",");
   // ['Spring', 'Winter']   los grupos
-  console.log(idss);
+//console.log(idss)
   useEffect(() => {
     if (idss.length > 0) {
       setLayer([]);
@@ -153,6 +165,12 @@ function FilterLeft({
 
   console.log(layer);
   const handleAddToMap = () => {
+    if(countryIso.length==0){
+      console.log('aun no hay nada')
+      setShowc(true); 
+     // alert('Por favor seleccione un país');
+    return;
+    }
     setShouldReset(!shouldReset);
     setShouldAddToMap(true);
     setData(accessionData);
@@ -162,6 +180,11 @@ function FilterLeft({
   const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
 
   return (
+    <>
+    <CountryModal
+    showc={showc} handleClosec={handleClosec} 
+  />
+    
     <Container className="mt-3">
       <Row className="align-items-center mb-3">
         <Col className="col-4 d-flex align-items-center">
@@ -178,6 +201,7 @@ function FilterLeft({
             aria-label="Default select example"
             onChange={handleCountryChange}
           >
+            <option value="">Select a country</option>
             {response.map((country) => (
               <option key={country.id} value={country.name}>
                 {country.name}
@@ -249,6 +273,9 @@ function FilterLeft({
         </Button>
       </div>
     </Container>
+    </>
+    
+
   );
 }
 

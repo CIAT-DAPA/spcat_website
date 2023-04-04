@@ -2,18 +2,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "./Home.css"
 import { Link } from 'react-router-dom'
-import Footer from '../../components/footer/Footer';
-import { useState, useEffect } from 'react';
 
 function Home() {
-    const [estado, setEstado] = useState('IN_pearl_miller');
-    useEffect(() => {
-const elementos = ['Spring', 'Winter'];
-
-const nuevoEstado = elementos.map(elemento => `${estado}_${elemento}`);
-setEstado(nuevoEstado);
-}, []);
-console.log(estado)
+    
     return (
         <>
          <div className="px-4 py-5 text-center container-page">

@@ -131,7 +131,7 @@ function FilterRight() {
                       type="text"
                       value={destination}
                       onChange={(event) => handleChange(event, index)}
-                      placeholder={`Destino #${index + 1}`}
+                      placeholder={`Destination #${index + 1}`}
                     />
                   </Col>
 
@@ -155,7 +155,7 @@ function FilterRight() {
                   />
                 </Col>
                 <Col className="p-destino ms-0 pt-2">
-                  <p className="">Agregar Destino</p>
+                  <p className="">Add destination</p>
                 </Col>
               </Row>
 
@@ -165,7 +165,7 @@ function FilterRight() {
                   className="text-white"
                   type="submit"
                 >
-                  Buscar ruta
+                  Get route
                   <FontAwesomeIcon
                     className="search-icon"
                     icon={faMagnifyingGlass}

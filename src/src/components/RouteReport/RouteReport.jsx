@@ -39,7 +39,7 @@ const RouteReport = ({show,handleClose}) => {
     }
   }
  
-
+console.log(elevationsg.length)
   return (
     <>
       
@@ -48,26 +48,30 @@ const RouteReport = ({show,handleClose}) => {
         <Modal.Header closeButton>
           <Modal.Title className="text-center">Route Summary</Modal.Title>
         </Modal.Header>
-        <Modal.Body >
-          <p>
-          Average distance {distance} kms
-          </p>
-          <p>Estimated travel time {time[0]} hours and {time[1]} minutes</p>
-          <p>Average travel altitude {elevationProm} mts</p>
+        <Modal.Body>
+  {elevationsg && elevationsg > 0 ?
+    <>
+      <p>Average distance {distance} kms</p>
+      <p>Estimated travel time {time[0]} hours and {time[1]} minutes</p>
+      <p>Average travel altitude {elevationProm} mts</p>
+      <ReactApexChart
+        options={options}
+        series={series}
+        type="line"
+        height={350}
+      />
+      <ReactApexChart
+        options={options}
+        series={series}
+        type="line"
+        height={350}
+      />
+    </>
+    :
+    <div>You must first generate a route to see this</div>
+  }
+</Modal.Body>
 
-          <ReactApexChart
-            options={options}
-            series={series}
-            type="line"
-            height={350}
-          />
-           <ReactApexChart
-            options={options}
-            series={series}
-            type="line"
-            height={350}
-          />
-        </Modal.Body>
         <Modal.Footer>
          
           <Button variant="primary" onClick={handleClose}>
