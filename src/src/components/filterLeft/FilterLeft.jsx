@@ -109,13 +109,15 @@ function FilterLeft({
   ); //filre los grupos que estan em el crrousell
   const idss = gruposencarrousell.map((obj) => obj.id).join(",");
   // ['Spring', 'Winter']   los grupos
-console.log(idss)
+  console.log(idss);
   useEffect(() => {
     if (idss.length > 0) {
-      setLayer([])
-      const nuevoEstado = carouselLandraceItemsNow.map(elemento => `${layer}_${elemento}`);
-      setLayer(nuevoEstado)
-      console.log(layer)
+      setLayer([]);
+      const nuevoEstado = carouselLandraceItemsNow.map(
+        (elemento) => `${layer}_${elemento}`
+      );
+      setLayer(nuevoEstado);
+      console.log(layer);
       const endpointaccesions = `http://localhost:5000/api/v1/accessionsbyidgroup?id=${idss}`;
       axios
         .get(endpointaccesions)
@@ -140,7 +142,6 @@ console.log(idss)
         // 4. Manejar la respuesta de la solicitud HTTP
         //setAccesionDataByCrop(response.data)
         if (response.data[0]?.accessions) {
-
           setAccessionData(response.data.flatMap((crop) => crop.accessions));
         } else {
           setAccessionData(response.data);
@@ -149,7 +150,7 @@ console.log(idss)
     }
   }, [idsCropss]);
 
-  console.log(layer)
+  console.log(layer);
   const handleAddToMap = () => {
     setShouldReset(!shouldReset);
     setShouldAddToMap(true);
@@ -157,20 +158,19 @@ console.log(idss)
     setLayerc(layer);
   };
 
-
-
-  const renderTooltip = (props) => (
-    <Tooltip >{props}</Tooltip>
-  );
+  const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
 
   return (
     <Container className="mt-3">
       <Row className="align-items-center mb-3">
         <Col className="col-4 d-flex align-items-center">
-          Country{" "}
-          <OverlayTrigger placement="top" overlay={renderTooltip("Step 1: Select your country")}>
-            <span class="badge rounded-pill bg-primary ms-1">Step 1</span>
+          <OverlayTrigger
+            placement="top"
+            overlay={renderTooltip("Step 1: Select your country")}
+          >
+            <span class="badge rounded-pill bg-primary me-1">Step 1</span>
           </OverlayTrigger>
+          Country
         </Col>
         <Col>
           <Form.Select
@@ -196,8 +196,8 @@ console.log(idss)
           crop={majorCrops}
         ></CheckFilter>
       )}
-      
-      {carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (
+
+      {carouselMajorItemsNow && (
         <CheckFilter
           title="Landrace Crops"
           toolTipTitle="Step 3"
@@ -205,22 +205,6 @@ console.log(idss)
           onDataChange={handleDataLandraceCropChange}
           onChange={shouldReset}
           crop={groupNames}
-        ></CheckFilter>
-      )}
-      {carouselMajorItemsNow && carouselMajorItemsNow.length > 1 && (
-        <CheckFilter
-          title="Landrace Crops"
-          onDataChange={handleDataLandraceCropChange}
-          onChange={shouldReset}
-          crop={[]}
-        ></CheckFilter>
-      )}
-      {carouselMajorItemsNow && carouselMajorItemsNow.length ==0 && (
-        <CheckFilter
-          title="Landrace Crops"
-          onDataChange={handleDataLandraceCropChange}
-          onChange={shouldReset}
-          crop={[]}
         ></CheckFilter>
       )}
       <div className="d-flex flex-column align-items-center gap-2 mt-3">
