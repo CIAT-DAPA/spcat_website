@@ -592,7 +592,7 @@ const descargarCSV = () => {
         <ZoomControl position="topright"></ZoomControl>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         
-     {/*  {  layerr.length > 0 && layerr.map((layerr) => (
+      {  layerr.length > 0 && layerr.map((layerr) => (
               <WMSTileLayer
               key={layerr}
               url="https://isa.ciat.cgiar.org/geoserver2/wms"
@@ -600,7 +600,7 @@ const descargarCSV = () => {
               format="image/png"
               transparent={true}
             /> 
-            ))} */}
+            ))}
 
        {/*  {layerr && (
   <WMSTileLayer 
