@@ -1,9 +1,10 @@
 import { React, useState, useEffect, useContext } from "react";
-import { CloseButton,Button } from "react-bootstrap";
+import { CloseButton,Button,Form } from "react-bootstrap";
 import { DataContext } from "../../context/context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import RouteError from "../routeError/RouteError";
+import Select from 'react-select';
 import { saveAs } from 'file-saver'; 
 import {MapContainer,TileLayer,ZoomControl,WMSTileLayer,LayersControl,Marker,Popup,Polyline,Tooltip,useMap,useMapEvents} from "react-leaflet";
 import "./Map.css";
@@ -423,15 +424,19 @@ const descargarCSV = () => {
   const archivo = new File([contenidoCSV], nombreArchivo, { type: 'text/csv;charset=utf-8' });
   saveAs(archivo); // Utilizar la función saveAs de FileSaver.js para descargar el archivo
 }
-  
+const [selectedOption, setSelectedOption] = useState(null);
+const options = [
+  { value: 'markers', label: 'Show accessions' },
+  { value: 'layer', label: 'Show gap' },
+  { value: 'both', label: 'Show both' }
+];
+console.log(selectedOption)
   return (
    
-
 
     
 
     <div className="mapDiv mx-0 p-0">
-
 
       <RouteError
     showe={showe} handleClosee={handleClosee} 
@@ -439,7 +444,14 @@ const descargarCSV = () => {
       
       <div className="div-filter-map" style={{backgroundColor:'transparent', zIndex:'1000', position:'relative'}}>
         <div className="px-4 py-2">
-     
+        {carouselMajorItems && carouselMajorItems.length > 0 && <Select options={options} onChange={setSelectedOption}
+            
+            >
+              
+            </Select>}
+
+        
+  
 
           {carouselMajorItems && carouselMajorItems.length > 0 && (
             <h6>Major crops</h6>
@@ -523,7 +535,215 @@ const descargarCSV = () => {
         style={{ height: "100%", width: "100%", position:'fixed', top: '58px' }}
         zoomControl={false}
       >
-        
+        {selectedOption && selectedOption.value=='markers'  &&(
+          accessions &&
+          accessions.length > 0 &&
+          accessions.map((marker, index) =>
+            marker.latitude && marker.longitude ? (
+              <Marker
+              eventHandlers={{
+                click: (e) => {
+                  handleClick(index, {
+                    Id:marker.id,
+                    AccecionID: marker.accession_id,
+
+                    SpeciesName: marker.species_name,
+                    Ext_id: marker.ext_id,
+                    Crop: marker.crop,
+                    Latitude: marker.latitude,
+                    Longitude: marker.longitude,
+                    Institution: marker.institution_name,
+                    Source: marker.source_database,
+
+                  });
+                  const newSet = new Set(clickedMarkerIndices);
+                  if (newSet.has(index)) {
+                    newSet.delete(index);
+                  } else {
+                    newSet.add(index);
+                  }
+                  setClickedMarkerIndices(newSet);
+                  console.log('marker clicked', e);
+                },
+              }}
+                key={index}
+                position={[marker.latitude, marker.longitude]}
+                icon={
+                  clickedMarkerIndices.has(index)
+                    ? L.icon({
+                        iconUrl: "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
+                        iconSize: [20, 20],
+                      })
+                    : customIcon
+                }
+                onMouseOver={(e) => {
+                  e.target.openPopup();
+                }}
+                onMouseOut={(e) => {
+                  e.target.closePopup();
+                }}
+              >
+                <Tooltip direction="top" offset={[0, -30]}>
+                  Institution: {marker.institution_name} <br /> Source:{marker.source_database} id: {marker.ext_id}
+                  <p>  <strong>click if you want to save this accession for export</strong> </p>
+                </Tooltip>
+              </Marker>
+            ) : null
+          )
+        )}
+
+        {selectedOption && selectedOption.value=='layer' && (
+          layerr.length > 0 && layerr.map((layerr) => (
+            <WMSTileLayer
+            key={layerr}
+            url="https://isa.ciat.cgiar.org/geoserver2/wms"
+            layers={`gap_analysis:${layerr}`}
+            format="image/png"
+            transparent={true}
+          /> 
+          ))
+        )}
+
+            {selectedOption && selectedOption.value=='both' &&(
+              <>
+              {accessions &&
+          accessions.length > 0 &&
+          accessions.map((marker, index) =>
+            marker.latitude && marker.longitude ? (
+              <Marker
+              eventHandlers={{
+                click: (e) => {
+                  handleClick(index, {
+                    Id:marker.id,
+                    AccecionID: marker.accession_id,
+
+                    SpeciesName: marker.species_name,
+                    Ext_id: marker.ext_id,
+                    Crop: marker.crop,
+                    Latitude: marker.latitude,
+                    Longitude: marker.longitude,
+                    Institution: marker.institution_name,
+                    Source: marker.source_database,
+
+                  });
+                  const newSet = new Set(clickedMarkerIndices);
+                  if (newSet.has(index)) {
+                    newSet.delete(index);
+                  } else {
+                    newSet.add(index);
+                  }
+                  setClickedMarkerIndices(newSet);
+                  console.log('marker clicked', e);
+                },
+              }}
+                key={index}
+                position={[marker.latitude, marker.longitude]}
+                icon={
+                  clickedMarkerIndices.has(index)
+                    ? L.icon({
+                        iconUrl: "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
+                        iconSize: [20, 20],
+                      })
+                    : customIcon
+                }
+                onMouseOver={(e) => {
+                  e.target.openPopup();
+                }}
+                onMouseOut={(e) => {
+                  e.target.closePopup();
+                }}
+              >
+                <Tooltip direction="top" offset={[0, -30]}>
+                  Institution: {marker.institution_name} <br /> Source:{marker.source_database} id: {marker.ext_id}
+                  <p>  <strong>click if you want to save this accession for export</strong> </p>
+                </Tooltip>
+              </Marker>
+            ) : null
+          )}
+ {  layerr.length > 0 && layerr.map((layerr) => (
+              <WMSTileLayer
+              key={layerr}
+              url="https://isa.ciat.cgiar.org/geoserver2/wms"
+              layers={`gap_analysis:${layerr}`}
+              format="image/png"
+              transparent={true}
+            /> 
+            ))}
+              </>
+            )}
+
+{!selectedOption &&(
+              <>
+              {accessions &&
+          accessions.length > 0 &&
+          accessions.map((marker, index) =>
+            marker.latitude && marker.longitude ? (
+              <Marker
+              eventHandlers={{
+                click: (e) => {
+                  handleClick(index, {
+                    Id:marker.id,
+                    AccecionID: marker.accession_id,
+
+                    SpeciesName: marker.species_name,
+                    Ext_id: marker.ext_id,
+                    Crop: marker.crop,
+                    Latitude: marker.latitude,
+                    Longitude: marker.longitude,
+                    Institution: marker.institution_name,
+                    Source: marker.source_database,
+
+                  });
+                  const newSet = new Set(clickedMarkerIndices);
+                  if (newSet.has(index)) {
+                    newSet.delete(index);
+                  } else {
+                    newSet.add(index);
+                  }
+                  setClickedMarkerIndices(newSet);
+                  console.log('marker clicked', e);
+                },
+              }}
+                key={index}
+                position={[marker.latitude, marker.longitude]}
+                icon={
+                  clickedMarkerIndices.has(index)
+                    ? L.icon({
+                        iconUrl: "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
+                        iconSize: [20, 20],
+                      })
+                    : customIcon
+                }
+                onMouseOver={(e) => {
+                  e.target.openPopup();
+                }}
+                onMouseOut={(e) => {
+                  e.target.closePopup();
+                }}
+              >
+                <Tooltip direction="top" offset={[0, -30]}>
+                  Institution: {marker.institution_name} <br /> Source:{marker.source_database} id: {marker.ext_id}
+                  <p>  <strong>click if you want to save this accession for export</strong> </p>
+                </Tooltip>
+              </Marker>
+            ) : null
+          )}
+ {  layerr.length > 0 && layerr.map((layerr) => (
+              <WMSTileLayer
+              key={layerr}
+              url="https://isa.ciat.cgiar.org/geoserver2/wms"
+              layers={`gap_analysis:${layerr}`}
+              format="image/png"
+              transparent={true}
+            /> 
+            ))}
+              </>
+            )}
+
+
+
+          
+{/* 
         {accessions &&
           accessions.length > 0 &&
           accessions.map((marker, index) =>
@@ -579,7 +799,7 @@ const descargarCSV = () => {
             ) : null
           )}
 
-
+ */}
    
         {ubicaciones.map((marker, index) => (
           <Marker key={index} position={[marker.latitude, marker.longitude]}>
@@ -592,7 +812,7 @@ const descargarCSV = () => {
         <ZoomControl position="topright"></ZoomControl>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         
-      {  layerr.length > 0 && layerr.map((layerr) => (
+     {/*  {  layerr.length > 0 && layerr.map((layerr) => (
               <WMSTileLayer
               key={layerr}
               url="https://isa.ciat.cgiar.org/geoserver2/wms"
@@ -600,7 +820,7 @@ const descargarCSV = () => {
               format="image/png"
               transparent={true}
             /> 
-            ))}
+            ))} */}
 
        {/*  {layerr && (
   <WMSTileLayer 
