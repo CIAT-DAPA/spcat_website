@@ -59,7 +59,7 @@ function CheckFilter({
   const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
 
   return (
-    <div className="mt-1 mb-4">
+    <div className="mt-1 mb-4" id="select-majorCrop">
       <OverlayTrigger
         placement="top"
         overlay={renderTooltip(toolTipDescription)}
@@ -67,7 +67,6 @@ function CheckFilter({
         <span class="badge rounded-pill bg-primary me-1">{toolTipTitle}</span>
       </OverlayTrigger>
       {title}{" "}
-      
       <div className="mb-0 d-flex justify-content-between align-items-center">
         <div className="position-relative w-100">
           <span className="position-absolute search">

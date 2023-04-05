@@ -49,7 +49,6 @@ function FilterLeft({
   const [accesionDataByCrop, setAccesionDataByCrop] = useState([]);
   const [layer, setLayer] = useState([]);
 
-
   const [showc, setShowc] = useState(false); // estado para controlar la visualización del Modal
 
   const handleClosec = () => {
@@ -91,7 +90,7 @@ function FilterLeft({
     setShouldAddToMap(false);
   }
   //console.log(carouselLandraceItemsNow);
-//console.log(countryIso)
+  //console.log(countryIso)
   useEffect(() => {
     const filteredData = crops.filter((item) =>
       carouselMajorItemsNow.includes(item.app_name)
@@ -107,9 +106,11 @@ function FilterLeft({
         .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
         .then((response) => {
           setAllGroupCrop(response.data);
-          console.log(allgroupscrop)
+          console.log(allgroupscrop);
           setLayer(countryIso + "_" + filteredCrops[0].name);
-          const groupsArray = response.data[0].groups.map(group => group.group_name);
+          const groupsArray = response.data[0].groups.map(
+            (group) => group.group_name
+          );
           setGroupNames(groupsArray);
         })
         .catch((error) => {
@@ -120,14 +121,14 @@ function FilterLeft({
     }
   }, [filteredCrops]);
 
- // console.log(groupNames)
+  // console.log(groupNames)
 
   const gruposencarrousell = allgroupscrop.filter((grupo) =>
     carouselLandraceItemsNow.includes(grupo.group_name)
   ); //filre los grupos que estan em el crrousell
   const idss = gruposencarrousell.map((obj) => obj.id).join(",");
   // ['Spring', 'Winter']   los grupos
-//console.log(idss)
+  //console.log(idss)
   useEffect(() => {
     if (idss.length > 0) {
       setLayer([]);
@@ -170,11 +171,11 @@ function FilterLeft({
 
   //console.log(layer);
   const handleAddToMap = () => {
-    if(countryIso.length==0){
-      console.log('aun no hay nada')
-      setShowc(true); 
-     // alert('Por favor seleccione un país');
-    return;
+    if (countryIso.length == 0) {
+      console.log("aun no hay nada");
+      setShowc(true);
+      // alert('Por favor seleccione un país');
+      return;
     }
     setShouldReset(!shouldReset);
     setShouldAddToMap(true);
@@ -186,68 +187,69 @@ function FilterLeft({
 
   return (
     <>
-    <CountryModal
-    showc={showc} handleClosec={handleClosec} 
-  />
-    
-    <Container className="mt-3">
-      <Row className="align-items-center mb-3">
-        <Col className="col-5 d-flex align-items-center">
-          <OverlayTrigger
-            placement="top"
-            overlay={renderTooltip("Step 1: Select your country")}
-          >
-            <span class="badge rounded-pill bg-primary me-1">Step 1</span>
-          </OverlayTrigger>
-          Country
-        </Col>
-        <Col>
-          <Form.Select
-            aria-label="Default select example"
-            onChange={handleCountryChange}
-          >
-            <option value="">Select country</option>
-            {response.map((country) => (
-              <option key={country.id} value={country.name}>
-                {country.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Col>
-      </Row>
+      <CountryModal showc={showc} handleClosec={handleClosec} />
 
-      {majorCrops && (
-        <CheckFilter
-          title="Major Crops"
-          toolTipTitle="Step 2"
-          toolTipDescription="Step 2: Select your crops"
-          onDataChange={handleDataMajorCropChange}
-          onChange={shouldReset}
-          crop={majorCrops}
-        ></CheckFilter>
-      )}
+      <Container className="mt-3">
+        <Row className="align-items-center mb-3" id="select-country">
+          <Col className="col-5 d-flex align-items-center" >
+            <OverlayTrigger
+              placement="top"
+              overlay={renderTooltip("Step 1: Select your country")}
+            >
+              <span class="badge rounded-pill bg-primary me-1">Step 1</span>
+            </OverlayTrigger>
+            Country
+          </Col>
+          <Col>
+            <Form.Select
+              aria-label="Default select example"
+              onChange={handleCountryChange}
+            >
+              <option value="">Select country</option>
+              {response.map((country) => (
+                <option key={country.id} value={country.name}>
+                  {country.name}
+                </option>
+              ))}
+            </Form.Select>
+          </Col>
+        </Row>
 
-      {carouselMajorItemsNow && carouselMajorItemsNow.length==1 && (
-        <CheckFilter
-          title="Landrace Crops"
-          toolTipTitle="Step 3"
-          toolTipDescription="Step 3: Select your landrace crops"
-          onDataChange={handleDataLandraceCropChange}
-          onChange={shouldReset}
-          crop={groupNames}
-        ></CheckFilter>
-      )}
-      {carouselMajorItemsNow && (carouselMajorItemsNow.length > 1 || carouselMajorItemsNow.length < 1)  && (
-        <CheckFilter
-          title="Landrace Crops"
-          toolTipTitle="Step 3"
-          toolTipDescription="Step 3: Select your landrace crops"
-          onDataChange={handleDataLandraceCropChange}
-          onChange={shouldReset}
-          crop={[]}
-        ></CheckFilter>
-      )}
-     {/*  {carouselMajorItemsNow && carouselMajorItemsNow.length ==0 && (
+        {majorCrops && (
+          <CheckFilter
+            title="Major Crops"
+            toolTipTitle="Step 2"
+            toolTipDescription="Step 2: Select your crops"
+            onDataChange={handleDataMajorCropChange}
+            onChange={shouldReset}
+            crop={majorCrops} 
+            
+          ></CheckFilter>
+        )}
+
+        {carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (
+          <CheckFilter
+            title="Landrace Crops"
+            toolTipTitle="Step 3"
+            toolTipDescription="Step 3: Select your landrace crops"
+            onDataChange={handleDataLandraceCropChange}
+            onChange={shouldReset}
+            crop={groupNames}
+          ></CheckFilter>
+        )}
+        {carouselMajorItemsNow &&
+          (carouselMajorItemsNow.length > 1 ||
+            carouselMajorItemsNow.length < 1) && (
+            <CheckFilter
+              title="Landrace Crops"
+              toolTipTitle="Step 3"
+              toolTipDescription="Step 3: Select your landrace crops"
+              onDataChange={handleDataLandraceCropChange}
+              onChange={shouldReset}
+              crop={[]}
+            ></CheckFilter>
+          )}
+        {/*  {carouselMajorItemsNow && carouselMajorItemsNow.length ==0 && (
         <CheckFilter
           title="Landrace Crops"
           onDataChange={handleDataLandraceCropChange}
@@ -255,34 +257,32 @@ function FilterLeft({
           crop={[]}
         ></CheckFilter>
       )} */}
-      <div className="d-flex flex-column align-items-center gap-2 mt-3">
-        <Button
-          variant="primary"
-          className="w-50 text-white"
-          onClick={handleAddToMap}
-        >
-          Add to map
-        </Button>
-        <input
-          type="file"
-          id="file-input"
-          style={{ display: "none" }}
-          onChange={handleFileInputChange}
-          ref={fileInputRef}
-        />
-        <Button
-          variant="primary"
-          className="text-white mb-3"
-          onClick={() => fileInputRef.current.click()}
-        >
-          <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your gap
-          analysis
-        </Button>
-      </div>
-    </Container>
+        <div className="d-flex flex-column align-items-center gap-2 mt-3">
+          <Button
+            variant="primary"
+            className="w-50 text-white"
+            onClick={handleAddToMap}
+          >
+            Add to map
+          </Button>
+          <input
+            type="file"
+            id="file-input"
+            style={{ display: "none" }}
+            onChange={handleFileInputChange}
+            ref={fileInputRef}
+          />
+          <Button
+            variant="primary"
+            className="text-white mb-3"
+            onClick={() => fileInputRef.current.click()}
+          >
+            <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your gap
+            analysis
+          </Button>
+        </div>
+      </Container>
     </>
-    
-
   );
 }
 
