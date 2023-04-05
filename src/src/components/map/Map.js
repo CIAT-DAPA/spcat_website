@@ -1,6 +1,8 @@
 import { React, useState, useEffect, useContext } from "react";
-import { CloseButton } from "react-bootstrap";
+import { CloseButton,Button } from "react-bootstrap";
 import { DataContext } from "../../context/context";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import RouteError from "../routeError/RouteError";
 import { saveAs } from 'file-saver'; 
 import {MapContainer,TileLayer,ZoomControl,WMSTileLayer,LayersControl,Marker,Popup,Polyline,Tooltip,useMap,useMapEvents} from "react-leaflet";
@@ -45,6 +47,9 @@ function Map({carouselMajorItems,setCarouselMajorItems,carouselLandraceItems,set
   const { data } = useContext(DataContext);
   const { elevationsg, setElevationsg } = useContext(DataContext);
   const { distance, setDistance } = useContext(DataContext);
+  const { dataRoutestoExport, setDataRoutestoExport } = useContext(DataContext);
+
+  
   const { time, setTime } = useContext(DataContext);
   const { travel, setTravel } = useContext(DataContext);
   const { pointDistance, setPointDistance} = useContext(DataContext);
@@ -310,7 +315,8 @@ Promise.all(context.map(city => getCoordsForCity(city)))
 
           setDistances(distances);
           setPointDistance(distances)
-
+//console.log(coordenadasApi)
+          
           elevationService.getElevationAlongPath(
             {
               path: coordenadasApi,
@@ -326,6 +332,16 @@ Promise.all(context.map(city => getCoordsForCity(city)))
                 console.log(`el promedio es ${promelevation}`)
                 setElevationProm(promelevation)
                 setElevationsg(elevations)
+                const data = coordenadasApi.map((coordenada, index) => ({
+                  Latitude: coordenada.lat,
+                  Longitude: coordenada.lng,
+                  Elevation: elevations[index],
+                  Distance: distances[index],
+                  PromElevation:promelevation,
+                  time: `${time[0]} horurs and ${time[1]} minutes`,
+                }));
+                console.log(time)
+                setDataRoutestoExport(data)
               } else {
                 console.error(`Error al obtener la elevación: ${status}`);
               }
@@ -347,8 +363,8 @@ console.log(distances)
 
     
   const customIcon = L.icon({
-    iconUrl: "https://img.icons8.com/material-outlined/256/marker.png",
-    iconSize: [35, 35], // tamaño del icono
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/2740/2740706.png",
+    iconSize: [20, 20], // tamaño del icono
   });
 
   const accessionsArreglo = prueba.map((objeto) => objeto.accessions);
@@ -381,9 +397,11 @@ console.log(distances)
     console.log('marker clicked', index);
   };
   
+  console.log(selectedMarkers)
  
   const customControl = L.control({ position: 'topright' });
   console.log(datatoExport)
+  console.log(datatoExport.length)
 
   const handleButtonClick = () => {
     // Tu lógica de código aquí
@@ -401,7 +419,7 @@ const convertirA_CSV = (datatoExport) => {
 
 const descargarCSV = () => {
   const contenidoCSV = convertirA_CSV(datatoExport);
-  const nombreArchivo = 'datos.csv';
+  const nombreArchivo = 'accessions.csv';
   const archivo = new File([contenidoCSV], nombreArchivo, { type: 'text/csv;charset=utf-8' });
   saveAs(archivo); // Utilizar la función saveAs de FileSaver.js para descargar el archivo
 }
@@ -413,14 +431,19 @@ const descargarCSV = () => {
     
 
     <div className="mapDiv mx-0 p-0">
+
+
       <RouteError
     showe={showe} handleClosee={handleClosee} 
   />
       
       <div className="div-filter-map" style={{backgroundColor:'transparent', zIndex:'1000', position:'relative'}}>
         <div className="px-4 py-2">
+     
+
           {carouselMajorItems && carouselMajorItems.length > 0 && (
             <h6>Major crops</h6>
+            
           )}
           {carouselMajorItems &&
             carouselMajorItems.map((item, i) => (
@@ -466,9 +489,28 @@ const descargarCSV = () => {
                 ></CloseButton>
               </div>
             ))}
+            {selectedMarkers && selectedMarkers.length>0 && accessions.length>0 &&(
+              <div className="div-inferior-derecha">
+                <Button 
+      
+      variant="primary"
+      className="text-white accession"
+      type="submit"
+      onClick={descargarCSV}
+    >
+      Download accessions
+      <FontAwesomeIcon
+        className="search-icon"
+        icon={faDownload}
+      ></FontAwesomeIcon>
+    </Button>
+              </div>
+      
+     )}
         </div>
+        
       </div>
-
+      
       <MapContainer
         id="mapid"
         center={[14.88, -35, 76]}
@@ -517,8 +559,8 @@ const descargarCSV = () => {
                 icon={
                   clickedMarkerIndices.has(index)
                     ? L.icon({
-                        iconUrl: "https://img.icons8.com/arcade/256/place-marker.png",
-                        iconSize: [35, 35],
+                        iconUrl: "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
+                        iconSize: [20, 20],
                       })
                     : customIcon
                 }
@@ -531,12 +573,14 @@ const descargarCSV = () => {
               >
                 <Tooltip direction="top" offset={[0, -30]}>
                   Institution: {marker.institution_name} <br /> Source:{marker.source_database} id: {marker.ext_id}
-                  <p>  <strong>Click si quiere guardar esta accesion para exportar</strong> </p>
+                  <p>  <strong>click if you want to save this accession for export</strong> </p>
                 </Tooltip>
               </Marker>
             ) : null
           )}
 
+
+   
         {ubicaciones.map((marker, index) => (
           <Marker key={index} position={[marker.latitude, marker.longitude]}>
             <Popup>
@@ -548,7 +592,7 @@ const descargarCSV = () => {
         <ZoomControl position="topright"></ZoomControl>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         
-      {/* {  layerr.length > 0 && layerr.map((layerr) => (
+     {/*  {  layerr.length > 0 && layerr.map((layerr) => (
               <WMSTileLayer
               key={layerr}
               url="https://isa.ciat.cgiar.org/geoserver2/wms"
@@ -574,8 +618,6 @@ const descargarCSV = () => {
     format="image/png"
     transparent={true}
   /> */}
-
-<button  className="boto" onClick={descargarCSV} >Haz clic</button>
 
 
 <Polyline color="lime" positions={lugares} weight={5} />

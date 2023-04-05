@@ -183,7 +183,7 @@ function FilterRight() {
       href={travel}
       target='_blank'
     >
-      Navegar a Destino
+      Navigate to destination
       <FontAwesomeIcon
         className="search-icon"
         icon={faCar}

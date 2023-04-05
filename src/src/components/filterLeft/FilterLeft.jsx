@@ -75,8 +75,14 @@ function FilterLeft({
   //console.log(countryIso)
   const handleFileInputChange = (event) => {
     const selectedFile = event.target.files[0];
-    // acciones con el archivo subido
-    //console.log(selectedFile);
+    // acciones con el archivo subido, por ejemplo, leer la imagen y convertirla en una URL
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imageURL = e.target.result;
+      // actualizar el estado o realizar otras acciones con la URL de la imagen
+      console.log(imageURL);
+    };
+    reader.readAsDataURL(selectedFile);
   };
 
   if (shouldAddToMap) {

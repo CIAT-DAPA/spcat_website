@@ -11,8 +11,9 @@ export function DataContextProvider(props){
     const [elevationProm, setElevationProm]= useState([]);
     const [iso, setIso]= useState([]);
     const [pointDistance, setPointDistance]= useState([]);
+    const [dataRoutestoExport, setDataRoutestoExport]= useState([]);
     return(
-        <DataContext.Provider value={{context,setContext,data,setData,layerc,setLayerc,elevationsg,setElevationsg,distance, setDistance,time, setTime,travel, setTravel,elevationProm, setElevationProm,iso, setIso,pointDistance, setPointDistance}} >
+        <DataContext.Provider value={{context,setContext,data,setData,layerc,setLayerc,elevationsg,setElevationsg,distance, setDistance,time, setTime,travel, setTravel,elevationProm, setElevationProm,iso, setIso,pointDistance, setPointDistance,dataRoutestoExport, setDataRoutestoExport}} >
             {props.children}
             </DataContext.Provider>
     )
