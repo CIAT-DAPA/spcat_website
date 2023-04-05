@@ -85,7 +85,7 @@ function FilterLeft({
     setShouldAddToMap(false);
   }
   //console.log(carouselLandraceItemsNow);
-console.log(countryIso)
+//console.log(countryIso)
   useEffect(() => {
     const filteredData = crops.filter((item) =>
       carouselMajorItemsNow.includes(item.app_name)
@@ -93,12 +93,11 @@ console.log(countryIso)
     setFilteredCrops(filteredData);
   }, [crops, carouselMajorItemsNow]);
 
-  console.log(filteredCrops)
+  //console.log(filteredCrops)
   useEffect(() => {
     if (filteredCrops.length === 1) {
       const cropId = filteredCrops[0].id;
       axios
-        .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
         .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
         .then((response) => {
           setAllGroupCrop(response.data);
@@ -115,7 +114,7 @@ console.log(countryIso)
     }
   }, [filteredCrops]);
 
-  console.log(groupNames)
+ // console.log(groupNames)
 
   const gruposencarrousell = allgroupscrop.filter((grupo) =>
     carouselLandraceItemsNow.includes(grupo.group_name)
@@ -163,7 +162,7 @@ console.log(countryIso)
     }
   }, [idsCropss]);
 
-  console.log(layer);
+  //console.log(layer);
   const handleAddToMap = () => {
     if(countryIso.length==0){
       console.log('aun no hay nada')
@@ -187,7 +186,7 @@ console.log(countryIso)
     
     <Container className="mt-3">
       <Row className="align-items-center mb-3">
-        <Col className="col-4 d-flex align-items-center">
+        <Col className="col-5 d-flex align-items-center">
           <OverlayTrigger
             placement="top"
             overlay={renderTooltip("Step 1: Select your country")}
@@ -201,7 +200,7 @@ console.log(countryIso)
             aria-label="Default select example"
             onChange={handleCountryChange}
           >
-            <option value="">Select a country</option>
+            <option value="">Select country</option>
             {response.map((country) => (
               <option key={country.id} value={country.name}>
                 {country.name}
@@ -222,7 +221,7 @@ console.log(countryIso)
         ></CheckFilter>
       )}
 
-      {carouselMajorItemsNow && (
+      {carouselMajorItemsNow && carouselMajorItemsNow.length==1 && (
         <CheckFilter
           title="Landrace Crops"
           toolTipTitle="Step 3"
@@ -232,22 +231,24 @@ console.log(countryIso)
           crop={groupNames}
         ></CheckFilter>
       )}
-      {carouselMajorItemsNow && carouselMajorItemsNow.length > 1 && (
+      {carouselMajorItemsNow && (carouselMajorItemsNow.length > 1 || carouselMajorItemsNow.length < 1)  && (
+        <CheckFilter
+          title="Landrace Crops"
+          toolTipTitle="Step 3"
+          toolTipDescription="Step 3: Select your landrace crops"
+          onDataChange={handleDataLandraceCropChange}
+          onChange={shouldReset}
+          crop={[]}
+        ></CheckFilter>
+      )}
+     {/*  {carouselMajorItemsNow && carouselMajorItemsNow.length ==0 && (
         <CheckFilter
           title="Landrace Crops"
           onDataChange={handleDataLandraceCropChange}
           onChange={shouldReset}
           crop={[]}
         ></CheckFilter>
-      )}
-      {carouselMajorItemsNow && carouselMajorItemsNow.length ==0 && (
-        <CheckFilter
-          title="Landrace Crops"
-          onDataChange={handleDataLandraceCropChange}
-          onChange={shouldReset}
-          crop={[]}
-        ></CheckFilter>
-      )}
+      )} */}
       <div className="d-flex flex-column align-items-center gap-2 mt-3">
         <Button
           variant="primary"

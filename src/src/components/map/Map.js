@@ -1,19 +1,9 @@
 import { React, useState, useEffect, useContext } from "react";
 import { CloseButton } from "react-bootstrap";
 import { DataContext } from "../../context/context";
-import {
-  MapContainer,
-  TileLayer,
-  ZoomControl,
-  WMSTileLayer,
-  LayersControl,
-  Marker,
-  Popup,
-  Polyline,
-  Tooltip,
-  useMap,
-  useMapEvents,
-} from "react-leaflet";
+import RouteError from "../routeError/RouteError";
+import { saveAs } from 'file-saver'; 
+import {MapContainer,TileLayer,ZoomControl,WMSTileLayer,LayersControl,Marker,Popup,Polyline,Tooltip,useMap,useMapEvents} from "react-leaflet";
 import "./Map.css";
 import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
@@ -23,13 +13,14 @@ import icon from "../../assets/icons/banana.png";
 import Papa from 'papaparse';
 
 const { BaseLayer } = LayersControl;
-function Map({
-  carouselMajorItems,
-  setCarouselMajorItems,
-  carouselLandraceItems,
-  setCarouselLandraceItems,
-}) {
+function Map({carouselMajorItems,setCarouselMajorItems,carouselLandraceItems,setCarouselLandraceItems,}) {
 
+  
+  const [showe, setShowe] = useState(false); // estado para controlar la visualización del Modal
+
+  const handleClosee = () => {
+    setShowe(false);
+  };
  
 
   const handleRemoveFromMajorCarousel = (index) => {
@@ -43,8 +34,8 @@ function Map({
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
   const position = { lat: 4.570868, lng: -74.297333 };
-  console.log(carouselMajorItems)
-  console.log(carouselLandraceItems)
+ // console.log(carouselMajorItems)
+  //console.log(carouselLandraceItems)
 
   const google = window.google;
   const { context } = useContext(DataContext);
@@ -56,6 +47,7 @@ function Map({
   const { distance, setDistance } = useContext(DataContext);
   const { time, setTime } = useContext(DataContext);
   const { travel, setTravel } = useContext(DataContext);
+  const { pointDistance, setPointDistance} = useContext(DataContext);
   const { elevationProm, setElevationProm} = useContext(DataContext);
   const [distances, setDistances] = useState([]);
   const [layerr, setLayerr] = useState([]);
@@ -66,6 +58,7 @@ function Map({
   const [wmsTileLayer, setWMSTileLayer] = useState(null);
   const[elevations,setElevations]=useState([])
   const [tooltipInfo, setTooltipInfo] = useState(null);
+  const[groups,setGroups]=useState([])
   useEffect(() => {
     // Aquí puedes hacer cualquier acción que necesites cada vez que cambie layerc
     // En este caso, no haremos nada especial
@@ -75,6 +68,7 @@ function Map({
   const urlCrops='http://127.0.0.1:5000/api/v1/crops';
 const [crops, setCrops] = useState([]);
 const [accessions, setAccessions] = useState([]);
+const [filteredgroups, setFilteredGroups] = useState([]);
 useEffect(()=>{
     const getCrops =async ()=>{
         try{
@@ -91,7 +85,7 @@ useEffect(()=>{
 },[])
 
 const[filteredCrops,setFilteredCrops]=useState([])
-console.log(carouselMajorItems)
+//console.log(carouselMajorItems)
 useEffect(() => {
   if (carouselMajorItems !== null) {
     const filteredData = crops.filter((item) =>
@@ -102,18 +96,20 @@ useEffect(() => {
   }
 }, [crops, carouselMajorItems]);
 
-console.log(filteredCrops)
+//console.log(filteredCrops)
 
   useEffect(() => {
     if ( carouselMajorItems !== null && carouselMajorItems.length === 1 && carouselLandraceItems.length==0) {
       const cropId = filteredCrops[0].id;
-      setLayerr(`${iso}_${filteredCrops[0].ext_id}`)
-      console.log(cropId)
+      setLayerr([`${iso}_${filteredCrops[0].ext_id}`])
+      //console.log(cropId)
+
+      
 
       axios
         .get(`http://localhost:5000/api/v1/accessionsbyidcrop?id=${cropId}&iso=${iso}`)
         .then((response) => {
-          console.log(response)
+          //console.log(response)
           setAccessions(response.data.flatMap((crop) => crop.accessions));
         })
         .catch((error) => {
@@ -125,15 +121,95 @@ console.log(filteredCrops)
 
     
   }, [filteredCrops]);
-  console.log(accessions)
-  console.log(layerr)
+
+
+
+  useEffect(() => {
+    if ( carouselLandraceItems !== null && carouselLandraceItems.length >0 && carouselMajorItems.length>0) {
+      const cropId = filteredCrops[0].id;
+    
+      axios
+        .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
+        .then((response) => {
+          //console.log(response)
+          setGroups(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else{
+
+    }
+
+    
+  }, [filteredCrops]);
+
+//console.log(groups)
+//console.log(carouselLandraceItems)
+
+useEffect(() => {
+  if (carouselLandraceItems != null && groups[0]?.groups != null) {
+    const filteredgroups = groups[0]?.groups
+    .map(obj => carouselLandraceItems.includes(obj.group_name) ? obj : null)
+    .filter(obj => obj !== null);
+    setFilteredGroups(filteredgroups);
+  }
+  console.log(groups)
+}, [carouselLandraceItems,groups]);
+
+////console.log(filteredgroups)
+
+const idsgroups = filteredgroups.map((obj) => obj.id).join(",");
+//console.log(idsgroups)
+const extidsgroup = filteredgroups.map((obj) => obj.ext_id).join(",").split(',');
+//console.log(extidsgroup)
+//console.log(layerr.length)
+
+useEffect(()=>{
+  if(carouselLandraceItems!=null && carouselLandraceItems.length>0){
+    setAccessions([])
+    const newArray = extidsgroup.map((element) => `${iso}_${element}`);
+    
+      setLayerr(newArray);
+    axios
+    .get(`http://localhost:5000/api/v1/accessionsbyidgroup?id=${idsgroups}&iso=${iso}`)
+    .then((response) => {
+      //console.log(response)
+      setAccessions(response.data.flatMap((crop) => crop.accessions));
+    })
+    .catch((error) => {
+      //console.log(error);
+    });
+} else if( carouselLandraceItems!=null && carouselLandraceItems.length==0) {
+  setAccessions([])
+}
+  
+},[filteredgroups])
+//console.log(accessions)
 
   const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
-console.log(idsCropss)
-console.log(iso)
+//console.log(idsCropss)
+//console.log(iso)
+const extids = filteredCrops.map((obj) => obj.ext_id).join(",").split(',');
+
+//console.log(extids)
+useEffect(()=>{
+  if(carouselMajorItems===null || carouselMajorItems.length==0){
+    setLayerr([])
+  }
+},[carouselMajorItems])
+
+useEffect(()=>{
+  if(carouselLandraceItems===null || carouselLandraceItems.length==0){
+    setLayerr([])
+  }
+},[carouselLandraceItems])
 
   useEffect(() => {
     if ( carouselMajorItems !== null && carouselMajorItems.length >1 && carouselLandraceItems.length==0) {
+      const newArray = extids.map((element) => `${iso}_${element}`);
+    
+      setLayerr(newArray);
       setAccessions([])
       const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`
 
@@ -150,7 +226,7 @@ console.log(iso)
     }
     
   }, [filteredCrops]);
-
+  //console.log(layerr)
 
 // Agregar un evento load al objeto window
 window.addEventListener("load", () => {
@@ -233,6 +309,7 @@ Promise.all(context.map(city => getCoordsForCity(city)))
           }
 
           setDistances(distances);
+          setPointDistance(distances)
 
           elevationService.getElevationAlongPath(
             {
@@ -260,12 +337,13 @@ Promise.all(context.map(city => getCoordsForCity(city)))
           setLugares(coordinates);
         } else {
           console.error(`Error al obtener la dirección: ${status}`);
+          setShowe(true); 
         }
       });
   }
   
 },[context])
-console.log(ubicaciones)
+console.log(distances)
 
     
   const customIcon = L.icon({
@@ -303,14 +381,42 @@ console.log(ubicaciones)
     console.log('marker clicked', index);
   };
   
+ 
+  const customControl = L.control({ position: 'topright' });
+  console.log(datatoExport)
 
+  const handleButtonClick = () => {
+    // Tu lógica de código aquí
+    console.log('¡El botón ha sido clickeado!');
+};
 
-  //console.log(data)
+// Crea el componente de control personalizado
+
+const convertirA_CSV = (datatoExport) => {
+  const cabecera = Object.keys(datatoExport[0]);
+  const filas = datatoExport.map(obj => cabecera.map(key => obj[key]));
+  filas.unshift(cabecera);
+  return filas.map(fila => fila.join(',')).join('\n');
+}
+
+const descargarCSV = () => {
+  const contenidoCSV = convertirA_CSV(datatoExport);
+  const nombreArchivo = 'datos.csv';
+  const archivo = new File([contenidoCSV], nombreArchivo, { type: 'text/csv;charset=utf-8' });
+  saveAs(archivo); // Utilizar la función saveAs de FileSaver.js para descargar el archivo
+}
+  
   return (
    
+
+
     
 
     <div className="mapDiv mx-0 p-0">
+      <RouteError
+    showe={showe} handleClosee={handleClosee} 
+  />
+      
       <div className="div-filter-map" style={{backgroundColor:'transparent', zIndex:'1000', position:'relative'}}>
         <div className="px-4 py-2">
           {carouselMajorItems && carouselMajorItems.length > 0 && (
@@ -375,22 +481,7 @@ console.log(ubicaciones)
         style={{ height: "100%", width: "100%", position:'fixed', top: '58px' }}
         zoomControl={false}
       >
-         <Marker
-          eventHandlers={{
-            click: (e) => {
-              console.log('marker clicked', e)
-            },
-          }}
-        position={position}
-        onMouseOver={e => {
-          e.target.openPopup();
-        }}
-        onMouseOut={e => {
-          e.target.closePopup();
-        }}
-      >
-        <Tooltip>I appear on mouse over</Tooltip>
-      </Marker>
+        
         {accessions &&
           accessions.length > 0 &&
           accessions.map((marker, index) =>
@@ -456,16 +547,37 @@ console.log(ubicaciones)
 
         <ZoomControl position="topright"></ZoomControl>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        
+      {/* {  layerr.length > 0 && layerr.map((layerr) => (
+              <WMSTileLayer
+              key={layerr}
+              url="https://isa.ciat.cgiar.org/geoserver2/wms"
+              layers={`gap_analysis:${layerr}`}
+              format="image/png"
+              transparent={true}
+            /> 
+            ))} */}
 
-        {layerc && (
+       {/*  {layerr && (
   <WMSTileLayer 
-    key={`layer-${layerc}`}
-    url="https://isa.ciat.cgiar.org/geoserver2/gap_analysis/wms"
-    layers={`gap_analysis:${layerc}`}
+    
+    url="http://localhost:8080/geoserver/gap_analysis/wms"
+    layers={`gap_analysis:GR_3`}
     format="image/png"
     transparent={true}
   />
-)}
+)} */}
+{/* <WMSTileLayer 
+    
+    url="http://localhost:8080/geoserver/gap_analysis/wms"
+    layers={`gap_analysis:GR_3`}
+    format="image/png"
+    transparent={true}
+  /> */}
+
+<button  className="boto" onClick={descargarCSV} >Haz clic</button>
+
+
 <Polyline color="lime" positions={lugares} weight={5} />
 
       </MapContainer>

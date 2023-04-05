@@ -11,6 +11,7 @@ const RouteReport = ({show,handleClose}) => {
  */
   const { elevationsg } = useContext(DataContext);
   const { distance } = useContext(DataContext);
+  const { pointDistance } = useContext(DataContext);
   const { time } = useContext(DataContext);
   const {elevationProm} = useContext(DataContext);
 
@@ -39,9 +40,39 @@ const RouteReport = ({show,handleClose}) => {
     }
   }
  
+
+
+
+
+
+  const seriest = [
+    {
+      name: "Elevación (metros)",
+      data: pointDistance,
+    },
+    
+  ];
+  const optionst = {
+    /* theme:{
+          mode:'dark'
+        }, */
+    chart: {
+      height: 300,
+      type: "line",
+    },
+    xaxis: {
+      categories: pointDistance.map((_, index) => `Ubicación ${index + 1}`),
+      tickAmount: 6,
+      
+    },
+    yaxis: {
+      decimalsInFloat: 2,
+    }
+  }
+ 
 console.log(elevationsg.length)
   return (
-    <>
+    
       
 
       <Modal dialogClassName="modal-height" scrollable={true} show={show} onHide={handleClose} >
@@ -49,8 +80,7 @@ console.log(elevationsg.length)
           <Modal.Title className="text-center">Route Summary</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-  {elevationsg && elevationsg > 0 ?
-    <>
+ 
       <p>Average distance {distance} kms</p>
       <p>Estimated travel time {time[0]} hours and {time[1]} minutes</p>
       <p>Average travel altitude {elevationProm} mts</p>
@@ -61,15 +91,14 @@ console.log(elevationsg.length)
         height={350}
       />
       <ReactApexChart
-        options={options}
-        series={series}
+        options={optionst}
+        series={seriest}
         type="line"
         height={350}
       />
-    </>
-    :
-    <div>You must first generate a route to see this</div>
-  }
+    
+    
+  
 </Modal.Body>
 
         <Modal.Footer>
@@ -79,7 +108,7 @@ console.log(elevationsg.length)
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    
   );
 };
 
