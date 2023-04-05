@@ -123,9 +123,8 @@ const descargarCSV = () => {
 console.log(elevationsg.length)
   return (
     
-      
-
-      <Modal dialogClassName="modal-height" scrollable={true} show={show} onHide={handleClose} >
+    
+<Modal dialogClassName="modal-height" scrollable={true} show={show} onHide={handleClose} >
         <Modal.Header closeButton>
           <Modal.Title className="text-center">Route Summary</Modal.Title>
         </Modal.Header>
@@ -171,6 +170,8 @@ console.log(elevationsg.length)
           </Button>
         </Modal.Footer>
       </Modal>
+
+      
     
   );
 };
