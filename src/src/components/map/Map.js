@@ -119,6 +119,8 @@ function Map({
       carouselLandraceItems.length == 0
     ) {
       const cropId = filteredCrops[0].id;
+      setSelectedMarkers([])
+      setClickedMarkerIndices(new Set());
       setLayerr([`${iso}_${filteredCrops[0].ext_id}`]);
       //console.log(cropId)
 
@@ -144,6 +146,8 @@ function Map({
       carouselLandraceItems.length > 0 &&
       carouselMajorItems.length > 0
     ) {
+      setSelectedMarkers([])
+      setClickedMarkerIndices(new Set());
       const cropId = filteredCrops[0].id;
 
       axios
@@ -164,6 +168,8 @@ function Map({
 
   useEffect(() => {
     if (carouselLandraceItems != null && groups[0]?.groups != null) {
+      setSelectedMarkers([])
+      setClickedMarkerIndices(new Set());
       const filteredgroups = groups[0]?.groups
         .map((obj) =>
           carouselLandraceItems.includes(obj.group_name) ? obj : null
@@ -189,7 +195,8 @@ function Map({
     if (carouselLandraceItems != null && carouselLandraceItems.length > 0) {
       setAccessions([]);
       const newArray = extidsgroup.map((element) => `${iso}_${element}`);
-
+      setSelectedMarkers([])
+      setClickedMarkerIndices(new Set());
       setLayerr(newArray);
       axios
         .get(
@@ -239,7 +246,8 @@ function Map({
       carouselLandraceItems.length == 0
     ) {
       const newArray = extids.map((element) => `${iso}_${element}`);
-
+      setSelectedMarkers([])
+      setClickedMarkerIndices(new Set());
       setLayerr(newArray);
       setAccessions([]);
       const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
@@ -255,7 +263,36 @@ function Map({
       });
     }
   }, [filteredCrops]);
-  //console.log(layerr)
+
+  useEffect(() => {
+    if (
+      carouselMajorItems !== null &&
+      carouselMajorItems.length == 1 &&
+      carouselLandraceItems.length == 0
+    ) {
+      const newArray = extids.map((element) => `${iso}_${element}`);
+      setSelectedMarkers([])
+      setClickedMarkerIndices(new Set());
+      setLayerr(newArray);
+      setAccessions([]);
+      
+      const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
+
+      axios.get(endopointAccesionsByCrop).then((response) => {
+        // 4. Manejar la respuesta de la solicitud HTTP
+        //setAccesionDataByCrop(response.data)
+        if (response.data[0]?.accessions) {
+          setAccessions(response.data.flatMap((crop) => crop.accessions));
+        } else {
+          setAccessions(response.data);
+        }
+      });
+    }
+  }, [carouselLandraceItems]);
+
+
+
+  console.log(layerr)
 
   // Agregar un evento load al objeto window
   window.addEventListener("load", () => {
@@ -427,6 +464,11 @@ function Map({
 
   //console.log(selectedMarkers)
   // console.log(datatoExport)
+  useEffect(()=>{
+    if(carouselMajorItems && carouselMajorItems.length==0){
+      setCarouselLandraceItems([])
+    }
+  },[carouselMajorItems])
 
   const handleClick = (index, tooltipInfo) => {
     const newSet = new Set(clickedMarkerIndices);
