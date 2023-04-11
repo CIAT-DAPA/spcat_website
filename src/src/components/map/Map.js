@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useContext,useRef } from "react";
+import { React, useState, useEffect, useContext, useRef } from "react";
 import { CloseButton, Button, Form } from "react-bootstrap";
 import { DataContext } from "../../context/context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -119,7 +119,7 @@ function Map({
       carouselLandraceItems.length == 0
     ) {
       const cropId = filteredCrops[0].id;
-      setSelectedMarkers([])
+      setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
       setLayerr([`${iso}_${filteredCrops[0].ext_id}`]);
       //console.log(cropId)
@@ -146,7 +146,7 @@ function Map({
       carouselLandraceItems.length > 0 &&
       carouselMajorItems.length > 0
     ) {
-      setSelectedMarkers([])
+      setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
       const cropId = filteredCrops[0].id;
 
@@ -168,7 +168,7 @@ function Map({
 
   useEffect(() => {
     if (carouselLandraceItems != null && groups[0]?.groups != null) {
-      setSelectedMarkers([])
+      setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
       const filteredgroups = groups[0]?.groups
         .map((obj) =>
@@ -195,7 +195,7 @@ function Map({
     if (carouselLandraceItems != null && carouselLandraceItems.length > 0) {
       setAccessions([]);
       const newArray = extidsgroup.map((element) => `${iso}_${element}`);
-      setSelectedMarkers([])
+      setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
       setLayerr(newArray);
       axios
@@ -246,7 +246,7 @@ function Map({
       carouselLandraceItems.length == 0
     ) {
       const newArray = extids.map((element) => `${iso}_${element}`);
-      setSelectedMarkers([])
+      setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
       setLayerr(newArray);
       setAccessions([]);
@@ -271,11 +271,11 @@ function Map({
       carouselLandraceItems.length == 0
     ) {
       const newArray = extids.map((element) => `${iso}_${element}`);
-      setSelectedMarkers([])
+      setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
       setLayerr(newArray);
       setAccessions([]);
-      
+
       const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
 
       axios.get(endopointAccesionsByCrop).then((response) => {
@@ -290,9 +290,7 @@ function Map({
     }
   }, [carouselLandraceItems]);
 
-
-
-  console.log(layerr)
+  console.log(layerr);
 
   // Agregar un evento load al objeto window
   window.addEventListener("load", () => {
@@ -361,7 +359,7 @@ function Map({
           );
           const hours = Math.floor(duration / 3600);
           const minutes = Math.floor((duration % 3600) / 60);
-          const timeString = `${hours} hours and ${minutes} minutes`
+          const timeString = `${hours} hours and ${minutes} minutes`;
           const url = `https://www.google.com/maps/dir/?api=1&origin=${
             puntos[0].location
           }&destination=${puntos[puntos.length - 1].location}&waypoints=${puntos
@@ -415,19 +413,17 @@ function Map({
                 console.log(`el promedio es ${promelevation}`);
                 setElevationProm(promelevation);
                 setElevationsg(elevations);
-                
-                  const data = coordenadasApi.map((coordenada, index) => ({
-                    Latitude: coordenada.lat,
-                    Longitude: coordenada.lng,
-                    Elevation: elevations[index],
-                    Distance: distances[index],
-                    PromElevation: promelevation,
-                    time: timeString,
-                  }));
-                  console.log(time);
-                  setDataRoutestoExport(data);
-                
-                
+
+                const data = coordenadasApi.map((coordenada, index) => ({
+                  Latitude: coordenada.lat,
+                  Longitude: coordenada.lng,
+                  Elevation: elevations[index],
+                  Distance: distances[index],
+                  PromElevation: promelevation,
+                  time: timeString,
+                }));
+                console.log(time);
+                setDataRoutestoExport(data);
               } else {
                 console.error(`Error al obtener la elevación: ${status}`);
               }
@@ -464,11 +460,11 @@ function Map({
 
   //console.log(selectedMarkers)
   // console.log(datatoExport)
-  useEffect(()=>{
-    if(carouselMajorItems && carouselMajorItems.length==0){
-      setCarouselLandraceItems([])
+  useEffect(() => {
+    if (carouselMajorItems && carouselMajorItems.length == 0) {
+      setCarouselLandraceItems([]);
     }
-  },[carouselMajorItems])
+  }, [carouselMajorItems]);
 
   const handleClick = (index, tooltipInfo) => {
     const newSet = new Set(clickedMarkerIndices);
@@ -507,7 +503,10 @@ function Map({
   const mapRef = useRef(null);
   useEffect(() => {
     if (accessions.length > 0) {
-      const latLngs = accessions.map((coordenada) => [coordenada.latitude, coordenada.longitude]);
+      const latLngs = accessions.map((coordenada) => [
+        coordenada.latitude,
+        coordenada.longitude,
+      ]);
       const bounds = L.latLngBounds(latLngs);
       if (mapRef.current) {
         mapRef.current.flyToBounds(bounds, { padding: [200, 200] });
@@ -530,7 +529,7 @@ function Map({
   ];
   console.log(selectedOption);
   return (
-    <div className="mapDiv mx-0 p-0">
+    <div className="mapDiv mx-0 p-0"  >
       <RouteError showe={showe} handleClosee={handleClosee} />
 
       <div
@@ -541,11 +540,9 @@ function Map({
           position: "relative",
         }}
       >
-        <div className="px-4 py-2">
+        <div className="px-4 py-2" >
           {carouselMajorItems && carouselMajorItems.length > 0 && (
-            <Select options={options} onChange={setSelectedOption}>
-              
-            </Select>
+            <Select options={options} onChange={setSelectedOption}></Select>
           )}
 
           {carouselMajorItems && carouselMajorItems.length > 0 && (
@@ -560,7 +557,9 @@ function Map({
               >
                 <img
                   alt=""
-                  src={`https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/${item.split(' ')[0].toLowerCase()}.png`}
+                  src={`https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/${item
+                    .split(" ")[0]
+                    .toLowerCase()}.png`}
                   width="20"
                 />{" "}
                 {item}
@@ -576,27 +575,29 @@ function Map({
           {carouselLandraceItems && carouselLandraceItems.length > 0 && (
             <h6>Landrace items</h6>
           )}
-         {carouselLandraceItems &&
-  carouselLandraceItems.map((item, i) => (
-    <div
-      className="btn border border-top-0 px-3 py-1 rounded-3 me-1 hoverable filter-map"
-      key={i}
-      onClick={() => handleRemoveFromLandraceCarousel(i)}
-    >
-      {carouselMajorItems.length > 0 && (
-        <img
-          alt=""
-          src={`https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/${carouselMajorItems[0].split(' ')[0].toLowerCase()}.png`}
-          width="20"
-        />
-      )}
-      {item}
-      <CloseButton
-        disabled
-        className="ms-1 close-button"
-      ></CloseButton>
-    </div>
-  ))}
+          {carouselLandraceItems &&
+            carouselLandraceItems.map((item, i) => (
+              <div
+                className="btn border border-top-0 px-3 py-1 rounded-3 me-1 hoverable filter-map"
+                key={i}
+                onClick={() => handleRemoveFromLandraceCarousel(i)}
+              >
+                {carouselMajorItems.length > 0 && (
+                  <img
+                    alt=""
+                    src={`https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/${carouselMajorItems[0]
+                      .split(" ")[0]
+                      .toLowerCase()}.png`}
+                    width="20"
+                  />
+                )}
+                {item}
+                <CloseButton
+                  disabled
+                  className="ms-1 close-button"
+                ></CloseButton>
+              </div>
+            ))}
           {selectedMarkers &&
             selectedMarkers.length > 0 &&
             accessions.length > 0 && (
@@ -606,6 +607,7 @@ function Map({
                   className="text-white accession"
                   type="submit"
                   onClick={descargarCSV}
+                  id="button-downloadAccesion"
                 >
                   Download accessions
                   <FontAwesomeIcon
@@ -619,8 +621,7 @@ function Map({
       </div>
 
       <MapContainer
-      
-        id="mapid"
+        id="mapid mapLayer"
         ref={mapRef}
         center={[14.88, -35, 76]}
         zoom={3}
@@ -675,7 +676,7 @@ function Map({
                     ? L.icon({
                         iconUrl:
                           "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
-                        iconSize: [20, 20],
+                        iconSize: [20, 20]
                       })
                     : customIcon
                 }

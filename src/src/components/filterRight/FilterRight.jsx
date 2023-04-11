@@ -30,7 +30,6 @@ function FilterRight() {
   const [isVisible, setIsVisible] = useState(false);
   const { travel } = useContext(DataContext);
 
-
   const [destinations, setDestinations] = useState([""]);
   const [places, setPlaces] = useState("");
 
@@ -88,7 +87,8 @@ function FilterRight() {
           onClick={() => setIsVisible(!isVisible)}
           aria-controls="example-collapse-text"
           aria-expanded={isVisible}
-          style={{borderRadius:"50%"}}
+          style={{ borderRadius: "50%" }}
+          id="button-route"
         >
           <FontAwesomeIcon
             icon={faCaretDown}
@@ -97,7 +97,9 @@ function FilterRight() {
         </Button>
       </div>
 
-      <div style={{ minHeight: "150px", height: "100%", backgroundColor:'white' }}>
+      <div
+        style={{ minHeight: "150px", height: "100%", backgroundColor: "white" }}
+      >
         <Collapse in={isVisible} dimension="width">
           <div id="example-collapse-text" className="pe-3">
             <div className="title-icon-container">
@@ -111,7 +113,7 @@ function FilterRight() {
             </div>
             <form onSubmit={handleSubmit}>
               {destinations.map((destination, index) => (
-                <Row key={index} className="row-destino">
+                <Row key={index} className="row-destino" id={`textare-city${index + 1}`}>
                   <Col className="d-flex flex-column justify-content-end me-0 px-0 ms-4">
                     <FontAwesomeIcon
                       onClick={handleAddToList}
@@ -152,6 +154,7 @@ function FilterRight() {
                     className="text-success "
                     onClick={handleAdd}
                     icon={faCirclePlus}
+                    id="button-addDestination"
                   />
                 </Col>
                 <Col className="p-destino ms-0 pt-2">
@@ -160,38 +163,31 @@ function FilterRight() {
               </Row>
 
               <div className="text-center">
-                <Button
-                  variant="primary"
-                  className="text-white"
-                  type="submit"
-                >
+                <Button variant="primary" className="text-white" type="submit" id="button-getRoute">
                   Get route
                   <FontAwesomeIcon
                     className="search-icon"
                     icon={faMagnifyingGlass}
                   ></FontAwesomeIcon>
                 </Button>
-
-                
               </div>
               <div className="text-center mt-3">
-  {travel.length>0 &&
-    <Button 
-      variant="primary"
-      className="text-white"
-      type="submit"
-      href={travel}
-      target='_blank'
-    >
-      Navigate to destination
-      <FontAwesomeIcon
-        className="search-icon"
-        icon={faCar}
-      ></FontAwesomeIcon>
-    </Button>
-  }
- 
-</div>
+                {travel.length > 0 && (
+                  <Button
+                    variant="primary"
+                    className="text-white"
+                    type="submit"
+                    href={travel}
+                    target="_blank"
+                  >
+                    Navigate to destination
+                    <FontAwesomeIcon
+                      className="search-icon"
+                      icon={faCar}
+                    ></FontAwesomeIcon>
+                  </Button>
+                )}
+              </div>
             </form>
           </div>
         </Collapse>

@@ -192,7 +192,7 @@ function FilterLeft({
 
       <Container className="mt-3">
         <Row className="align-items-center mb-3" id="select-country">
-          <Col className="col-5 d-flex align-items-center" >
+          <Col className="col-5 d-flex align-items-center">
             <OverlayTrigger
               placement="top"
               overlay={renderTooltip("Step 1: Select your country")}
@@ -202,18 +202,17 @@ function FilterLeft({
             Country
           </Col>
           <Col>
-            <Form.Select 
+            <Form.Select
               aria-label="Default select example"
               onChange={handleCountryChange}
             >
-              <option  value="">Select country</option>
+              <option value="">Select country</option>
               {response.map((country) => (
                 <>
-                   <option key={country.id} value={country.name} >
-                  {country.name}
-                </option>
+                  <option key={country.id} value={country.name}>
+                    {country.name}
+                  </option>
                 </>
-                
               ))}
             </Form.Select>
           </Col>
@@ -226,8 +225,8 @@ function FilterLeft({
             toolTipDescription="Step 2: Select your crops"
             onDataChange={handleDataMajorCropChange}
             onChange={shouldReset}
-            crop={majorCrops} 
-            
+            crop={majorCrops}
+            idOnboarding="select-majorCrop"
           ></CheckFilter>
         )}
 
@@ -239,6 +238,7 @@ function FilterLeft({
             onDataChange={handleDataLandraceCropChange}
             onChange={shouldReset}
             crop={groupNames}
+            idOnboarding="select-landraceCrop"
           ></CheckFilter>
         )}
         {carouselMajorItemsNow &&
@@ -251,6 +251,7 @@ function FilterLeft({
               onDataChange={handleDataLandraceCropChange}
               onChange={shouldReset}
               crop={[]}
+              idOnboarding="select-landraceCrop"
             ></CheckFilter>
           )}
         {/*  {carouselMajorItemsNow && carouselMajorItemsNow.length ==0 && (
@@ -266,6 +267,7 @@ function FilterLeft({
             variant="primary"
             className="w-50 text-white"
             onClick={handleAddToMap}
+            id="button-addToMap"
           >
             Add to map
           </Button>
