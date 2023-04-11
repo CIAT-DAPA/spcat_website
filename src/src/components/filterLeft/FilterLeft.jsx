@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
   Row,
   Form,
@@ -126,7 +127,50 @@ function FilterLeft({
   const gruposencarrousell = allgroupscrop.filter((grupo) =>
     carouselLandraceItemsNow.includes(grupo.group_name)
   ); //filre los grupos que estan em el crrousell
+  const idss = gruposencarrousell.map((obj) => obj.id).join(",");
+  // ['Spring', 'Winter']   los grupos
+  //console.log(idss)
+  useEffect(() => {
+    if (idss.length > 0) {
+      setLayer([]);
+      const nuevoEstado = carouselLandraceItemsNow.map(
+        (elemento) => `${layer}_${elemento}`
+      );
+      setLayer(nuevoEstado);
+      console.log(layer);
+      const endpointaccesions = `http://localhost:5000/api/v1/accessionsbyidgroup?id=${idss}`;
+      axios
+        .get(endpointaccesions)
+        .then((response) => {
+          // 4. Manejar la respuesta de la solicitud HTTP
+          setAccessionData(response.data);
+        })
+        .catch((error) => {
+          console.log("Error en la solicitud HTTP:", error);
+        });
+    }
+  }, [idss]);
 
+  const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
+
+  useEffect(() => {
+    if (idsCropss.length > 1) {
+      setAccessionData([]);
+      setData([]);
+      const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}`;
+      axios.get(endopointAccesionsByCrop).then((response) => {
+        // 4. Manejar la respuesta de la solicitud HTTP
+        //setAccesionDataByCrop(response.data)
+        if (response.data[0]?.accessions) {
+          setAccessionData(response.data.flatMap((crop) => crop.accessions));
+        } else {
+          setAccessionData(response.data);
+        }
+      });
+    }
+  }, [idsCropss]);
+
+  //console.log(layer);
   const handleAddToMap = () => {
     if (countryIso.length == 0) {
       console.log("aun no hay nada");

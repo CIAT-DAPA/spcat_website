@@ -59,7 +59,7 @@ function CheckFilter({
   const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
 
   return (
-    <div className="mt-1 mb-4">
+    <div className="mt-1 mb-4" id="select-majorCrop">
       <OverlayTrigger
         placement="top"
         overlay={renderTooltip(toolTipDescription)}
