@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useContext } from "react";
+import { React, useState, useEffect, useContext,useRef } from "react";
 import { CloseButton, Button, Form } from "react-bootstrap";
 import { DataContext } from "../../context/context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -504,7 +504,16 @@ function Map({
     filas.unshift(cabecera);
     return filas.map((fila) => fila.join(",")).join("\n");
   };
-
+  const mapRef = useRef(null);
+  useEffect(() => {
+    if (accessions.length > 0) {
+      const latLngs = accessions.map((coordenada) => [coordenada.latitude, coordenada.longitude]);
+      const bounds = L.latLngBounds(latLngs);
+      if (mapRef.current) {
+        mapRef.current.flyToBounds(bounds, { padding: [200, 200] });
+      }
+    }
+  }, [accessions]);
   const descargarCSV = () => {
     const contenidoCSV = convertirA_CSV(datatoExport);
     const nombreArchivo = "accessions.csv";
@@ -534,7 +543,9 @@ function Map({
       >
         <div className="px-4 py-2">
           {carouselMajorItems && carouselMajorItems.length > 0 && (
-            <Select options={options} onChange={setSelectedOption}></Select>
+            <Select options={options} onChange={setSelectedOption}>
+              
+            </Select>
           )}
 
           {carouselMajorItems && carouselMajorItems.length > 0 && (
@@ -549,7 +560,7 @@ function Map({
               >
                 <img
                   alt=""
-                  src="https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/banana.png"
+                  src={`https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/${item.split(' ')[0].toLowerCase()}.png`}
                   width="20"
                 />{" "}
                 {item}
@@ -565,25 +576,27 @@ function Map({
           {carouselLandraceItems && carouselLandraceItems.length > 0 && (
             <h6>Landrace items</h6>
           )}
-          {carouselLandraceItems &&
-            carouselLandraceItems.map((item, i) => (
-              <div
-                className="btn border border-top-0 px-3 py-1 rounded-3 me-1 hoverable filter-map"
-                key={i}
-                onClick={() => handleRemoveFromLandraceCarousel(i)}
-              >
-                <img
-                  alt=""
-                  src="https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/banana.png"
-                  width="20"
-                />{" "}
-                {item}
-                <CloseButton
-                  disabled
-                  className="ms-1 close-button"
-                ></CloseButton>
-              </div>
-            ))}
+         {carouselLandraceItems &&
+  carouselLandraceItems.map((item, i) => (
+    <div
+      className="btn border border-top-0 px-3 py-1 rounded-3 me-1 hoverable filter-map"
+      key={i}
+      onClick={() => handleRemoveFromLandraceCarousel(i)}
+    >
+      {carouselMajorItems.length > 0 && (
+        <img
+          alt=""
+          src={`https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/${carouselMajorItems[0].split(' ')[0].toLowerCase()}.png`}
+          width="20"
+        />
+      )}
+      {item}
+      <CloseButton
+        disabled
+        className="ms-1 close-button"
+      ></CloseButton>
+    </div>
+  ))}
           {selectedMarkers &&
             selectedMarkers.length > 0 &&
             accessions.length > 0 && (
@@ -606,7 +619,9 @@ function Map({
       </div>
 
       <MapContainer
+      
         id="mapid"
+        ref={mapRef}
         center={[14.88, -35, 76]}
         zoom={3}
         maxBounds={[
