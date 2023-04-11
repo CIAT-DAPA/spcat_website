@@ -38,6 +38,20 @@ function MapTools() {
 
   const [carouselMajorItems, setCarouselMajorItems] = useState(null);
   const [carouselLandraceItems, setCarouselLandraceItems] = useState(null);
+  // const [stepIndex, setStepIndex] = useState(0);
+
+  // const handleJoyrideCallback = (data) => {
+  //   const { action, index, status, type } = data;
+  //   if (action === 'clicked' && type === 'target') {
+  //     // Si se hace clic en el objetivo, avanzar al siguiente paso
+  //     const nextIndex = status === 'skipped' ? index + 1 : index;
+  //     setStepIndex(nextIndex);
+  //   }else if (action === 'next' && type === 'step:after'){
+  //     setStepIndex(index+1);
+  //   }
+   
+  //   console.log(`Action: ${action} - Index: ${index} - Status: ${status} - Type: ${type}`)
+  // };
 
   return (
     <Row className="m-0 ">
@@ -64,10 +78,12 @@ function MapTools() {
         <FilterRight></FilterRight>
       </Col>
       <Joyride
-        continuous
+        continuous={true}
         showProgress
         showSkipButton
         spotlightClicks
+        // stepIndex={stepIndex}
+        // callback={handleJoyrideCallback}
         steps={steps}
         styles={style}
       />
