@@ -38,19 +38,16 @@ function MapTools() {
 
   const [carouselMajorItems, setCarouselMajorItems] = useState(null);
   const [carouselLandraceItems, setCarouselLandraceItems] = useState(null);
-  // const [stepIndex, setStepIndex] = useState(0);
+  const [isContinouous, setIsContinouous] = useState(true);
 
   // const handleJoyrideCallback = (data) => {
   //   const { action, index, status, type } = data;
-  //   if (action === 'clicked' && type === 'target') {
-  //     // Si se hace clic en el objetivo, avanzar al siguiente paso
-  //     const nextIndex = status === 'skipped' ? index + 1 : index;
-  //     setStepIndex(nextIndex);
-  //   }else if (action === 'next' && type === 'step:after'){
-  //     setStepIndex(index+1);
+  //   if (index == 5) {
   //   }
-   
-  //   console.log(`Action: ${action} - Index: ${index} - Status: ${status} - Type: ${type}`)
+
+  //   console.log(
+  //     `Action: ${action} - Index: ${index} - Status: ${status} - Type: ${type}`
+  //   );
   // };
 
   return (
@@ -78,12 +75,10 @@ function MapTools() {
         <FilterRight></FilterRight>
       </Col>
       <Joyride
-        continuous={true}
+        continuous={isContinouous}
         showProgress
         showSkipButton
-        spotlightClicks
-        // stepIndex={stepIndex}
-        // callback={handleJoyrideCallback}
+        // spotlightClicks //Hace que avance con el boton next
         steps={steps}
         styles={style}
       />

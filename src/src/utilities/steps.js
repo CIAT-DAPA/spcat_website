@@ -4,18 +4,21 @@ export const steps = [
     content: "Here you can select the desire country",
     target: "#select-country",
     placement: "auto",
+    spotlightClicks: true
   },
   {
     title: "Select the major crop",
     content: "Here you can select the desire crops",
     target: "#select-majorCrop",
     placement: "auto",
+    spotlightClicks: false
   },
   {
     title: "Select the landrace crop",
     content: "Here you can select the desire landrace crops",
     target: "#select-landraceCrop",
     placement: "auto",
+    spotlightClicks: true
   },
   {
     title: "Add to map",
@@ -33,7 +36,6 @@ export const steps = [
     title: "Create a route",
     content: "Click this button to open the route section",
     target: "#button-route",
-    spotlightClicks: true,
     placement: "auto",
   },
   {

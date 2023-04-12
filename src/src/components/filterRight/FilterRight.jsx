@@ -84,7 +84,9 @@ function FilterRight() {
       <div className="right-container">
         <Button
           className="arrow-button"
-          onClick={() => setIsVisible(!isVisible)}
+          onClick={() => {
+            setIsVisible(!isVisible);
+          }}
           aria-controls="example-collapse-text"
           aria-expanded={isVisible}
           style={{ borderRadius: "50%" }}
@@ -113,7 +115,11 @@ function FilterRight() {
             </div>
             <form onSubmit={handleSubmit}>
               {destinations.map((destination, index) => (
-                <Row key={index} className="row-destino" id={`textare-city${index + 1}`}>
+                <Row
+                  key={index}
+                  className="row-destino"
+                  id={`textare-city${index + 1}`}
+                >
                   <Col className="d-flex flex-column justify-content-end me-0 px-0 ms-4">
                     <FontAwesomeIcon
                       onClick={handleAddToList}
@@ -163,7 +169,12 @@ function FilterRight() {
               </Row>
 
               <div className="text-center">
-                <Button variant="primary" className="text-white" type="submit" id="button-getRoute">
+                <Button
+                  variant="primary"
+                  className="text-white"
+                  type="submit"
+                  id="button-getRoute"
+                >
                   Get route
                   <FontAwesomeIcon
                     className="search-icon"
