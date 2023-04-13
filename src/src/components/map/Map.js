@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useContext, useRef } from "react";
+import { React, useState, useEffect, useContext, useRef,Control } from "react";
 import { CloseButton, Button, Form } from "react-bootstrap";
 import { DataContext } from "../../context/context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,7 @@ import {
   Tooltip,
   useMap,
   useMapEvents,
+  ImageOverlay
 } from "react-leaflet";
 import "./Map.css";
 import "leaflet-routing-machine";
@@ -56,6 +57,7 @@ function Map({
   const google = window.google;
   const { context } = useContext(DataContext);
   const { iso } = useContext(DataContext);
+  const { image } = useContext(DataContext);
   const [ubicaciones, setUbicaciones] = useState([]);
 
   const { data } = useContext(DataContext);
@@ -70,18 +72,14 @@ function Map({
   const [distances, setDistances] = useState([]);
   const [layerr, setLayerr] = useState([]);
 
-  const { layerc } = useContext(DataContext);
+  
   const [prueba, setPrueba] = useState([]);
   const [lugares, setLugares] = useState([]);
   const [wmsTileLayer, setWMSTileLayer] = useState(null);
   const [elevations, setElevations] = useState([]);
   const [tooltipInfo, setTooltipInfo] = useState(null);
   const [groups, setGroups] = useState([]);
-  useEffect(() => {
-    // Aquí puedes hacer cualquier acción que necesites cada vez que cambie layerc
-    // En este caso, no haremos nada especial
-  }, [layerc]);
-
+  
   let url = "https://maps.googleapis.com/maps/api/directions/json?";
   const urlCrops = "http://127.0.0.1:5000/api/v1/crops";
   const [crops, setCrops] = useState([]);
@@ -443,7 +441,7 @@ function Map({
   console.log(distances);
 
   const customIcon = L.icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/2740/2740706.png",
+    iconUrl: "https://img.icons8.com/color/256/circled-dot.png",
     iconSize: [20, 20], // tamaño del icono
   });
 
@@ -491,7 +489,12 @@ function Map({
     // Tu lógica de código aquí
     console.log("¡El botón ha sido clickeado!");
   };
+console.log(image)
+var initLat = 38.9761;
+var initLon = -77.4875;
 
+var imageUrl = 'data:image/jpeg;base64,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6yx8szlgyElvq5r42nHbcQBiaen6qlmoRNL069q9O/B8IIruQVYgvgAr3557nnidHasH0mi3TQDuV3T7K2B/Bzx9pehRvifQWjw9TqbzWFb9DTVtipcKSxbIzY+0HzHAGQMesltX/wBxp2OjJ01YrO24IFfhfKEVx5UGBk45H047zd1nwvXZeuqYeO6LhBazPWnuUTOATxzjP3nz8R9H1Osp+X8bwUYjxFrXazoOdgds7c/j/wBt/BB1lhpl0+iKrqrHcWPjcagzlntb3cjG0dySD2UkYekX2act02sNbY2UF2BmtFJUvYefOEKgDHLfbJFq6f09qa/CpqTTgAgOWNthOMbiTjJ7ckma/wAP/DjaNXVHDNYzPbcy7tQ7sckk8KPtxx95bfRCJSdJq/ldCqGx6la4bT4aKWI8RyP68AHk5Yg9skjL8S9Mdq6tHp1LlrKhe+M7awGD84ILkN6988yyV/D1Aax9nmsKmw5JZiOBuJ5Mk6NKiABQAB6SdCJq6WLVVLKlSpBWErzn6GDISR7FVIHv+JM0UKgwqgfiZZ7JaEREgREQEREBERAREQEREBERAREQEREBERAREQPMRiexA8xGJ7EBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERA//9k=';
+var imageBounds = [[initLat + 3, initLon + 3], [initLat - 3, initLon - 3]];
   // Crea el componente de control personalizado
 
   const convertirA_CSV = (datatoExport) => {
@@ -527,9 +530,16 @@ function Map({
     { value: "layer", label: "Show gap" },
     { value: "both", label: "Show both" },
   ];
-  console.log(selectedOption);
+
+  const [option1Checked, setOption1Checked] = useState(true);
+  const [option2Checked, setOption2Checked] = useState(true);
+  console.log(option1Checked);
+  console.log(option2Checked);
+  const [currentLayer, setCurrentLayer] = useState('normal');
+
+  
   return (
-    <div className="mapDiv mx-0 p-0"  >
+    <div className="mapDiv mx-0 p-0">
       <RouteError showe={showe} handleClosee={handleClosee} />
 
       <div
@@ -540,9 +550,28 @@ function Map({
           position: "relative",
         }}
       >
-        <div className="px-4 py-2" >
+        <div className="px-4 py-2">
+         
           {carouselMajorItems && carouselMajorItems.length > 0 && (
-            <Select options={options} onChange={setSelectedOption}></Select>
+            //<Select options={options} onChange={setSelectedOption}></Select>
+             <div class="image-container">
+            <img  className="icon"
+              src="https://unpkg.com/leaflet@1.2.0/dist/images/layers.png"
+              alt="jejej"
+            ></img>
+
+            <div class="options">
+              <label>
+                <input type="checkbox" name="Markers"  checked={option1Checked} onChange={(e) => setOption1Checked(e.target.checked)} />
+                Accesions
+              </label>
+              <label>
+                <input type="checkbox" name="Gap" checked={option2Checked}
+          onChange={(e) => setOption2Checked(e.target.checked)} />
+                Gap
+              </label>
+            </div>
+          </div>
           )}
 
           {carouselMajorItems && carouselMajorItems.length > 0 && (
@@ -638,8 +667,8 @@ function Map({
         }}
         zoomControl={false}
       >
-        {selectedOption &&
-          selectedOption.value == "markers" &&
+        {option1Checked==true && option2Checked==false &&
+        
           accessions &&
           accessions.length > 0 &&
           accessions.map((marker, index) =>
@@ -671,12 +700,13 @@ function Map({
                 }}
                 key={index}
                 position={[marker.latitude, marker.longitude]}
+                zIndex={15000+index}
                 icon={
                   clickedMarkerIndices.has(index)
                     ? L.icon({
                         iconUrl:
                           "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
-                        iconSize: [20, 20]
+                        iconSize: [20, 20],
                       })
                     : customIcon
                 }
@@ -701,20 +731,20 @@ function Map({
             ) : null
           )}
 
-        {selectedOption &&
-          selectedOption.value == "layer" &&
+        {option1Checked==false && option2Checked==true  &&
           layerr.length > 0 &&
-          layerr.map((layerr) => (
+          layerr.map((layerr, index) => (
             <WMSTileLayer
               key={layerr}
               url="https://isa.ciat.cgiar.org/geoserver2/wms"
               layers={`gap_analysis:${layerr}`}
               format="image/png"
               transparent={true}
+              zIndex={1000 + index}
             />
           ))}
 
-        {selectedOption && selectedOption.value == "both" && (
+        {option1Checked==true && option2Checked==true && (
           <>
             {accessions &&
               accessions.length > 0 &&
@@ -747,6 +777,7 @@ function Map({
                     }}
                     key={index}
                     position={[marker.latitude, marker.longitude]}
+                    zIndex={10000 + index}
                     icon={
                       clickedMarkerIndices.has(index)
                         ? L.icon({
@@ -777,92 +808,20 @@ function Map({
                 ) : null
               )}
             {layerr.length > 0 &&
-              layerr.map((layerr) => (
+              layerr.map((layerr, index) => (
                 <WMSTileLayer
                   key={layerr}
                   url="https://isa.ciat.cgiar.org/geoserver2/wms"
                   layers={`gap_analysis:${layerr}`}
                   format="image/png"
                   transparent={true}
+                  zIndex={1000 + index}
                 />
               ))}
           </>
         )}
 
-        {!selectedOption && (
-          <>
-            {accessions &&
-              accessions.length > 0 &&
-              accessions.map((marker, index) =>
-                marker.latitude && marker.longitude ? (
-                  <Marker
-                    eventHandlers={{
-                      click: (e) => {
-                        handleClick(index, {
-                          Id: marker.id,
-                          AccecionID: marker.accession_id,
-
-                          SpeciesName: marker.species_name,
-                          Ext_id: marker.ext_id,
-                          Crop: marker.crop,
-                          Latitude: marker.latitude,
-                          Longitude: marker.longitude,
-                          Institution: marker.institution_name,
-                          Source: marker.source_database,
-                        });
-                        const newSet = new Set(clickedMarkerIndices);
-                        if (newSet.has(index)) {
-                          newSet.delete(index);
-                        } else {
-                          newSet.add(index);
-                        }
-                        setClickedMarkerIndices(newSet);
-                        console.log("marker clicked", e);
-                      },
-                    }}
-                    key={index}
-                    position={[marker.latitude, marker.longitude]}
-                    icon={
-                      clickedMarkerIndices.has(index)
-                        ? L.icon({
-                            iconUrl:
-                              "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
-                            iconSize: [20, 20],
-                          })
-                        : customIcon
-                    }
-                    onMouseOver={(e) => {
-                      e.target.openPopup();
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.closePopup();
-                    }}
-                  >
-                    <Tooltip direction="top" offset={[0, -30]}>
-                      Institution: {marker.institution_name} <br /> Source:
-                      {marker.source_database} id: {marker.ext_id}
-                      <p>
-                        {" "}
-                        <strong>
-                          click if you want to save this accession for export
-                        </strong>{" "}
-                      </p>
-                    </Tooltip>
-                  </Marker>
-                ) : null
-              )}
-            {layerr.length > 0 &&
-              layerr.map((layerr) => (
-                <WMSTileLayer
-                  key={layerr}
-                  url="https://isa.ciat.cgiar.org/geoserver2/wms"
-                  layers={`gap_analysis:${layerr}`}
-                  format="image/png"
-                  transparent={true}
-                />
-              ))}
-          </>
-        )}
+    
 
         {ubicaciones.map((marker, index) => (
           <Marker key={index} position={[marker.latitude, marker.longitude]}>
@@ -870,8 +829,20 @@ function Map({
           </Marker>
         ))}
 
-        <ZoomControl position="topright"></ZoomControl>
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <LayersControl position="topleft" className="mt-5">
+          <LayersControl.BaseLayer checked name="Normal">
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="Relief">
+            <TileLayer url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png" />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="Satellite">
+            <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
+          </LayersControl.BaseLayer>
+        </LayersControl>
+
+        
+       // {/* <ImageOverlay zIndex={1000} url={imageUrl} bounds={imageBounds} /> */}
 
         <Polyline color="lime" positions={lugares} weight={5} />
       </MapContainer>

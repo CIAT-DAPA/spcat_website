@@ -1,5 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+/* import {tiff} from 'tiff.js'; */
+
+
 import {
   Row,
   Form,
@@ -13,7 +16,6 @@ import CheckFilter from "../checkFilter/CheckFilter";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState, useEffect, useContext } from "react";
 import CountryModal from "../modalcountry/modalc";
-
 import axios from "axios";
 import { DataContext } from "../../context/context";
 import { layerGroup } from "leaflet";
@@ -31,8 +33,6 @@ function FilterLeft({
     }
   }, [crops]);
 
-  const { data, setData } = useContext(DataContext);
-  const { layerc, setLayerc } = useContext(DataContext);
   const { iso, setIso } = useContext(DataContext);
 
   const [shouldAddToMap, setShouldAddToMap] = useState(false);
@@ -49,6 +49,7 @@ function FilterLeft({
   const [accessionData, setAccessionData] = useState([]);
   const [accesionDataByCrop, setAccesionDataByCrop] = useState([]);
   const [layer, setLayer] = useState([]);
+  const { image, setImage } = useContext(DataContext);
 
   const [showc, setShowc] = useState(false); // estado para controlar la visualización del Modal
 
@@ -71,19 +72,19 @@ function FilterLeft({
     setCountryIso(selectedCountry.iso_2);
     setIso(selectedCountry.iso_2);
   };
-
+  console.log(iso)
+  
   //console.log(countryIso)
   const handleFileInputChange = (event) => {
-    const selectedFile = event.target.files[0];
-    // acciones con el archivo subido, por ejemplo, leer la imagen y convertirla en una URL
+    const file = event.target.files[0];
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const imageURL = e.target.result;
-      // actualizar el estado o realizar otras acciones con la URL de la imagen
-      console.log(imageURL);
-    };
-    reader.readAsDataURL(selectedFile);
+
+    
+
+
   };
+
+  console.log(image)
 
   if (shouldAddToMap) {
     setCarouselMajorItems(carouselMajorItemsNow);
@@ -155,8 +156,6 @@ function FilterLeft({
 
   useEffect(() => {
     if (idsCropss.length > 1) {
-      setAccessionData([]);
-      setData([]);
       const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}`;
       axios.get(endopointAccesionsByCrop).then((response) => {
         // 4. Manejar la respuesta de la solicitud HTTP
@@ -180,8 +179,6 @@ function FilterLeft({
     }
     setShouldReset(!shouldReset);
     setShouldAddToMap(true);
-    setData(accessionData);
-    setLayerc(layer);
   };
 
   const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
@@ -273,6 +270,7 @@ function FilterLeft({
           </Button>
           <input
             type="file"
+            accept=".tif"
             id="file-input"
             style={{ display: "none" }}
             onChange={handleFileInputChange}

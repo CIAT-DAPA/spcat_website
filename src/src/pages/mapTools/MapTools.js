@@ -82,6 +82,8 @@ function MapTools() {
         steps={steps}
         styles={style}
       />
+    <p>hola</p>
+
     </Row>
   );
 }

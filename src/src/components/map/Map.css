@@ -27,3 +27,40 @@
     bottom: -500px;
     right: 0;
 }
+.leaflet-left{
+ margin-top: 200px;
+ margin-left: 11px;
+}
+.leaflet-rifht{
+    margin-right: 1000px;
+   }
+   .icon{
+    margin-top: 30px;
+   }
+   .image-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .options {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    background-color: white;
+    padding: 10px;
+   border-radius: 10px;
+  }
+  
+  .image-container:hover .options {
+    display: block;
+  }
+  .options label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .options input[type="checkbox"] {
+    margin-right: 10px; /* para dejar un espacio entre el checkbox y el texto */
+  }
