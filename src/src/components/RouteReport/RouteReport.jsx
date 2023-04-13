@@ -21,7 +21,7 @@ const RouteReport = ({show,handleClose}) => {
   const { dataRoutestoExport } = useContext(DataContext);
   const {elevationProm} = useContext(DataContext);
 
- console.log(dataRoutestoExport)
+ //console.log(dataRoutestoExport)
 
 
  const convertirA_CSV = (dataRoutestoExport) => {
@@ -120,7 +120,7 @@ const descargarCSV = () => {
     },
   }
  
-console.log(elevationsg.length)
+//console.log(elevationsg.length)
   return (
     
       <div className="container-fluid">

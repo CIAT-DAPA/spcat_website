@@ -175,7 +175,7 @@ function Map({
         .filter((obj) => obj !== null);
       setFilteredGroups(filteredgroups);
     }
-    console.log(groups);
+    //console.log(groups);
   }, [carouselLandraceItems, groups]);
 
   ////console.log(filteredgroups)
@@ -288,7 +288,7 @@ function Map({
     }
   }, [carouselLandraceItems]);
 
-  console.log(layerr);
+  //console.log(layerr);
 
   // Agregar un evento load al objeto window
   window.addEventListener("load", () => {
@@ -399,7 +399,7 @@ function Map({
             (results, status) => {
               if (status === google.maps.ElevationStatus.OK) {
                 // Obtener las elevaciones de los puntos de la ruta
-                console.log(results);
+                //console.log(results);
                 const elevations = results.map((result) => result.elevation);
                 // Las elevaciones están en metros
                 const promelevation = (
@@ -408,7 +408,7 @@ function Map({
                     0
                   ) / elevations.length
                 ).toFixed(2);
-                console.log(`el promedio es ${promelevation}`);
+               // console.log(`el promedio es ${promelevation}`);
                 setElevationProm(promelevation);
                 setElevationsg(elevations);
 
@@ -420,7 +420,7 @@ function Map({
                   PromElevation: promelevation,
                   time: timeString,
                 }));
-                console.log(time);
+                //console.log(time);
                 setDataRoutestoExport(data);
               } else {
                 console.error(`Error al obtener la elevación: ${status}`);
@@ -438,7 +438,7 @@ function Map({
       });
     }
   }, [context]);
-  console.log(distances);
+ 
 
   const customIcon = L.icon({
     iconUrl: "https://img.icons8.com/color/256/circled-dot.png",
@@ -479,11 +479,11 @@ function Map({
     console.log("marker clicked", index);
   };
 
-  console.log(selectedMarkers);
+ // console.log(selectedMarkers);
 
   const customControl = L.control({ position: "topright" });
-  console.log(datatoExport);
-  console.log(datatoExport.length);
+  //console.log(datatoExport);
+  //console.log(datatoExport.length);
 
   const handleButtonClick = () => {
     // Tu lógica de código aquí
@@ -533,8 +533,7 @@ var imageBounds = [[initLat + 3, initLon + 3], [initLat - 3, initLon - 3]];
 
   const [option1Checked, setOption1Checked] = useState(true);
   const [option2Checked, setOption2Checked] = useState(true);
-  console.log(option1Checked);
-  console.log(option2Checked);
+  
   const [currentLayer, setCurrentLayer] = useState('normal');
 
   

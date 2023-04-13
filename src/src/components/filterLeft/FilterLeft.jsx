@@ -72,7 +72,7 @@ function FilterLeft({
     setCountryIso(selectedCountry.iso_2);
     setIso(selectedCountry.iso_2);
   };
-  console.log(iso)
+  //console.log(iso)
   
   //console.log(countryIso)
   const handleFileInputChange = (event) => {
