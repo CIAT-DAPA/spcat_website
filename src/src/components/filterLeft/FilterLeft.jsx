@@ -84,7 +84,7 @@ function FilterLeft({
 
   };
 
-  console.log(image)
+  // console.log(image)
 
   if (shouldAddToMap) {
     setCarouselMajorItems(carouselMajorItemsNow);

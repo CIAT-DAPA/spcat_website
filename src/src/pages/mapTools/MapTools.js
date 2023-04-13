@@ -38,7 +38,8 @@ function MapTools() {
 
   const [carouselMajorItems, setCarouselMajorItems] = useState(null);
   const [carouselLandraceItems, setCarouselLandraceItems] = useState(null);
-  const [isContinouous, setIsContinouous] = useState(true);
+  const [showRoad, setShowRoad] = useState(false);
+  const [indexStep, setIndexStep] = useState(0);
 
   // const handleJoyrideCallback = (data) => {
   //   const { action, index, status, type } = data;
@@ -63,7 +64,7 @@ function MapTools() {
           setCarouselLandraceItems={setCarouselLandraceItems}
         ></FilterLeft>
       </Col>
-      <Col className="mx-0 px-0">
+      <Col className="mx-0 px-0 " id="mapLayer">
         <Map
           carouselMajorItems={carouselMajorItems}
           setCarouselMajorItems={setCarouselMajorItems}
@@ -72,18 +73,45 @@ function MapTools() {
         ></Map>
       </Col>
       <Col className="col-auto" style={{ zIndex: "1000" }}>
-        <FilterRight></FilterRight>
+        <FilterRight
+          showRoad={showRoad}
+          setShowRoad={setShowRoad}
+          indexStep={indexStep}
+          setIndexStep={setIndexStep}
+        ></FilterRight>
       </Col>
       <Joyride
-        continuous={isContinouous}
+        continuous
         showProgress
         showSkipButton
-        // spotlightClicks //Hace que avance con el boton next
+        callback={(data) => {
+          const { action, index, status, type, lifecycle } = data;
+          let currentIndex = indexStep;
+          if (
+            action === "next" &&
+            lifecycle === "complete" &&
+            indexStep !== 6
+          ) {
+            currentIndex++;
+            setIndexStep(currentIndex);
+          } else if (type === "error:target_not_found") {
+            currentIndex++;
+            setIndexStep(currentIndex);
+          } else if (
+            index === 6 &&
+            lifecycle === "complete" &&
+            action === "next" &&
+            type === "step:after"
+          ) {
+            currentIndex++;
+            setIndexStep(currentIndex);
+          }
+          console.log(data);
+        }}
+        stepIndex={indexStep}
         steps={steps}
         styles={style}
       />
-    <p>hola</p>
-
     </Row>
   );
 }

@@ -4,14 +4,18 @@ export const steps = [
     content: "Here you can select the desire country",
     target: "#select-country",
     placement: "auto",
-    spotlightClicks: true
+    spotlightClicks: false,
+    disableCloseOnEsc: false,
+    disableOverlay: false,
+    disableOverlayClose: false,
+
   },
   {
     title: "Select the major crop",
     content: "Here you can select the desire crops",
     target: "#select-majorCrop",
     placement: "auto",
-    spotlightClicks: false
+    spotlightClicks: true
   },
   {
     title: "Select the landrace crop",
@@ -25,54 +29,71 @@ export const steps = [
     content: "Click the button to add to map",
     target: "#button-addToMap",
     placement: "auto",
+    spotlightClicks: false
   },
   {
     title: "Map",
     content: "Now you can see the layers on the map",
     target: "#mapLayer",
-    placement: "auto",
+    placement: "left",
+    spotlightClicks: true
   },
   {
     title: "Create a route",
     content: "Click this button to open the route section",
     target: "#button-route",
     placement: "auto",
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideFooter: true,
+    hideCloseButton: true
   },
   {
     title: "Create a route",
     content: "Write a city",
     target: "#textare-city1",
     placement: "auto",
+    spotlightClicks: true
   },
   {
     title: "Create a route",
     content: "Add another destination",
     target: "#button-addDestination",
     placement: "auto",
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideFooter: true,
+    hideCloseButton: true
   },
   {
     title: "Create a route",
     content: "Write another city",
     target: "#textare-city2",
     placement: "auto",
+    spotlightClicks: true
   },
   {
     title: "Create a route",
     content: "Now get the route!",
     target: "#button-getRoute",
     placement: "auto",
+    spotlightClicks: true
   },
   {
     title: "Download accesion",
     content: "Select this accesion",
     target: ".leaflet-marker-icon",
     placement: "auto",
+    spotlightClicks: true
   },
   {
     title: "Download accesion",
     content: "Now download the accesion that you select",
     target: "#button-downloadAccesion",
     placement: "auto",
+    spotlightClicks: true
   },
 ];
 

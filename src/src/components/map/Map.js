@@ -489,7 +489,7 @@ function Map({
     // Tu lógica de código aquí
     console.log("¡El botón ha sido clickeado!");
   };
-console.log(image)
+// console.log(image)
 var initLat = 38.9761;
 var initLon = -77.4875;
 
@@ -538,7 +538,7 @@ var imageBounds = [[initLat + 3, initLon + 3], [initLat - 3, initLon - 3]];
 
   
   return (
-    <div className="mapDiv mx-0 p-0">
+    <div className="mapDiv mx-0 p-0 " >
       <RouteError showe={showe} handleClosee={handleClosee} />
 
       <div
@@ -649,7 +649,7 @@ var imageBounds = [[initLat + 3, initLon + 3], [initLat - 3, initLon - 3]];
       </div>
 
       <MapContainer
-        id="mapid mapLayer"
+        id="mapid"
         ref={mapRef}
         center={[14.88, -35, 76]}
         zoom={3}

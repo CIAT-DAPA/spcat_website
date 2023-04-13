@@ -22,12 +22,11 @@ import {
 } from "@react-google-maps/api";
 //import icon from '../../assets/icons/remove.png'
 
-function FilterRight() {
+function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const { context, setContext } = useContext(DataContext);
-  const [isVisible, setIsVisible] = useState(false);
   const { travel } = useContext(DataContext);
 
   const [destinations, setDestinations] = useState([""]);
@@ -85,16 +84,19 @@ function FilterRight() {
         <Button
           className="arrow-button"
           onClick={() => {
-            setIsVisible(!isVisible);
+            setShowRoad(!showRoad);
+            setTimeout(() => {
+              setIndexStep(6);
+            }, 250);
           }}
           aria-controls="example-collapse-text"
-          aria-expanded={isVisible}
+          aria-expanded={showRoad}
           style={{ borderRadius: "50%" }}
           id="button-route"
         >
           <FontAwesomeIcon
             icon={faCaretDown}
-            className={`text-light ${isVisible ? "rotate-270" : "rotate-90"}`}
+            className={`text-light ${showRoad ? "rotate-270" : "rotate-90"}`}
           />
         </Button>
       </div>
@@ -102,7 +104,7 @@ function FilterRight() {
       <div
         style={{ minHeight: "150px", height: "100%", backgroundColor: "white" }}
       >
-        <Collapse in={isVisible} dimension="width">
+        <Collapse in={showRoad} dimension="width">
           <div id="example-collapse-text" className="pe-3">
             <div className="title-icon-container">
               <h5 className="route-title">Route</h5>
@@ -158,7 +160,12 @@ function FilterRight() {
                 <Col className="icons me-0  ms-4 col-1 align-self-center">
                   <FontAwesomeIcon
                     className="text-success "
-                    onClick={handleAdd}
+                    onClick={() => {
+                      handleAdd();
+                      setTimeout(() => {
+                        setIndexStep(8);
+                      }, 250);
+                    }}
                     icon={faCirclePlus}
                     id="button-addDestination"
                   />
