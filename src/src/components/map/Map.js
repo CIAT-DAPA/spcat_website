@@ -4,7 +4,6 @@ import { DataContext } from "../../context/context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import RouteError from "../routeError/RouteError";
-import Select from "react-select";
 import { saveAs } from "file-saver";
 import {
   MapContainer,
@@ -25,8 +24,7 @@ import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import L from "leaflet";
 import axios from "axios";
-import icon from "../../assets/icons/banana.png";
-import Papa from "papaparse";
+
 
 const { BaseLayer } = LayersControl;
 function Map({
@@ -51,8 +49,6 @@ function Map({
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
   const position = { lat: 4.570868, lng: -74.297333 };
-  // console.log(carouselMajorItems)
-  //console.log(carouselLandraceItems)
 
   const google = window.google;
   const { context } = useContext(DataContext);
@@ -535,6 +531,25 @@ var imageBounds = [[initLat + 3, initLon + 3], [initLat - 3, initLon - 3]];
   const [option2Checked, setOption2Checked] = useState(true);
   
   const [currentLayer, setCurrentLayer] = useState('normal');
+  const [currentImage, setCurrentImage] = useState(null);
+  
+  useEffect(() => {
+    // Borra la imagen anterior si existe
+    if (currentImage) {
+      currentImage.remove();
+    }
+
+    // Agrega la nueva imagen
+    if (image!=undefined) {
+      image.options.zIndex = 1000;
+      image.addTo(mapRef.current);
+      mapRef.current.flyToBounds(image.getBounds());
+      //image._image.style.backfaceVisibility = 'hidden';
+    }
+
+    // Actualiza el estado con la nueva imagen
+    setCurrentImage(image);
+  }, [image]);
 
   
   return (
@@ -551,27 +566,7 @@ var imageBounds = [[initLat + 3, initLon + 3], [initLat - 3, initLon - 3]];
       >
         <div className="px-4 py-2">
          
-          {carouselMajorItems && carouselMajorItems.length > 0 && (
-            //<Select options={options} onChange={setSelectedOption}></Select>
-             <div class="image-container">
-            <img  className="icon"
-              src="https://unpkg.com/leaflet@1.2.0/dist/images/layers.png"
-              alt="jejej"
-            ></img>
-
-            <div class="options">
-              <label>
-                <input type="checkbox" name="Markers"  checked={option1Checked} onChange={(e) => setOption1Checked(e.target.checked)} />
-                Accesions
-              </label>
-              <label>
-                <input type="checkbox" name="Gap" checked={option2Checked}
-          onChange={(e) => setOption2Checked(e.target.checked)} />
-                Gap
-              </label>
-            </div>
-          </div>
-          )}
+         
 
           {carouselMajorItems && carouselMajorItems.length > 0 && (
             <h6>Major crops</h6>
@@ -600,6 +595,7 @@ var imageBounds = [[initLat + 3, initLon + 3], [initLat - 3, initLon - 3]];
         </div>
 
         <div className=" px-4 py-2">
+          
           {carouselLandraceItems && carouselLandraceItems.length > 0 && (
             <h6>Landrace items</h6>
           )}
@@ -646,6 +642,27 @@ var imageBounds = [[initLat + 3, initLon + 3], [initLat - 3, initLon - 3]];
               </div>
             )}
         </div>
+        {carouselMajorItems && carouselMajorItems.length > 0 && (
+            //<Select options={options} onChange={setSelectedOption}></Select>
+             <div class="image-container ">
+            <img  className="icon"
+              src="https://unpkg.com/leaflet@1.2.0/dist/images/layers.png"
+              alt="jejej"
+            ></img>
+
+            <div class="options">
+              <label>
+                <input type="checkbox" name="Markers"  checked={option1Checked} onChange={(e) => setOption1Checked(e.target.checked)} />
+                Accesions
+              </label>
+              <label>
+                <input type="checkbox" name="Gap" checked={option2Checked}
+          onChange={(e) => setOption2Checked(e.target.checked)} />
+                Gap
+              </label>
+            </div>
+          </div>
+          )}
       </div>
 
       <MapContainer

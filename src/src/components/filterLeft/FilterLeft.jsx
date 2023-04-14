@@ -1,6 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+
 
 /* import {tiff} from 'tiff.js'; */
+import GeoTIFF, { fromUrl, fromUrls, fromArrayBuffer, fromBlob } from 'geotiff';
+
+import GeoRasterLayer from "georaster-layer-for-leaflet";
+import parseGeoraster from 'georaster';
+
+import L from "leaflet";
+//import * as GeoTIFF from 'geotiff/src/main';
 
 
 import {
@@ -23,7 +32,7 @@ function FilterLeft({
   setCarouselMajorItems,
   setCarouselLandraceItems,
   response,
-  crops,
+  crops,toggleImageVisibility, imageVisible
 }) {
   const [majorCrops, setMajorCrops] = useState([]);
   useEffect(() => {
@@ -74,14 +83,41 @@ function FilterLeft({
   };
   //console.log(iso)
   
+  const [imageCoords, setImageCoords] = useState(null);
+  const [dataaa,setDataa]=useState([])
   //console.log(countryIso)
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
+
+    // Leer el archivo TIFF
     const reader = new FileReader();
+    reader.onload = () => {
+      const tiffData = reader.result;
+      
+      parseGeoraster(tiffData).then(georaster => {
 
-    
+        console.log("georaster:", georaster);
+        /*
+            GeoRasterLayer is an extension of GridLayer,
+            which means can use GridLayer options like opacity.
+            Just make sure to include the georaster option!
+            http://leafletjs.com/reference-1.2.0.html#gridlayer
+        */
+        var layer = new GeoRasterLayer({
+            georaster: georaster,
+            opacity: 0.7,
+            resolution: 256
+        });
+        setImage(layer)
+        console.log("layer:", layer);
+        
+        /* layer.addTo(map);
 
-
+        map.fitBounds(layer.getBounds());
+        document.getElementById("overlay").style.display = "none"; */
+      });
+    };
+    reader.readAsArrayBuffer(file);
   };
 
   // console.log(image)
@@ -180,6 +216,9 @@ function FilterLeft({
     setShouldReset(!shouldReset);
     setShouldAddToMap(true);
   };
+  const eraseLayer=()=>{
+    setImage(null)
+  }
 
   const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
 
@@ -276,14 +315,26 @@ function FilterLeft({
             onChange={handleFileInputChange}
             ref={fileInputRef}
           />
+          <div className="d-flex">
           <Button
             variant="primary"
-            className="text-white mb-3"
+            className="text-white mb-3 "
             onClick={() => fileInputRef.current.click()}
           >
             <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your gap
             analysis
+            
           </Button>
+          {image &&(
+             <FontAwesomeIcon
+             className="text-danger icons mt-2 ml-2 text-primary"
+             onClick={eraseLayer}
+             icon={faCircleXmark}
+           />
+            )}
+         
+          </div>
+          
         </div>
       </Container>
     </>

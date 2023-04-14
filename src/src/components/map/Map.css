@@ -28,7 +28,7 @@
     right: 0;
 }
 .leaflet-left{
- margin-top: 200px;
+ margin-top: 220px;
  margin-left: 11px;
 }
 .leaflet-rifht{
@@ -40,6 +40,9 @@
    .image-container {
     position: relative;
     display: inline-block;
+    margin-left: 30px;
+   
+    
   }
   
   .options {
