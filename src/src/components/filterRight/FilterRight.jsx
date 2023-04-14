@@ -164,7 +164,7 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
                       handleAdd();
                       setTimeout(() => {
                         setIndexStep(8);
-                      }, 250);
+                      }, 200);
                     }}
                     icon={faCirclePlus}
                     id="button-addDestination"

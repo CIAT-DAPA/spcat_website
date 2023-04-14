@@ -41,16 +41,6 @@ function MapTools() {
   const [showRoad, setShowRoad] = useState(false);
   const [indexStep, setIndexStep] = useState(0);
 
-  // const handleJoyrideCallback = (data) => {
-  //   const { action, index, status, type } = data;
-  //   if (index == 5) {
-  //   }
-
-  //   console.log(
-  //     `Action: ${action} - Index: ${index} - Status: ${status} - Type: ${type}`
-  //   );
-  // };
-
   return (
     <Row className="m-0 ">
       <Col
@@ -62,6 +52,8 @@ function MapTools() {
           crops={crops}
           setCarouselMajorItems={setCarouselMajorItems}
           setCarouselLandraceItems={setCarouselLandraceItems}
+          indexStep={indexStep}
+          setIndexStep={setIndexStep}
         ></FilterLeft>
       </Col>
       <Col className="mx-0 px-0 " id="mapLayer">
@@ -84,19 +76,19 @@ function MapTools() {
         continuous
         showProgress
         showSkipButton
+        hideBackButton
         callback={(data) => {
           const { action, index, status, type, lifecycle } = data;
           let currentIndex = indexStep;
-          if (
-            action === "next" &&
-            lifecycle === "complete" &&
-            indexStep !== 6
+          if (type === "error:target_not_found") {
+            currentIndex++;
+            setIndexStep(currentIndex);
+            console.log("if 2");
+          } else if (
+            (index === 7 || index === 0 || index === 1 || index === 2 || index === 3) &&
+            lifecycle === "complete"
           ) {
-            currentIndex++;
-            setIndexStep(currentIndex);
-          } else if (type === "error:target_not_found") {
-            currentIndex++;
-            setIndexStep(currentIndex);
+            return;
           } else if (
             index === 6 &&
             lifecycle === "complete" &&
@@ -105,11 +97,21 @@ function MapTools() {
           ) {
             currentIndex++;
             setIndexStep(currentIndex);
+            console.log("if 3");
+          } else if (
+            action === "next" &&
+            lifecycle === "complete" &&
+            indexStep !== 6
+          ) {
+            currentIndex++;
+            setIndexStep(currentIndex);
+            console.log("if 1");
           }
           console.log(data);
         }}
         stepIndex={indexStep}
         steps={steps}
+        run
         styles={style}
       />
     </Row>

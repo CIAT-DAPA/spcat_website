@@ -18,6 +18,7 @@ function CheckFilter({
   toolTipTitle,
   toolTipDescription,
   idOnboarding,
+  setIndexStep,
 }) {
   const [tableItems, setTableItems] = useState([]);
   const [carouselItems, setCarouselItems] = useState([]);
@@ -28,6 +29,9 @@ function CheckFilter({
     const itemToAdd = tableItems.splice(index, 1)[0];
     setCarouselItems([...carouselItems, itemToAdd]);
     setTableItems([...tableItems]);
+    if (title === "Major Crops") setIndexStep(2);
+    else if (title === "Landrace Crops") setIndexStep(3);
+    ///////////////
   };
 
   const handleRemoveFromCarousel = (index) => {

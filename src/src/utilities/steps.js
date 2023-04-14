@@ -4,32 +4,44 @@ export const steps = [
     content: "Here you can select the desire country",
     target: "#select-country",
     placement: "auto",
-    spotlightClicks: false,
-    disableCloseOnEsc: false,
-    disableOverlay: false,
-    disableOverlayClose: false,
-
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideFooter: true,
+    hideCloseButton: true
   },
   {
     title: "Select the major crop",
     content: "Here you can select the desire crops",
     target: "#select-majorCrop",
     placement: "auto",
-    spotlightClicks: true
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideFooter: true,
+    hideCloseButton: true
   },
   {
     title: "Select the landrace crop",
     content: "Here you can select the desire landrace crops",
     target: "#select-landraceCrop",
     placement: "auto",
-    spotlightClicks: true
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideFooter: true,
+    hideCloseButton: true
   },
   {
     title: "Add to map",
     content: "Click the button to add to map",
     target: "#button-addToMap",
     placement: "auto",
-    spotlightClicks: false
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideFooter: true,
+    hideCloseButton: true
   },
   {
     title: "Map",
