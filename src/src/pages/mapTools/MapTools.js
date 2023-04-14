@@ -40,6 +40,13 @@ function MapTools() {
   const [carouselLandraceItems, setCarouselLandraceItems] = useState(null);
   const [showRoad, setShowRoad] = useState(false);
   const [indexStep, setIndexStep] = useState(0);
+  const [tutorialFinished, setTutorialFinished] = useState(
+    window.localStorage.getItem("tutorial") || false
+  );
+
+  useEffect(() => {
+    window.localStorage.setItem("tutorial", true);
+  }, [tutorialFinished]);
 
   return (
     <Row className="m-0 ">
@@ -72,48 +79,66 @@ function MapTools() {
           setIndexStep={setIndexStep}
         ></FilterRight>
       </Col>
-      <Joyride
-        continuous
-        showProgress
-        showSkipButton
-        hideBackButton
-        callback={(data) => {
-          const { action, index, status, type, lifecycle } = data;
-          let currentIndex = indexStep;
-          if (type === "error:target_not_found") {
-            currentIndex++;
-            setIndexStep(currentIndex);
-            console.log("if 2");
-          } else if (
-            (index === 7 || index === 0 || index === 1 || index === 2 || index === 3) &&
-            lifecycle === "complete"
-          ) {
-            return;
-          } else if (
-            index === 6 &&
-            lifecycle === "complete" &&
-            action === "next" &&
-            type === "step:after"
-          ) {
-            currentIndex++;
-            setIndexStep(currentIndex);
-            console.log("if 3");
-          } else if (
-            action === "next" &&
-            lifecycle === "complete" &&
-            indexStep !== 6
-          ) {
-            currentIndex++;
-            setIndexStep(currentIndex);
-            console.log("if 1");
-          }
-          console.log(data);
-        }}
-        stepIndex={indexStep}
-        steps={steps}
-        run
-        styles={style}
-      />
+      {/* {!tutorialFinished && ( */}
+        <Joyride
+          continuous
+          showProgress
+          showSkipButton={true}
+          showStepsProgress={false}
+          showCloseButton={false}
+          hideBackButton
+          callback={(data) => {
+            const { action, index, status, type, lifecycle } = data;
+            let currentIndex = indexStep;
+            if (type === "error:target_not_found") {
+              currentIndex++;
+              setIndexStep(currentIndex);
+              console.log("if 2");
+            } else if (
+              (index === 7 ||
+                index === 0 ||
+                index === 1 ||
+                index === 2 ||
+                index === 3) &&
+              lifecycle === "complete"
+            ) {
+              return;
+            } else if (
+              index === 6 &&
+              lifecycle === "complete" &&
+              action === "next" &&
+              type === "step:after"
+            ) {
+              currentIndex++;
+              setIndexStep(currentIndex);
+              console.log("if 3");
+            } else if (
+              action === "next" &&
+              lifecycle === "complete" &&
+              indexStep !== 6
+            ) {
+              currentIndex++;
+              setIndexStep(currentIndex);
+              console.log("if 1");
+            } else if (action === "skip") {
+              setTutorialFinished(true);
+            }
+            console.log(data);
+          }}
+          stepIndex={indexStep}
+          steps={steps}
+          run
+          styles={{
+            options: {
+              primaryColor: "#f56038",
+              zIndex: 1000,
+            },
+            buttonNext: {
+              display: indexStep == 0 ? "none":undefined,
+            },
+          }}
+        />
+      {/* )} */}
     </Row>
   );
 }

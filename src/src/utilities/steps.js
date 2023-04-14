@@ -7,7 +7,9 @@ export const steps = [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
-    hideFooter: true,
+    hideFooter: false,
+    showSkipButton:true,
+    continuous :false,
     hideCloseButton: true
   },
   {
@@ -65,7 +67,7 @@ export const steps = [
     title: "Create a route",
     content: "Write a city",
     target: "#textare-city1",
-    placement: "auto",
+    placement: "bottom",
     spotlightClicks: true
   },
   {

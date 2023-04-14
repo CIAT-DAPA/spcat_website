@@ -87,7 +87,7 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
             setShowRoad(!showRoad);
             setTimeout(() => {
               setIndexStep(6);
-            }, 250);
+            }, 400);
           }}
           aria-controls="example-collapse-text"
           aria-expanded={showRoad}
