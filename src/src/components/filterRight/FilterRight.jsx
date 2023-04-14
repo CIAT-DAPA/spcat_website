@@ -60,6 +60,7 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
     // Aquí podrías enviar la información a un servidor o manejarla de alguna otra forma
     setContext(destinations);
     setPlaces(destinations);
+    setIndexStep(10);
     console.log(destinations);
   }
 

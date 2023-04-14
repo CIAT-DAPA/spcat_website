@@ -50,7 +50,10 @@ export const steps = [
     content: "Now you can see the layers on the map",
     target: "#mapLayer",
     placement: "left",
-    spotlightClicks: true
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideCloseButton: true
   },
   {
     title: "Create a route",
@@ -68,7 +71,10 @@ export const steps = [
     content: "Write a city",
     target: "#textare-city1",
     placement: "bottom",
-    spotlightClicks: true
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideCloseButton: true
   },
   {
     title: "Create a route",
@@ -86,28 +92,43 @@ export const steps = [
     content: "Write another city",
     target: "#textare-city2",
     placement: "auto",
-    spotlightClicks: true
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideCloseButton: true
   },
   {
     title: "Create a route",
     content: "Now get the route!",
     target: "#button-getRoute",
     placement: "auto",
-    spotlightClicks: true
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideFooter: true,
+    hideCloseButton: true
   },
   {
     title: "Download accesion",
     content: "Select this accesion",
     target: ".leaflet-marker-icon",
     placement: "auto",
-    spotlightClicks: true
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideFooter: true,
+    hideCloseButton: true
   },
   {
     title: "Download accesion",
     content: "Now download the accesion that you select",
     target: "#button-downloadAccesion",
     placement: "auto",
-    spotlightClicks: true
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideFooter: true,
+    hideCloseButton: true
   },
 ];
 

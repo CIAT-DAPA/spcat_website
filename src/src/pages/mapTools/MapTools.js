@@ -63,12 +63,15 @@ function MapTools() {
           setIndexStep={setIndexStep}
         ></FilterLeft>
       </Col>
-      <Col className="mx-0 px-0 " id="mapLayer">
+      <Col className="mx-0 px-0 " >
         <Map
           carouselMajorItems={carouselMajorItems}
           setCarouselMajorItems={setCarouselMajorItems}
           carouselLandraceItems={carouselLandraceItems}
           setCarouselLandraceItems={setCarouselLandraceItems}
+          indexStep={indexStep}
+          setIndexStep={setIndexStep}
+          
         ></Map>
       </Col>
       <Col className="col-auto" style={{ zIndex: "1000" }}>
@@ -79,7 +82,7 @@ function MapTools() {
           setIndexStep={setIndexStep}
         ></FilterRight>
       </Col>
-      {/* {!tutorialFinished && ( */}
+      {!tutorialFinished && (
         <Joyride
           continuous
           showProgress
@@ -93,13 +96,14 @@ function MapTools() {
             if (type === "error:target_not_found") {
               currentIndex++;
               setIndexStep(currentIndex);
-              console.log("if 2");
             } else if (
               (index === 7 ||
                 index === 0 ||
                 index === 1 ||
                 index === 2 ||
-                index === 3) &&
+                index === 3 ||
+                index === 9 ||
+                index === 10) &&
               lifecycle === "complete"
             ) {
               return;
@@ -111,7 +115,6 @@ function MapTools() {
             ) {
               currentIndex++;
               setIndexStep(currentIndex);
-              console.log("if 3");
             } else if (
               action === "next" &&
               lifecycle === "complete" &&
@@ -119,7 +122,6 @@ function MapTools() {
             ) {
               currentIndex++;
               setIndexStep(currentIndex);
-              console.log("if 1");
             } else if (action === "skip") {
               setTutorialFinished(true);
             }
@@ -134,11 +136,11 @@ function MapTools() {
               zIndex: 1000,
             },
             buttonNext: {
-              display: indexStep == 0 ? "none":undefined,
+              display: indexStep == 0 ? "none" : undefined,
             },
           }}
         />
-      {/* )} */}
+      )}
     </Row>
   );
 }
