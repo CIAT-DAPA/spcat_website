@@ -15,6 +15,7 @@ function MapTools() {
     const getCountries = async () => {
       try {
         const responde = await axios.get(url);
+        console.log(responde)
         setResponse(responde.data);
       } catch (error) {
         console.log(error);

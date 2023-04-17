@@ -45,7 +45,6 @@ function FilterLeft({
   }, [crops]);
 
   const { iso, setIso } = useContext(DataContext);
-
   const [shouldAddToMap, setShouldAddToMap] = useState(false);
   const [carouselMajorItemsNow, setCarouselMajorItemsNow] = useState([]); //items del carusel en el momento
   const [carouselLandraceItemsNow, setCarouselLandraceItemsNow] =
@@ -86,7 +85,7 @@ function FilterLeft({
       setIndexStep(1);
     }, 200);
   };
-  //console.log(iso)
+ 
 
   const [imageCoords, setImageCoords] = useState(null);
   const [dataaa, setDataa] = useState([]);
@@ -163,7 +162,7 @@ function FilterLeft({
     }
   }, [filteredCrops]);
 
-  // console.log(groupNames)
+ 
 
   const gruposencarrousell = allgroupscrop.filter((grupo) =>
     carouselLandraceItemsNow.includes(grupo.group_name)
@@ -194,20 +193,7 @@ function FilterLeft({
 
   const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
 
-  useEffect(() => {
-    if (idsCropss.length > 1) {
-      const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}`;
-      axios.get(endopointAccesionsByCrop).then((response) => {
-        // 4. Manejar la respuesta de la solicitud HTTP
-        //setAccesionDataByCrop(response.data)
-        if (response.data[0]?.accessions) {
-          setAccessionData(response.data.flatMap((crop) => crop.accessions));
-        } else {
-          setAccessionData(response.data);
-        }
-      });
-    }
-  }, [idsCropss]);
+
 
   //console.log(layer);
   const handleAddToMap = () => {
@@ -280,6 +266,7 @@ function FilterLeft({
             toolTipTitle="Step 3"
             toolTipDescription="Step 3: Select your landrace crops"
             onDataChange={handleDataLandraceCropChange}
+            itemm={carouselMajorItemsNow}
             onChange={shouldReset}
             crop={groupNames}
             idOnboarding="select-landraceCrop"
@@ -336,7 +323,7 @@ function FilterLeft({
             </Button>
             {image && (
               <FontAwesomeIcon
-                className="text-danger icons mt-2 ml-2 text-primary"
+                className="icons mt-2 ml-2 text-primary"
                 onClick={eraseLayer}
                 icon={faCircleXmark}
               />

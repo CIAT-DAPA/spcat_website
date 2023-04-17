@@ -19,6 +19,7 @@ function CheckFilter({
   toolTipDescription,
   idOnboarding,
   setIndexStep,
+  itemm
 }) {
   const [tableItems, setTableItems] = useState([]);
   const [carouselItems, setCarouselItems] = useState([]);
@@ -60,9 +61,10 @@ function CheckFilter({
     }
     //console.log(crop)
   }, [crop]);
+ 
 
+  
   const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
-
   return (
     <div className="mt-1 mb-4" id={idOnboarding}>
       <OverlayTrigger
@@ -98,11 +100,30 @@ function CheckFilter({
               .map((item, i) => (
                 <tr key={i} onClick={() => handleAddToCarousel(i)}>
                   <td className="text-center">
-                    <img
-                      alt=""
-                      /* src={require(`../../assets/icons/${item.split(' ')[0].toLowerCase()}.png`)} */
-                      width="20"
-                    />{" "}
+                    {(() => {
+                      try {
+                        return (
+                          <img
+                            alt=""
+                            src={require(`../../assets/icons/${item
+                              .split(" ")[0]
+                              .toLowerCase()}.png`)}
+                            width="20"
+                          />
+                        );
+                      } catch (err) {
+                       
+                        return (
+                          <img
+                            alt=""
+                            src={require(`../../assets/icons/${itemm[0]
+                              .split(" ")[0]
+                              .toLowerCase()}.png`)}
+                            width="20"
+                          />
+                        );
+                      }
+                    })()}{" "}
                     {item}
                   </td>
                 </tr>
@@ -122,11 +143,28 @@ function CheckFilter({
                 onClick={() => handleRemoveFromCarousel(i)}
                 key={i}
               >
-                <img
-                  alt=""
-                  /* src={require(`../../assets/icons/${item.split(' ')[0].toLowerCase()}.png`)} */
-                  width="20"
-                />{" "}
+                 {(() => {
+                      try {
+                        return (
+                          <img
+                            alt=""
+                            src={require(`../../assets/icons/${carouselItems[i]
+                              .split(" ")[0]
+                              .toLowerCase()}.png`)}
+                            width="20"
+                          />
+                        );
+                      } catch (err) {
+                       
+                        return (
+                          <img
+                            alt=""
+                            src={itemm && require(`../../assets/icons/${itemm[0].split(" ")[0].toLowerCase()}.png`)}
+                            width="20"
+                          />
+                        );
+                      }
+                    })()}{" "}
                 {item}
                 <CloseButton
                   disabled

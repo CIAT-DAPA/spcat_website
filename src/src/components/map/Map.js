@@ -542,7 +542,7 @@ function Map({
     if (currentImage) {
       currentImage.remove();
     }
-
+console.log(layerr)
     // Agrega la nueva imagen
     if (image != undefined) {
       image.options.zIndex = 1000;
@@ -579,12 +579,12 @@ function Map({
                 onClick={() => handleRemoveFromMajorCarousel(i)}
               >
                 <img
-                  alt=""
-                  src={`https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/${item
-                    .split(" ")[0]
-                    .toLowerCase()}.png`}
-                  width="20"
-                />{" "}
+                    alt=""
+                    src={require(`../../assets/icons/${item.split(' ')[0].toLowerCase()}.png`)}
+
+                    width="20"
+                  />
+                  {" "}
                 {item}
                 <CloseButton
                   disabled
@@ -608,9 +608,10 @@ function Map({
                 {carouselMajorItems.length > 0 && (
                   <img
                     alt=""
-                    src={`https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/${carouselMajorItems[0]
+                    src={require(`../../assets/icons/${carouselMajorItems[0]
                       .split(" ")[0]
-                      .toLowerCase()}.png`}
+                      .toLowerCase()}.png`)}
+
                     width="20"
                   />
                 )}
