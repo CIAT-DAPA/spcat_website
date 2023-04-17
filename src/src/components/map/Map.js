@@ -35,7 +35,7 @@ function Map({
   setIndexStep,
   crops,
   placesCoordinates,
-  polylineCoords
+  polylineCoords,
 }) {
   const [showe, setShowe] = useState(false); // estado para controlar la visualización del Modal
 
@@ -53,18 +53,15 @@ function Map({
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
 
- 
   const { iso } = useContext(DataContext);
   const { image } = useContext(DataContext);
 
   const [layerr, setLayerr] = useState([]);
 
-
   const [groups, setGroups] = useState([]);
 
   const [accessions, setAccessions] = useState([]);
   const [filteredgroups, setFilteredGroups] = useState([]);
- 
 
   const [filteredCrops, setFilteredCrops] = useState([]);
   useEffect(() => {
@@ -75,7 +72,6 @@ function Map({
       setFilteredCrops(filteredData);
     }
   }, [crops, carouselMajorItems]);
-
 
   useEffect(() => {
     if (
@@ -139,7 +135,6 @@ function Map({
     }
   }, [carouselLandraceItems, groups]);
 
-
   const idsgroups = filteredgroups.map((obj) => obj.id).join(",");
   const extidsgroup = filteredgroups
     .map((obj) => obj.ext_id)
@@ -160,8 +155,7 @@ function Map({
         .then((response) => {
           setAccessions(response.data.flatMap((crop) => crop.accessions));
         })
-        .catch((error) => {
-        });
+        .catch((error) => {});
     } else if (
       carouselLandraceItems != null &&
       carouselLandraceItems.length == 0
@@ -243,8 +237,6 @@ function Map({
     iconSize: [20, 20], // tamaño del icono
   });
 
- 
-
   const [clickedMarkerIndices, setClickedMarkerIndices] = useState(new Set());
   const [selectedMarkers, setSelectedMarkers] = useState([]);
   const [datatoExport, setDataToExport] = useState([]);
@@ -275,8 +267,6 @@ function Map({
     console.log("marker clicked", index);
   };
 
-
-  
   const convertirA_CSV = (datatoExport) => {
     const cabecera = Object.keys(datatoExport[0]);
     const filas = datatoExport.map((obj) => cabecera.map((key) => obj[key]));
@@ -288,7 +278,7 @@ function Map({
     if (accessions.length > 0) {
       const latLngs = accessions.map((coordenada) => [
         coordenada.latitude,
-        coordenada.longitude +5,
+        coordenada.longitude + 5,
       ]);
       const bounds = L.latLngBounds(latLngs);
       if (mapRef.current) {
@@ -336,6 +326,7 @@ function Map({
           backgroundColor: "transparent",
           zIndex: "1000",
           position: "relative",
+          width: "fit-content",
         }}
       >
         <div className="px-4 py-2">
@@ -350,12 +341,12 @@ function Map({
                 onClick={() => handleRemoveFromMajorCarousel(i)}
               >
                 <img
-                    alt=""
-                    src={require(`../../assets/icons/${item.split(' ')[0].toLowerCase()}.png`)}
-
-                    width="20"
-                  />
-                  {" "}
+                  alt=""
+                  src={require(`../../assets/icons/${item
+                    .split(" ")[0]
+                    .toLowerCase()}.png`)}
+                  width="20"
+                />{" "}
                 {item}
                 <CloseButton
                   disabled
@@ -382,7 +373,6 @@ function Map({
                     src={require(`../../assets/icons/${carouselMajorItems[0]
                       .split(" ")[0]
                       .toLowerCase()}.png`)}
-
                     width="20"
                   />
                 )}
@@ -393,25 +383,6 @@ function Map({
                 ></CloseButton>
               </div>
             ))}
-          {selectedMarkers &&
-            selectedMarkers.length > 0 &&
-            accessions.length > 0 && (
-              <div className="div-inferior-derecha">
-                <Button
-                  variant="primary"
-                  className="text-white accession"
-                  type="submit"
-                  onClick={descargarCSV}
-                  id="button-downloadAccesion"
-                >
-                  Download accessions
-                  <FontAwesomeIcon
-                    className="search-icon"
-                    icon={faDownload}
-                  ></FontAwesomeIcon>
-                </Button>
-              </div>
-            )}
         </div>
         {carouselMajorItems && carouselMajorItems.length > 0 && (
           //<Select options={options} onChange={setSelectedOption}></Select>
@@ -640,6 +611,25 @@ function Map({
         {/* <ImageOverlay zIndex={1000} url={imageUrl} bounds={imageBounds} /> */}
         <Polyline color="lime" positions={polylineCoords} weight={5} />
       </MapContainer>
+      {selectedMarkers &&
+        selectedMarkers.length > 0 &&
+        accessions.length > 0 && (
+          <div className="div-inferior-derecha">
+            <Button
+              variant="primary"
+              className="text-white accession"
+              type="submit"
+              onClick={descargarCSV}
+              id="button-downloadAccesion"
+            >
+              Download accessions
+              <FontAwesomeIcon
+                className="search-icon"
+                icon={faDownload}
+              ></FontAwesomeIcon>
+            </Button>
+          </div>
+        )}
     </div>
   );
 }

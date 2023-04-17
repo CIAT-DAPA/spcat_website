@@ -166,7 +166,7 @@ const descargarCSV = () => {
 
         <Modal.Footer>
          
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" className="text-white" onClick={handleClose}>
             OK
           </Button>
         </Modal.Footer>
