@@ -14,10 +14,10 @@ const RouteReport = ({show,handleClose}) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
  */
-  const { elevationsg } = useContext(DataContext);
-  const { distance } = useContext(DataContext);
+  const { elevationsPoints } = useContext(DataContext);
+  const { averageDistance } = useContext(DataContext);
   const { pointDistance } = useContext(DataContext);
-  const { time } = useContext(DataContext);
+  const { travelTime } = useContext(DataContext);
   const { dataRoutestoExport } = useContext(DataContext);
   const {elevationProm} = useContext(DataContext);
 
@@ -40,7 +40,7 @@ const descargarCSV = () => {
   const series = [
     {
       name: "Elevación (metros)",
-      data: elevationsg,
+      data: elevationsPoints,
     },
     
   ];
@@ -131,8 +131,8 @@ const descargarCSV = () => {
         </Modal.Header>
         <Modal.Body>
  
-      <p>Average distance {distance} kms</p>
-      <p>Estimated travel time {time[0]} hours and {time[1]} minutes</p>
+      <p>Average distance {averageDistance} kms</p>
+      <p>Estimated travel time {travelTime[0]} hours and {travelTime[1]} minutes</p>
       <p>Average travel altitude {elevationProm} mts</p>
       <ReactApexChart
         options={options}

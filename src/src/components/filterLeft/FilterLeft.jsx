@@ -167,10 +167,10 @@ function FilterLeft({
   const gruposencarrousell = allgroupscrop.filter((grupo) =>
     carouselLandraceItemsNow.includes(grupo.group_name)
   ); //filre los grupos que estan em el crrousell
-  const idss = gruposencarrousell.map((obj) => obj.id).join(",");
+ // const idss = gruposencarrousell.map((obj) => obj.id).join(",");
   // ['Spring', 'Winter']   los grupos
   //console.log(idss)
-  useEffect(() => {
+ /*  useEffect(() => {
     if (idss.length > 0) {
       setLayer([]);
       const nuevoEstado = carouselLandraceItemsNow.map(
@@ -189,7 +189,7 @@ function FilterLeft({
           console.log("Error en la solicitud HTTP:", error);
         });
     }
-  }, [idss]);
+  }, [idss]); */
 
   const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
 

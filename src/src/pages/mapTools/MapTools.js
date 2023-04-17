@@ -2,20 +2,191 @@ import FilterLeft from "../../components/filterLeft/FilterLeft";
 import Map from "../../components/map/Map";
 import "./MapTools.css";
 import { Col, Row } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useContext } from "react";
 import FilterRight from "../../components/filterRight/FilterRight.jsx";
 import axios from "axios";
 import { steps, style } from "../../utilities/steps";
 import Joyride from "react-joyride";
+import { DataContext } from "../../context/context";
+import RouteError from "../../components/routeError/RouteError";
+const google = window.google;
+
 
 function MapTools() {
+  //states of vaiables
+  const [showe, setShowe] = useState(false);
+  const [placesCoordinates, setPlacesCoordinates] = useState([]);
+  const [polylineCoords, setPolylineCoords] = useState([]);
+
+  //context
+  const { places } = useContext(DataContext);
+
+
+  const { elevationsPoints, setElevationsPoints } = useContext(DataContext);
+  const { averageDistance, setAverageDistance } = useContext(DataContext);
+  const { dataRoutestoExport, setDataRoutestoExport } = useContext(DataContext);
+
+  const { travelTime, setTravelTime } = useContext(DataContext);
+  const { travel, setTravel } = useContext(DataContext);
+  const { pointDistance, setPointDistance } = useContext(DataContext);
+  const { elevationProm, setElevationProm } = useContext(DataContext);
+
+
+  const handleClosee = () => {
+    setShowe(false);
+  }; // estado para controlar la visualización del Modal
+
+
+useEffect(() => {
+  if (places.length > 0) {
+    const directionsService = new google.maps.DirectionsService();
+    const elevationService = new google.maps.ElevationService();
+    const puntos = places.map((punto) => ({ location: punto }));
+    const geocoder = new google.maps.Geocoder();
+    const contextWithCoords = [];
+
+    const getCoordsForCity = (city) => {
+      return new Promise((resolve, reject) => {
+        geocoder.geocode({ address: city }, (results, status) => {
+          if (status === google.maps.GeocoderStatus.OK) {
+            const location = results[0].geometry.location;
+            const coords = {
+              latitude: location.lat(),
+              longitude: location.lng(),
+            };
+            resolve({
+              ...coords,
+              location: new google.maps.LatLng(
+                coords.latitude,
+                coords.longitude
+              ),
+            });
+          } else {
+            reject(new Error(`Geocode failed: ${status}`));
+          }
+        });
+      });
+    };
+
+    Promise.all(places.map((city) => getCoordsForCity(city)))
+      .then((coordsArray) => {
+        setPlacesCoordinates(coordsArray);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    const request = {
+      origin: puntos[0].location,
+      destination: puntos[puntos.length - 1].location,
+      travelMode: google.maps.TravelMode.DRIVING,
+      waypoints: puntos.slice(1, -1),
+    };
+
+    // Enviar la solicitud de dirección a la API de Google Maps
+    directionsService.route(request, (response, status) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        // Obtener las coordenadas de la ruta
+        const route = response.routes[0];
+
+        const coordinates = route.overview_path.map((point) => [
+          point.lat(),
+          point.lng(),
+        ]);
+
+        const duration = response.routes[0].legs.reduce(
+          (total, leg) => total + leg.duration.value,
+          0
+        );
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        const timeString = `${hours} hours and ${minutes} minutes`;
+        const url = `https://www.google.com/maps/dir/?api=1&origin=${
+          puntos[0].location
+        }&destination=${puntos[puntos.length - 1].location}&waypoints=${puntos
+          .slice(1, -1)
+          .map((punto) => punto.location)
+          .join("|")}&travelmode=driving`;
+        setTravel(url);
+        const coordenadasApi = coordinates.map((coordenadas) => {
+          return {
+            lat: coordenadas[0],
+            lng: coordenadas[1],
+          };
+        });
+        setTravelTime([hours, minutes]);
+        const distance = route.legs.reduce(
+          (acc, leg) => acc + leg.distance.value,
+          0
+        );
+        setAverageDistance(distance / 1000);
+
+        const distances = [];
+        for (let i = 0; i < coordenadasApi.length - 1; i++) {
+          const from = new google.maps.LatLng(coordenadasApi[i]);
+          const to = new google.maps.LatLng(coordenadasApi[i + 1]);
+          const distance =
+            google.maps.geometry.spherical.computeDistanceBetween(from, to);
+          distances.push(distance);
+        }
+
+        setPointDistance(distances);
+        //console.log(coordenadasApi)
+
+        elevationService.getElevationAlongPath(
+          {
+            path: coordenadasApi,
+            samples: 256,
+          },
+          (results, status) => {
+            if (status === google.maps.ElevationStatus.OK) {
+              // Obtener las elevaciones de los puntos de la ruta
+              //console.log(results);
+              const elevations = results.map((result) => result.elevation);
+              // Las elevaciones están en metros
+              const promelevation = (
+                elevations.reduce(
+                  (acumulador, numero) => acumulador + numero,
+                  0
+                ) / elevations.length
+              ).toFixed(2);
+              // console.log(`el promedio es ${promelevation}`);
+              setElevationProm(promelevation);
+              setElevationsPoints(elevations);
+
+              const data = coordenadasApi.map((coordenada, index) => ({
+                Latitude: coordenada.lat,
+                Longitude: coordenada.lng,
+                Elevation: elevations[index],
+                Distance: distances[index],
+                PromElevation: promelevation,
+                time: timeString,
+              }));
+              //console.log(time);
+              setDataRoutestoExport(data);
+            } else {
+              console.error(`Error al obtener la elevación: ${status}`);
+            }
+          }
+        );
+
+        // Las coordenadas están en formato [latitud, longitud]
+
+        setPolylineCoords(coordinates);
+      } else {
+        console.error(`Error al obtener la dirección: ${status}`);
+        setShowe(true);
+      }
+    });
+  }
+}, [places]);
+
   const url = "http://127.0.0.1:5000/api/v1/countries";
   const [response, setResponse] = useState([]);
   useEffect(() => {
     const getCountries = async () => {
       try {
         const responde = await axios.get(url);
-        console.log(responde)
         setResponse(responde.data);
       } catch (error) {
         console.log(error);
@@ -51,6 +222,8 @@ function MapTools() {
 
   return (
     <Row className="m-0 ">
+      <RouteError showe={showe} handleClosee={handleClosee} />
+
       <Col
         className="col-5 col-xxl-3 col-xl-4 overflow-auto"
         style={{ height: "91vh" }}
@@ -66,6 +239,9 @@ function MapTools() {
       </Col>
       <Col className="mx-0 px-0 " >
         <Map
+          placesCoordinates={placesCoordinates}
+          polylineCoords={polylineCoords}
+          crops={crops}
           carouselMajorItems={carouselMajorItems}
           setCarouselMajorItems={setCarouselMajorItems}
           carouselLandraceItems={carouselLandraceItems}

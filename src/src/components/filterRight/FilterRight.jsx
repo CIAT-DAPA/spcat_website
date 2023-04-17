@@ -26,11 +26,10 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const { context, setContext } = useContext(DataContext);
+  const { places, setPlaces } = useContext(DataContext);
   const { travel } = useContext(DataContext);
 
   const [destinations, setDestinations] = useState([""]);
-  const [places, setPlaces] = useState("");
 
   function handleChange(event, index) {
     const newDestinations = [...destinations];
@@ -58,26 +57,18 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
   function handleSubmit(event) {
     event.preventDefault();
     // Aquí podrías enviar la información a un servidor o manejarla de alguna otra forma
-    setContext(destinations);
     setPlaces(destinations);
     setIndexStep(10);
     console.log(destinations);
   }
 
   function handleAddToList(index) {
-    const newContext = [...context, destinations[index]];
-    setContext(newContext);
+    const newContext = [...places, destinations[index]];
+    setPlaces(newContext);
     console.log(newContext);
   }
 
-  let key = "AIzaSyARbwF61yXA-0aEOfeDYanC-IpgfxMQL-w";
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: key,
-    libraries: ["places"],
-  });
-  if (!isLoaded) {
-    return <div>no carga</div>;
-  }
+
 
   return (
     <>
