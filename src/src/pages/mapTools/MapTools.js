@@ -114,14 +114,18 @@ useEffect(() => {
             lng: coordenadas[1],
           };
         });
+
+
         setTravelTime([hours, minutes]);
         const distance = route.legs.reduce(
           (acc, leg) => acc + leg.distance.value,
           0
         );
+        
         setAverageDistance(distance / 1000);
 
         const distances = [];
+        const data = [];
         for (let i = 0; i < coordenadasApi.length - 1; i++) {
           const from = new google.maps.LatLng(coordenadasApi[i]);
           const to = new google.maps.LatLng(coordenadasApi[i + 1]);

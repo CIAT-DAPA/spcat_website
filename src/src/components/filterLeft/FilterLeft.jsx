@@ -89,9 +89,11 @@ function FilterLeft({
 
   const [imageCoords, setImageCoords] = useState(null);
   const [dataaa, setDataa] = useState([]);
+  
   //console.log(countryIso)
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
+    console.log(file)
 
     // Leer el archivo TIFF
     const reader = new FileReader();
@@ -123,7 +125,9 @@ function FilterLeft({
     reader.readAsArrayBuffer(file);
   };
 
-  // console.log(image)
+  const holi=(e)=>{
+    e.target.value=null;
+  }
 
   if (shouldAddToMap) {
     setCarouselMajorItems(carouselMajorItemsNow);
@@ -210,6 +214,7 @@ function FilterLeft({
   };
   const eraseLayer = () => {
     setImage(null);
+    
   };
 
   const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
@@ -225,7 +230,7 @@ function FilterLeft({
               placement="top"
               overlay={renderTooltip("Step 1: Select your country")}
             >
-              <span class="badge rounded-pill bg-primary me-1">Step 1</span>
+              <span className="badge rounded-pill bg-primary me-1">Step 1</span>
             </OverlayTrigger>
             Country
           </Col>
@@ -310,6 +315,7 @@ function FilterLeft({
             id="file-input"
             style={{ display: "none" }}
             onChange={handleFileInputChange}
+            onClick={holi}
             ref={fileInputRef}
           />
           <div className="d-flex">

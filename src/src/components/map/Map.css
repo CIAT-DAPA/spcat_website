@@ -67,3 +67,17 @@
   .options input[type="checkbox"] {
     margin-right: 10px; /* para dejar un espacio entre el checkbox y el texto */
   }
+.divisito{
+  margin-top: 520px;
+  top: inherit;
+    position: absolute;
+   
+}
+.layers-container{
+  opacity: 0.8;
+  background-color:rgb(235, 238, 245);
+  width: 120px;
+  height: 130px;
+  border-radius: 5px;
+  border: 1px solid black;
+}

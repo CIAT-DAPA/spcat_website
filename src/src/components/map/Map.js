@@ -233,7 +233,7 @@ function Map({
   }, [carouselLandraceItems]);
 
   const customIcon = L.icon({
-    iconUrl: "https://img.icons8.com/color/256/circled-dot.png",
+    iconUrl: "https://img.icons8.com/ios-glyphs/256/pain-point.png",
     iconSize: [20, 20], // tamaño del icono
   });
 
@@ -298,14 +298,15 @@ function Map({
   const [option1Checked, setOption1Checked] = useState(true);
   const [option2Checked, setOption2Checked] = useState(true);
   const [currentImage, setCurrentImage] = useState(null);
-
+  
   useEffect(() => {
     // Borra la imagen anterior si existe
     if (currentImage) {
       currentImage.remove();
+      setCurrentImage(null)
     }
     // Agrega la nueva imagen
-    if (image != undefined) {
+    if (image != null) {
       image.options.zIndex = 1000;
       image.addTo(mapRef.current);
       mapRef.current.flyToBounds(image.getBounds());
@@ -315,7 +316,17 @@ function Map({
     // Actualiza el estado con la nueva imagen
     setCurrentImage(image);
   }, [image]);
-
+  
+  const colorsLayer=[
+    "#FF5733", // Naranja
+    "#8B78E6", // Morado
+    "#FFC300", // Amarillo brillante
+    "#00BFFF", // Azul claro
+    "#FF69B4", // Rosa
+    "#1E90FF", // Azul brillante
+    "#008000" // Verde claro
+  ]
+ 
   return (
     <div className="mapDiv mx-0 p-0 " id="mapLayer">
       <RouteError showe={showe} handleClosee={handleClosee} />
@@ -386,14 +397,14 @@ function Map({
         </div>
         {carouselMajorItems && carouselMajorItems.length > 0 && (
           //<Select options={options} onChange={setSelectedOption}></Select>
-          <div class="image-container ">
+          <div className="image-container ">
             <img
               className="icon"
               src="https://unpkg.com/leaflet@1.2.0/dist/images/layers.png"
               alt="jejej"
             ></img>
 
-            <div class="options">
+            <div className="options">
               <label>
                 <input
                   type="checkbox"
@@ -435,6 +446,35 @@ function Map({
         }}
         zoomControl={false}
       >
+       {/*  <div className={"leaflet-bottom leaflet-left divisito"}>
+          <div className="layers-container">
+            <p className="text-center">Layers</p>
+            {carouselLandraceItems &&
+              carouselLandraceItems.length > 0 &&
+              carouselLandraceItems.map((item, index) => {
+                return (
+                  <div
+                    style={{ display: "flex", flexDirection: "row" }}
+                    key={item.id}
+                  >
+                    <div
+                      className="color-block"
+                      style={{
+                        opacity: 0.5,
+                        backgroundColor:
+                          colorsLayer[index % colorsLayer.length],
+                        width: "15px",
+                        height: "15px",
+                        marginRight: "5px",
+                        marginLeft: "5px",
+                      }}
+                    ></div>
+                    <p>{item}</p>
+                  </div>
+                );
+              })}
+          </div>
+        </div> */}
         {option1Checked == true &&
           option2Checked == false &&
           accessions &&
@@ -509,6 +549,7 @@ function Map({
               format="image/png"
               transparent={true}
               zIndex={1000 + index}
+              styles={`Gap` + index}
             />
           ))}
         {option1Checked == true && option2Checked == true && (
@@ -587,6 +628,7 @@ function Map({
                   format="image/png"
                   transparent={true}
                   zIndex={1000 + index}
+                  styles={`Gap` + index}
                 />
               ))}
           </>

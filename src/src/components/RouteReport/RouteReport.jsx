@@ -18,10 +18,12 @@ const RouteReport = ({show,handleClose}) => {
   const { averageDistance } = useContext(DataContext);
   const { pointDistance } = useContext(DataContext);
   const { travelTime } = useContext(DataContext);
+  const { places } = useContext(DataContext);
   const { dataRoutestoExport } = useContext(DataContext);
   const {elevationProm} = useContext(DataContext);
 
  //console.log(dataRoutestoExport)
+
 
 
  const convertirA_CSV = (dataRoutestoExport) => {
@@ -37,6 +39,10 @@ const descargarCSV = () => {
   const archivo = new File([contenidoCSV], nombreArchivo, { type: 'text/csv;charset=utf-8' });
   saveAs(archivo); // Utilizar la función saveAs de FileSaver.js para descargar el archivo
 }
+
+
+
+
   const series = [
     {
       name: "Elevación (metros)",

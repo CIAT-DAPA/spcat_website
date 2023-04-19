@@ -71,7 +71,7 @@ function CheckFilter({
         placement="top"
         overlay={renderTooltip(toolTipDescription)}
       >
-        <span class="badge rounded-pill bg-primary me-1">{toolTipTitle}</span>
+        <span className="badge rounded-pill bg-primary me-1">{toolTipTitle}</span>
       </OverlayTrigger>
       {title}{" "}
       <div className="mb-0 d-flex justify-content-between align-items-center">
