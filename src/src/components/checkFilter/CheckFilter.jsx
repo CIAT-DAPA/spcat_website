@@ -24,9 +24,11 @@ function CheckFilter({
   const [tableItems, setTableItems] = useState([]);
   const [carouselItems, setCarouselItems] = useState([]);
   const [searchValue, setSearchValue] = useState("");
+  const [basaName, setBaseName] = useState([]);
 
-  const handleAddToCarousel = (item) => {
-    setCarouselItems([...carouselItems, item]);
+  const handleAddToCarousel = (index) => {
+    const itemToAdd = tableItems.splice(index, 1)[0];
+    setCarouselItems([...carouselItems, itemToAdd]);
     setTableItems([...tableItems]);
     if (title === "Major Crops") setIndexStep(2);
     else if (title === "Landrace Crops") setIndexStep(3);
@@ -96,7 +98,7 @@ function CheckFilter({
                 item.toLowerCase().includes(searchValue.toLowerCase())
               )
               .map((item, i) => (
-                <tr key={i} onClick={() => handleAddToCarousel(item)}>
+                <tr key={i} onClick={() => handleAddToCarousel(i)}>
                   <td className="text-center">
                     {(() => {
                       try {

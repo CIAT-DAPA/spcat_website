@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import RouteError from "../routeError/RouteError";
 import { saveAs } from "file-saver";
+import MapLegend from "../mapLegend/MapLegend";
 import {
   MapContainer,
   TileLayer,
@@ -432,6 +433,7 @@ useEffect(() => {
         {carouselMajorItems && carouselMajorItems.length > 0 && (
           //<Select options={options} onChange={setSelectedOption}></Select>
           <div className="image-container">
+
             <img
               className="icon"
               src="https://unpkg.com/leaflet@1.2.0/dist/images/layers.png"
@@ -460,7 +462,13 @@ useEffect(() => {
             </div>
           </div>
         )}
+       
+          
+       
+
       </div>
+      
+     
 
       <MapContainer
         id="mapid"
@@ -481,60 +489,7 @@ useEffect(() => {
         zoomControl={false}
       >
         
-        <div className={"leaflet-bottom leaflet-left divisito"}>
-          <div className="layers-container">
-            <p className="text-center">Layers</p>
-            {
-              carouselLandraceItems?.length > 0 &&
-              carouselLandraceItems.map((item, index) => {
-                return (
-                  <div
-                    style={{ display: "flex", flexDirection: "row" }}
-                    key={item.id}
-                  >
-                    <div
-                      className="color-block"
-                      style={{
-                        opacity: 0.5,
-                        backgroundColor:
-                          colors[index % colors.length],
-                        width: "15px",
-                        height: "15px",
-                        marginRight: "5px",
-                        marginLeft: "5px",
-                      }}
-                    ></div>
-                    <p>{item}</p>
-                  </div>
-                );
-              })}
-               {
-              carouselMajorItems?.length > 0 && carouselLandraceItems==0 &&
-              carouselMajorItems.map((item, index) => {
-                return (
-                  <div
-                    style={{ display: "flex", flexDirection: "row" }}
-                    key={item.id}
-                  >
-                    <div
-                      className="color-block"
-                      style={{
-                        opacity: 0.5,
-                        backgroundColor:
-                          colors[index % colors.length],
-                        width: "15px",
-                        height: "15px",
-                        marginRight: "5px",
-                        marginLeft: "5px",
-                      }}
-                    ></div>
-                    <p>{item}</p>
-                  </div>
-                );
-              })}
-          </div>
-        </div>
-        
+      
         {option1Checked == true &&
           option2Checked == false &&
           accessions &&
@@ -713,10 +668,15 @@ useEffect(() => {
         {/* <ImageOverlay zIndex={1000} url={imageUrl} bounds={imageBounds} /> */}
         <Polyline color="lime" positions={polylineCoords} weight={5} />
       </MapContainer>
+      <MapLegend
+          carouselLandraceItems={carouselLandraceItems}
+          carouselMajorItems={carouselMajorItems}
+          colors={colors}/>
       {selectedMarkers &&
         selectedMarkers.length > 0 &&
         accessions.length > 0 && (
           <div className="div-inferior-derecha">
+
             <Button
               variant="primary"
               className="text-white accession"
