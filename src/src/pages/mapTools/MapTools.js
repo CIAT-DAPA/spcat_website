@@ -317,7 +317,7 @@ useEffect(() => {
               zIndex: 1000,
             },
             buttonNext: {
-              display: indexStep == 0 ? "none" : undefined,
+              display: indexStep !== 4 && indexStep !== 6 && indexStep !== 8 ?  "none" : undefined,
             },
           }}
         />

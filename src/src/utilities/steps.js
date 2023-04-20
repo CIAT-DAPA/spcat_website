@@ -20,7 +20,9 @@ export const steps = [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
-    hideFooter: true,
+    hideFooter: false,
+    showSkipButton:true,
+    continuous :false,
     hideCloseButton: true
   },
   {
@@ -31,7 +33,9 @@ export const steps = [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
-    hideFooter: true,
+    hideFooter: false,
+    showSkipButton:true,
+    continuous :false,
     hideCloseButton: true
   },
   {
@@ -42,7 +46,9 @@ export const steps = [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
-    hideFooter: true,
+    hideFooter: false,
+    showSkipButton:true,
+    continuous :false,
     hideCloseButton: true
   },
   {
@@ -63,7 +69,9 @@ export const steps = [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
-    hideFooter: true,
+    hideFooter: false,
+    showSkipButton:true,
+    continuous :false,
     hideCloseButton: true
   },
   {
@@ -84,7 +92,9 @@ export const steps = [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
-    hideFooter: true,
+    hideFooter: false,
+    showSkipButton:true,
+    continuous :false,
     hideCloseButton: true
   },
   {
@@ -105,7 +115,9 @@ export const steps = [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
-    hideFooter: true,
+    hideFooter: false,
+    showSkipButton:true,
+    continuous :false,
     hideCloseButton: true
   },
   {
@@ -116,7 +128,9 @@ export const steps = [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
-    hideFooter: true,
+    hideFooter: false,
+    showSkipButton:true,
+    continuous :false,
     hideCloseButton: true
   },
   {
@@ -127,7 +141,9 @@ export const steps = [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
-    hideFooter: true,
+    hideFooter: false,
+    showSkipButton:true,
+    continuous :false,
     hideCloseButton: true
   },
 ];
