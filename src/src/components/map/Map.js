@@ -37,6 +37,7 @@ function Map({
   crops,
   placesCoordinates,
   polylineCoords,
+  showRoad
 }) {
   const [showe, setShowe] = useState(false); // estado para controlar la visualización del Modal
 
@@ -675,8 +676,7 @@ useEffect(() => {
       {selectedMarkers &&
         selectedMarkers.length > 0 &&
         accessions.length > 0 && (
-          <div className="div-inferior-derecha">
-
+          <div className={showRoad ? "div-inferior-derecha-showRoad" : "div-inferior-derecha"}>
             <Button
               variant="primary"
               className="text-white accession"
