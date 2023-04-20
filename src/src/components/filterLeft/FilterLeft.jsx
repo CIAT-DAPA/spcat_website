@@ -310,6 +310,7 @@ function FilterLeft({
             Add to map
           </Button>
           <input
+            multiple
             type="file"
             accept=".tif"
             id="file-input"

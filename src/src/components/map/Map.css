@@ -34,15 +34,18 @@
 .leaflet-rifht{
     margin-right: 1000px;
    }
-   .icon{
-    margin-top: 30px;
-   }
+   
    .image-container {
     position: relative;
     display: inline-block;
     margin-left: 30px;
-   
-    
+    background-color: aliceblue;
+    width: 38px;
+    height: 38px;
+   border-radius: 5px;
+    border: 1px solid black;
+    display: grid;
+    place-content: center;
   }
   
   .options {
@@ -52,10 +55,18 @@
     display: none;
     background-color: white;
     padding: 10px;
-   border-radius: 10px;
+   border-radius: 4px;
+   border: 1px solid black;
   }
   
   .image-container:hover .options {
+    display: block;
+    
+  }
+  .leaflet-bottom:hover .options{
+    display: block;
+  }
+  .leaflet-left:hover .options{
     display: block;
   }
   .options label {
@@ -80,4 +91,16 @@
   height: 130px;
   border-radius: 5px;
   border: 1px solid black;
+}
+.leaflet-right {
+  right: 25%;
+}
+.leaflet-touch .leaflet-control-layers-toggle {
+  /* background-image: url(https://img.icons8.com/sf-regular/256/map.png); */
+  width: 44px;
+  height: 44px;
+}
+
+.leaflet-bottom{
+  bottom: -40%;
 }

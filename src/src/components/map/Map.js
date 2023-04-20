@@ -46,13 +46,55 @@ function Map({
   const handleRemoveFromMajorCarousel = (index) => {
     const itemToRemove = carouselMajorItems.splice(index, 1)[0];
     setCarouselMajorItems([...carouselMajorItems]);
+    const colorToRemove = colors[index];
+    const newcolores = [...colors.slice(0, index), ...colors.slice(index + 1)];
+    setColors(newcolores)
   };
-
+const [colors,setColors]=useState([
+  "#FF5733", // Naranja
+  "#8B78E6", // Morado
+  "#FFC300", // Amarillo brillante
+  "#00BFFF", // Azul claro
+  "#FF69B4", // Rosa
+  "#1E90FF", // Azul brillante
+  "#008000" // Verde claro
+]
+)
+useEffect(() => {
+  if (  carouselLandraceItems?.length === 0) {
+    setColors([
+      "#FF5733", // Naranja
+      "#8B78E6", // Morado
+      "#FFC300", // Amarillo brillante
+      "#00BFFF", // Azul claro
+      "#FF69B4", // Rosa
+      "#1E90FF", // Azul brillante
+      "#008000" // Verde claro
+    ]);
+  }
+}, [carouselLandraceItems]);
+useEffect(() => {
+  if (  carouselMajorItems?.length === 0) {
+    setColors([
+      "#FF5733", // Naranja
+      "#8B78E6", // Morado
+      "#FFC300", // Amarillo brillante
+      "#00BFFF", // Azul claro
+      "#FF69B4", // Rosa
+      "#1E90FF", // Azul brillante
+      "#008000" // Verde claro
+    ]);
+  }
+}, [carouselMajorItems]);
   const handleRemoveFromLandraceCarousel = (index) => {
     const itemToRemove = carouselLandraceItems.splice(index, 1)[0];
+    const colorToRemove = colors[index];
+    const newcolores = [...colors.slice(0, index), ...colors.slice(index + 1)];
+    setColors(newcolores)
+  console.log(colors)
+   
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
-
   const { iso } = useContext(DataContext);
   const { image } = useContext(DataContext);
 
@@ -317,15 +359,7 @@ function Map({
     setCurrentImage(image);
   }, [image]);
   
-  const colorsLayer=[
-    "#FF5733", // Naranja
-    "#8B78E6", // Morado
-    "#FFC300", // Amarillo brillante
-    "#00BFFF", // Azul claro
-    "#FF69B4", // Rosa
-    "#1E90FF", // Azul brillante
-    "#008000" // Verde claro
-  ]
+
  
   return (
     <div className="mapDiv mx-0 p-0 " id="mapLayer">
@@ -366,7 +400,7 @@ function Map({
               </div>
             ))}
         </div>
-
+       
         <div className=" px-4 py-2">
           {carouselLandraceItems && carouselLandraceItems.length > 0 && (
             <h6>Landrace items</h6>
@@ -397,7 +431,7 @@ function Map({
         </div>
         {carouselMajorItems && carouselMajorItems.length > 0 && (
           //<Select options={options} onChange={setSelectedOption}></Select>
-          <div className="image-container ">
+          <div className="image-container">
             <img
               className="icon"
               src="https://unpkg.com/leaflet@1.2.0/dist/images/layers.png"
@@ -446,11 +480,12 @@ function Map({
         }}
         zoomControl={false}
       >
-       {/*  <div className={"leaflet-bottom leaflet-left divisito"}>
+        
+        <div className={"leaflet-bottom leaflet-left divisito"}>
           <div className="layers-container">
             <p className="text-center">Layers</p>
-            {carouselLandraceItems &&
-              carouselLandraceItems.length > 0 &&
+            {
+              carouselLandraceItems?.length > 0 &&
               carouselLandraceItems.map((item, index) => {
                 return (
                   <div
@@ -462,7 +497,31 @@ function Map({
                       style={{
                         opacity: 0.5,
                         backgroundColor:
-                          colorsLayer[index % colorsLayer.length],
+                          colors[index % colors.length],
+                        width: "15px",
+                        height: "15px",
+                        marginRight: "5px",
+                        marginLeft: "5px",
+                      }}
+                    ></div>
+                    <p>{item}</p>
+                  </div>
+                );
+              })}
+               {
+              carouselMajorItems?.length > 0 && carouselLandraceItems==0 &&
+              carouselMajorItems.map((item, index) => {
+                return (
+                  <div
+                    style={{ display: "flex", flexDirection: "row" }}
+                    key={item.id}
+                  >
+                    <div
+                      className="color-block"
+                      style={{
+                        opacity: 0.5,
+                        backgroundColor:
+                          colors[index % colors.length],
                         width: "15px",
                         height: "15px",
                         marginRight: "5px",
@@ -474,7 +533,8 @@ function Map({
                 );
               })}
           </div>
-        </div> */}
+        </div>
+        
         {option1Checked == true &&
           option2Checked == false &&
           accessions &&
@@ -638,7 +698,7 @@ function Map({
             <Popup>Destino: {index + 1}</Popup>
           </Marker>
         ))}
-        <LayersControl position="topleft" className="mt-5">
+        <LayersControl position="topright" className="mt-5">
           <LayersControl.BaseLayer checked name="Normal">
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           </LayersControl.BaseLayer>
