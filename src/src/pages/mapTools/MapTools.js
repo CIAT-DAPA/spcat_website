@@ -252,7 +252,7 @@ useEffect(() => {
           setCarouselLandraceItems={setCarouselLandraceItems}
           indexStep={indexStep}
           setIndexStep={setIndexStep}
-          
+          showRoad={showRoad}
         ></Map>
       </Col>
       <Col className="col-auto" style={{ zIndex: "1000" }}>
