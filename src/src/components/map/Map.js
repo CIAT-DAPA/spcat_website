@@ -386,7 +386,36 @@ useEffect(() => {
   const [option1Checked, setOption1Checked] = useState(true);
   const [option2Checked, setOption2Checked] = useState(true);
   const [currentImage, setCurrentImage] = useState(null);
-  
+  useEffect(()=>{
+    {option1Checked == false &&
+      option2Checked == true &&
+      layerr.length > 0 &&
+      setColors([
+        "#FF5733", // Naranja
+        "#8B78E6", // Morado
+        "#FFC300", // Amarillo brillante
+        "#00BFFF", // Azul claro
+        "#FF69B4", // Rosa
+        "#1E90FF", // Azul brillante
+        "#008000" // Verde claro
+      ])
+    }
+  } ,[option2Checked,option1Checked])
+  useEffect(()=>{
+    {option1Checked == true &&
+      option2Checked == false &&
+      layerr.length > 0 &&
+      setColors([
+        "#FF5733", // Naranja
+        "#8B78E6", // Morado
+        "#FFC300", // Amarillo brillante
+        "#00BFFF", // Azul claro
+        "#FF69B4", // Rosa
+        "#1E90FF", // Azul brillante
+        "#008000" // Verde claro
+      ])
+    }
+  } ,[option2Checked,option1Checked])
   useEffect(() => {
     // Borra la imagen anterior si existe
     if (currentImage) {
@@ -614,6 +643,8 @@ useEffect(() => {
               styles={`Gap` + index}
             />
           ))}
+          
+          
         {option1Checked == true && option2Checked == true && (
           <>
             {accessions &&
