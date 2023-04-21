@@ -5,8 +5,8 @@
       <div className='test ms-2'>
         {/* Map legend for carouselLandraceItems */}
         {carouselLandraceItems && carouselLandraceItems.length >0? (
-          <div className="my-legend ">
-            <div className="legend-title ms-2">Landrace Crops</div>
+          <div className="my-legend p-2">
+            <div className="legend-title">Landrace Crops</div>
             <div className="legend-scale">
               <ul className="legend-labels ms-2">
                 {carouselLandraceItems &&
@@ -15,26 +15,25 @@
                     return (
                       <li key={index}>
                         <span
-                          style={{ background: colors[index % colors.length] }}
+                          style={{ background: colors[index % colors.length],opacity:'0.7' }}
                         ></span>
-                        <b>
+                       
                           {item}
-                        </b>
+                       
                       </li>
                     );
                   })}
               </ul>
             </div>
             <div className="legend-source">
-              ' '
             </div>
           </div>
         ) : null}
 
         {/* Map legend for carouselMajorItems */}
         {carouselMajorItems && carouselMajorItems.length > 0 && carouselLandraceItems.length === 0 ?(
-          <div className="my-legend ms-2">
-            <div className="legend-title ms-2">Major Crops</div>
+          <div className="my-legend ms-2 p-2">
+            <div className="legend-title ">Major Crops</div>
             <div className="legend-scale">
               <ul className="legend-labels ms-2">
                 {carouselMajorItems &&
@@ -43,19 +42,16 @@
                     return (
                       <li key={index}>
                         <span
-                          style={{ background: colors[index % colors.length] }}
+                          style={{ background: colors[index % colors.length],opacity:'0.7' }}
                         ></span>
-                        <b>
                         {item}
-                        </b>
-                        
                       </li>
                     );
                   })}
               </ul>
             </div>
             <div className="legend-source">
-              ' ' 
+             
             </div>
           </div>
         ) : null}
