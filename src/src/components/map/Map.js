@@ -6,6 +6,8 @@ import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import RouteError from "../routeError/RouteError";
 import { saveAs } from "file-saver";
 import MapLegend from "../mapLegend/MapLegend";
+import Loader from "../loader/Loader";
+import NoGaps from "../nogapsmodal/NoGaps";
 import {
   MapContainer,
   TileLayer,
@@ -44,6 +46,15 @@ function Map({
   const handleClosee = () => {
     setShowe(false);
   };
+  //actions for modal loading
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  //action for modal no gaps
+  const [showg, setShowg] = useState(false);
+
+  const handleCloseg = () => setShowg(false);
+  const handleShowg = () => setShowg(true);
 
   const handleRemoveFromMajorCarousel = (index) => {
     const itemToRemove = carouselMajorItems.splice(index, 1)[0];
@@ -93,7 +104,6 @@ useEffect(() => {
     const colorToRemove = colors[index];
     const newcolores = [...colors.slice(0, index), ...colors.slice(index + 1)];
     setColors(newcolores)
-  console.log(colors)
    
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
@@ -123,6 +133,7 @@ useEffect(() => {
       carouselMajorItems.length === 1 &&
       carouselLandraceItems.length == 0
     ) {
+      setShow(true);
       const cropId = filteredCrops[0].id;
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
@@ -133,8 +144,17 @@ useEffect(() => {
           `http://localhost:5000/api/v1/accessionsbyidcrop?id=${cropId}&iso=${iso}`
         )
         .then((response) => {
-          setAccessions(response.data.flatMap((crop) => crop.accessions));
+          console.log(response.data[0].accessions)
+          setShow(false);
+          if (response.data[0].accessions.length===0) {
+            
+            setShowg(true)
+            setCarouselMajorItems([])
+          } else {
+            setAccessions(response.data.flatMap((crop) => crop.accessions));
+          }
         })
+          
         .catch((error) => {
           console.log(error);
         });
@@ -149,6 +169,7 @@ useEffect(() => {
       carouselLandraceItems.length > 0 &&
       carouselMajorItems.length > 0
     ) {
+      setShow(true)
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
       const cropId = filteredCrops[0].id;
@@ -156,7 +177,8 @@ useEffect(() => {
       axios
         .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
         .then((response) => {
-          //console.log(response)
+          setShow(false)
+          console.log(response)
           setGroups(response.data);
         })
         .catch((error) => {
@@ -165,7 +187,6 @@ useEffect(() => {
     } else {
     }
   }, [filteredCrops]);
-
   useEffect(() => {
     if (carouselLandraceItems != null && groups[0]?.groups != null) {
       setSelectedMarkers([]);
@@ -178,16 +199,20 @@ useEffect(() => {
       setFilteredGroups(filteredgroups);
     }
   }, [carouselLandraceItems, groups]);
-
+  
   const idsgroups = filteredgroups.map((obj) => obj.id).join(",");
   const extidsgroup = filteredgroups
-    .map((obj) => obj.ext_id)
-    .join(",")
-    .split(",");
+  .filter(obj => carouselLandraceItems.includes(obj.group_name))
+  .sort((a, b) => carouselLandraceItems.indexOf(a.group_name) - carouselLandraceItems.indexOf(b.group_name))
+  .map(obj => obj.ext_id);
 
+    
+   
   useEffect(() => {
     if (carouselLandraceItems != null && carouselLandraceItems.length > 0) {
+      setShow(true)
       setAccessions([]);
+      //let hola= filteredgroups.ma
       const newArray = extidsgroup.map((element) => `${iso}_${element}`);
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
@@ -197,7 +222,14 @@ useEffect(() => {
           `http://localhost:5000/api/v1/accessionsbyidgroup?id=${idsgroups}&iso=${iso}`
         )
         .then((response) => {
-          setAccessions(response.data.flatMap((crop) => crop.accessions));
+          setShow(false)
+          if (response.data[0].accessions.length===0) {
+            
+            setShowg(true)
+            setCarouselMajorItems([])
+          } else {
+            setAccessions(response.data.flatMap((crop) => crop.accessions));
+          }
         })
         .catch((error) => {});
     } else if (
@@ -207,9 +239,11 @@ useEffect(() => {
       setAccessions([]);
     }
   }, [filteredgroups]);
-
   const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
-  const extids = filteredCrops
+  const extids =  filteredCrops
+  .filter(obj => carouselMajorItems.includes(obj.app_name))
+  .sort((a, b) => carouselMajorItems.indexOf(a.app_name) - carouselMajorItems.indexOf(b.app_name))
+  .map(obj => obj.ext_id);filteredCrops
     .map((obj) => obj.ext_id)
     .join(",")
     .split(",");
@@ -232,6 +266,7 @@ useEffect(() => {
       carouselMajorItems.length > 1 &&
       carouselLandraceItems.length == 0
     ) {
+      setShow(true)
       const newArray = extids.map((element) => `${iso}_${element}`);
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
@@ -240,11 +275,17 @@ useEffect(() => {
       const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
 
       axios.get(endopointAccesionsByCrop).then((response) => {
+        setShow(false)
+
+        const flatMapAccesons= response.data.flatMap((crop) => crop.accessions)
         // 4. Manejar la respuesta de la solicitud HTTP
-        if (response.data[0]?.accessions) {
-          setAccessions(response.data.flatMap((crop) => crop.accessions));
+        if (flatMapAccesons.length>0) {
+
+          setAccessions(flatMapAccesons);
         } else {
-          setAccessions(response.data);
+          setShowg(true)
+          setAccessions([]);
+          setCarouselMajorItems([])
         }
       });
     }
@@ -256,6 +297,7 @@ useEffect(() => {
       carouselMajorItems.length == 1 &&
       carouselLandraceItems.length == 0
     ) {
+      setShow(true)
       const newArray = extids.map((element) => `${iso}_${element}`);
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
@@ -265,12 +307,14 @@ useEffect(() => {
       const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
 
       axios.get(endopointAccesionsByCrop).then((response) => {
-        // 4. Manejar la respuesta de la solicitud HTTP
-        //setAccesionDataByCrop(response.data)
-        if (response.data[0]?.accessions) {
-          setAccessions(response.data.flatMap((crop) => crop.accessions));
+        setShow(false)
+       const flatMapAccesions= response.data.flatMap((crop) => crop.accessions)
+        if (flatMapAccesions.length>0) {
+          setAccessions(flatMapAccesions);
         } else {
-          setAccessions(response.data);
+          setAccessions([]);
+          setShowg(true)
+          setCarouselMajorItems([])
         }
       });
     }
@@ -310,7 +354,7 @@ useEffect(() => {
     setClickedMarkerIndices(newSet);
     console.log("marker clicked", index);
   };
-
+{carouselLandraceItems?.length>0 &&(console.log(carouselLandraceItems))}
   const convertirA_CSV = (datatoExport) => {
     const cabecera = Object.keys(datatoExport[0]);
     const filas = datatoExport.map((obj) => cabecera.map((key) => obj[key]));
@@ -360,12 +404,14 @@ useEffect(() => {
     // Actualiza el estado con la nueva imagen
     setCurrentImage(image);
   }, [image]);
-  
+ 
 
  
   return (
     <div className="mapDiv mx-0 p-0 " id="mapLayer">
+      <Loader show={show} handleClose={handleClose}/>
       <RouteError showe={showe} handleClosee={handleClosee} />
+      <NoGaps showg={showg} handleCloseg={handleCloseg}/>
 
       <div
         className="div-filter-map"

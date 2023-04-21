@@ -9,7 +9,6 @@ import parseGeoraster from "georaster";
 
 import L from "leaflet";
 //import * as GeoTIFF from 'geotiff/src/main';
-
 import {
   Row,
   Form,
@@ -329,6 +328,7 @@ function FilterLeft({
               analysis
             </Button>
             {image && (
+              
               <FontAwesomeIcon
                 className="icons mt-2 ml-2 text-primary"
                 onClick={eraseLayer}
