@@ -9,14 +9,19 @@ import { steps, style } from "../../utilities/steps";
 import Joyride from "react-joyride";
 import { DataContext } from "../../context/context";
 import RouteError from "../../components/routeError/RouteError";
+import Loader from "../../components/loader/Loader";
 const google = window.google;
-
 
 function MapTools() {
   //states of vaiables
+  const [statusFail,setStatusFail]=useState(false)
   const [showe, setShowe] = useState(false);
   const [placesCoordinates, setPlacesCoordinates] = useState([]);
   const [polylineCoords, setPolylineCoords] = useState([]);
+//state for loading
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true); 
 
   //context
   const { places } = useContext(DataContext);
@@ -82,7 +87,7 @@ useEffect(() => {
       travelMode: google.maps.TravelMode.DRIVING,
       waypoints: puntos.slice(1, -1),
     };
-
+setShow(true)
     // Enviar la solicitud de dirección a la API de Google Maps
     directionsService.route(request, (response, status) => {
       if (status === google.maps.DirectionsStatus.OK) {
@@ -180,7 +185,10 @@ useEffect(() => {
       } else {
         console.error(`Error al obtener la dirección: ${status}`);
         setShowe(true);
+        setPlacesCoordinates([])
+        setPolylineCoords([])
       }
+      setShow(false);
     });
   }
 }, [places]);
@@ -227,6 +235,8 @@ useEffect(() => {
   return (
     <Row className="m-0 ">
       <RouteError showe={showe} handleClosee={handleClosee} />
+      <Loader show={show} handleClose={handleClose}/>
+
 
       <Col
         className="col-5 col-xxl-3 col-xl-4 overflow-auto"
@@ -253,6 +263,7 @@ useEffect(() => {
           indexStep={indexStep}
           setIndexStep={setIndexStep}
           showRoad={showRoad}
+          statusFail={statusFail}
         ></Map>
       </Col>
       <Col className="col-auto" style={{ zIndex: "1000" }}>

@@ -52,6 +52,7 @@ function Map({
   const handleShow = () => setShow(true);
   //action for modal no gaps
   const [showg, setShowg] = useState(false);
+  const { places } = useContext(DataContext);
 
   const handleCloseg = () => setShowg(false);
   const handleShowg = () => setShowg(true);
@@ -63,40 +64,24 @@ function Map({
     const newcolores = [...colors.slice(0, index), ...colors.slice(index + 1)];
     setColors(newcolores)
   };
-const [colors,setColors]=useState([
-  "#FF5733", // Naranja
-  "#8B78E6", // Morado
-  "#FFC300", // Amarillo brillante
-  "#00BFFF", // Azul claro
-  "#FF69B4", // Rosa
-  "#1E90FF", // Azul brillante
-  "#008000" // Verde claro
-]
-)
+  const colorsInitialState = [
+    "#FF5733", // Naranja
+    "#8B78E6", // Morado
+    "#FFC300", // Amarillo brillante
+    "#00BFFF", // Azul claro
+    "#FF69B4", // Rosa
+    "#1E90FF", // Azul brillante
+    "#008000" // Verde claro
+  ]
+const [colors,setColors]=useState(colorsInitialState)
 useEffect(() => {
   if (  carouselLandraceItems?.length === 0) {
-    setColors([
-      "#FF5733", // Naranja
-      "#8B78E6", // Morado
-      "#FFC300", // Amarillo brillante
-      "#00BFFF", // Azul claro
-      "#FF69B4", // Rosa
-      "#1E90FF", // Azul brillante
-      "#008000" // Verde claro
-    ]);
+    setColors(colorsInitialState);
   }
 }, [carouselLandraceItems]);
 useEffect(() => {
   if (  carouselMajorItems?.length === 0) {
-    setColors([
-      "#FF5733", // Naranja
-      "#8B78E6", // Morado
-      "#FFC300", // Amarillo brillante
-      "#00BFFF", // Azul claro
-      "#FF69B4", // Rosa
-      "#1E90FF", // Azul brillante
-      "#008000" // Verde claro
-    ]);
+    setColors(colorsInitialState);
   }
 }, [carouselMajorItems]);
   const handleRemoveFromLandraceCarousel = (index) => {
@@ -390,32 +375,22 @@ useEffect(() => {
     {option1Checked == false &&
       option2Checked == true &&
       layerr.length > 0 &&
-      setColors([
-        "#FF5733", // Naranja
-        "#8B78E6", // Morado
-        "#FFC300", // Amarillo brillante
-        "#00BFFF", // Azul claro
-        "#FF69B4", // Rosa
-        "#1E90FF", // Azul brillante
-        "#008000" // Verde claro
-      ])
+      setColors(colorsInitialState)
     }
   } ,[option2Checked,option1Checked])
   useEffect(()=>{
     {option1Checked == true &&
       option2Checked == false &&
       layerr.length > 0 &&
-      setColors([
-        "#FF5733", // Naranja
-        "#8B78E6", // Morado
-        "#FFC300", // Amarillo brillante
-        "#00BFFF", // Azul claro
-        "#FF69B4", // Rosa
-        "#1E90FF", // Azul brillante
-        "#008000" // Verde claro
-      ])
+      setColors(colorsInitialState)
     }
   } ,[option2Checked,option1Checked])
+
+useEffect(()=>{
+  option1Checked == true && option2Checked == true && layerr.length>0 &&
+  setColors(colorsInitialState)
+},[option2Checked,option1Checked])
+
   useEffect(() => {
     // Borra la imagen anterior si existe
     if (currentImage) {
@@ -728,7 +703,7 @@ useEffect(() => {
         )}
         {placesCoordinates.map((marker, index) => (
           <Marker key={index} position={[marker.latitude, marker.longitude]}>
-            <Popup>Destino: {index + 1}</Popup>
+            <Popup>{`Destino ${index+1} : ${places[index].charAt(0).toUpperCase() +places[index].slice(1)}`}</Popup>
           </Marker>
         ))}
         <LayersControl position="topright" className="mt-5">
@@ -746,9 +721,11 @@ useEffect(() => {
         {/* <ImageOverlay zIndex={1000} url={imageUrl} bounds={imageBounds} /> */}
         <Polyline color="lime" positions={polylineCoords} weight={5} />
       </MapContainer>
-      <MapLegend
+      <MapLegend 
+          option2Checked={option2Checked}
           carouselLandraceItems={carouselLandraceItems}
           carouselMajorItems={carouselMajorItems}
+          
           colors={colors}/>
       {selectedMarkers &&
         selectedMarkers.length > 0 &&
