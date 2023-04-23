@@ -8,6 +8,7 @@ import { saveAs } from "file-saver";
 import MapLegend from "../mapLegend/MapLegend";
 import Loader from "../loader/Loader";
 import NoGaps from "../nogapsmodal/NoGaps";
+import LayersMarkers from "../LayersMarkers/LayersMarkers";
 import {
   MapContainer,
   TileLayer,
@@ -39,7 +40,7 @@ function Map({
   crops,
   placesCoordinates,
   polylineCoords,
-  showRoad
+  showRoad,
 }) {
   const [showe, setShowe] = useState(false); // estado para controlar la visualización del Modal
 
@@ -62,7 +63,7 @@ function Map({
     setCarouselMajorItems([...carouselMajorItems]);
     const colorToRemove = colors[index];
     const newcolores = [...colors.slice(0, index), ...colors.slice(index + 1)];
-    setColors(newcolores)
+    setColors(newcolores);
   };
   const colorsInitialState = [
     "#FF5733", // Naranja
@@ -71,25 +72,25 @@ function Map({
     "#00BFFF", // Azul claro
     "#FF69B4", // Rosa
     "#1E90FF", // Azul brillante
-    "#008000" // Verde claro
-  ]
-const [colors,setColors]=useState(colorsInitialState)
-useEffect(() => {
-  if (  carouselLandraceItems?.length === 0) {
-    setColors(colorsInitialState);
-  }
-}, [carouselLandraceItems]);
-useEffect(() => {
-  if (  carouselMajorItems?.length === 0) {
-    setColors(colorsInitialState);
-  }
-}, [carouselMajorItems]);
+    "#008000", // Verde claro
+  ];
+  const [colors, setColors] = useState(colorsInitialState);
+  useEffect(() => {
+    if (carouselLandraceItems?.length === 0) {
+      setColors(colorsInitialState);
+    }
+  }, [carouselLandraceItems]);
+  useEffect(() => {
+    if (carouselMajorItems?.length === 0) {
+      setColors(colorsInitialState);
+    }
+  }, [carouselMajorItems]);
   const handleRemoveFromLandraceCarousel = (index) => {
     const itemToRemove = carouselLandraceItems.splice(index, 1)[0];
     const colorToRemove = colors[index];
     const newcolores = [...colors.slice(0, index), ...colors.slice(index + 1)];
-    setColors(newcolores)
-   
+    setColors(newcolores);
+
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
   const { iso } = useContext(DataContext);
@@ -129,17 +130,16 @@ useEffect(() => {
           `http://localhost:5000/api/v1/accessionsbyidcrop?id=${cropId}&iso=${iso}`
         )
         .then((response) => {
-          console.log(response.data[0].accessions)
+          console.log(response.data[0].accessions);
           setShow(false);
-          if (response.data[0].accessions.length===0) {
-            
-            setShowg(true)
-            setCarouselMajorItems([])
+          if (response.data[0].accessions.length === 0) {
+            setShowg(true);
+            setCarouselMajorItems([]);
           } else {
             setAccessions(response.data.flatMap((crop) => crop.accessions));
           }
         })
-          
+
         .catch((error) => {
           console.log(error);
         });
@@ -154,7 +154,7 @@ useEffect(() => {
       carouselLandraceItems.length > 0 &&
       carouselMajorItems.length > 0
     ) {
-      setShow(true)
+      setShow(true);
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
       const cropId = filteredCrops[0].id;
@@ -162,8 +162,7 @@ useEffect(() => {
       axios
         .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
         .then((response) => {
-          setShow(false)
-          console.log(response)
+          setShow(false);
           setGroups(response.data);
         })
         .catch((error) => {
@@ -184,18 +183,20 @@ useEffect(() => {
       setFilteredGroups(filteredgroups);
     }
   }, [carouselLandraceItems, groups]);
-  
+
   const idsgroups = filteredgroups.map((obj) => obj.id).join(",");
   const extidsgroup = filteredgroups
-  .filter(obj => carouselLandraceItems.includes(obj.group_name))
-  .sort((a, b) => carouselLandraceItems.indexOf(a.group_name) - carouselLandraceItems.indexOf(b.group_name))
-  .map(obj => obj.ext_id);
+    .filter((obj) => carouselLandraceItems.includes(obj.group_name))
+    .sort(
+      (a, b) =>
+        carouselLandraceItems.indexOf(a.group_name) -
+        carouselLandraceItems.indexOf(b.group_name)
+    )
+    .map((obj) => obj.ext_id);
 
-    
-   
   useEffect(() => {
     if (carouselLandraceItems != null && carouselLandraceItems.length > 0) {
-      setShow(true)
+      setShow(true);
       setAccessions([]);
       //let hola= filteredgroups.ma
       const newArray = extidsgroup.map((element) => `${iso}_${element}`);
@@ -207,11 +208,10 @@ useEffect(() => {
           `http://localhost:5000/api/v1/accessionsbyidgroup?id=${idsgroups}&iso=${iso}`
         )
         .then((response) => {
-          setShow(false)
-          if (response.data[0].accessions.length===0) {
-            
-            setShowg(true)
-            setCarouselMajorItems([])
+          setShow(false);
+          if (response.data[0].accessions.length === 0) {
+            setShowg(true);
+            setCarouselMajorItems([]);
           } else {
             setAccessions(response.data.flatMap((crop) => crop.accessions));
           }
@@ -225,10 +225,15 @@ useEffect(() => {
     }
   }, [filteredgroups]);
   const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
-  const extids =  filteredCrops
-  .filter(obj => carouselMajorItems.includes(obj.app_name))
-  .sort((a, b) => carouselMajorItems.indexOf(a.app_name) - carouselMajorItems.indexOf(b.app_name))
-  .map(obj => obj.ext_id);filteredCrops
+  const extids = filteredCrops
+    .filter((obj) => carouselMajorItems.includes(obj.app_name))
+    .sort(
+      (a, b) =>
+        carouselMajorItems.indexOf(a.app_name) -
+        carouselMajorItems.indexOf(b.app_name)
+    )
+    .map((obj) => obj.ext_id);
+  filteredCrops
     .map((obj) => obj.ext_id)
     .join(",")
     .split(",");
@@ -251,7 +256,7 @@ useEffect(() => {
       carouselMajorItems.length > 1 &&
       carouselLandraceItems.length == 0
     ) {
-      setShow(true)
+      setShow(true);
       const newArray = extids.map((element) => `${iso}_${element}`);
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
@@ -260,17 +265,18 @@ useEffect(() => {
       const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
 
       axios.get(endopointAccesionsByCrop).then((response) => {
-        setShow(false)
+        setShow(false);
 
-        const flatMapAccesons= response.data.flatMap((crop) => crop.accessions)
+        const flatMapAccesons = response.data.flatMap(
+          (crop) => crop.accessions
+        );
         // 4. Manejar la respuesta de la solicitud HTTP
-        if (flatMapAccesons.length>0) {
-
+        if (flatMapAccesons.length > 0) {
           setAccessions(flatMapAccesons);
         } else {
-          setShowg(true)
+          setShowg(true);
           setAccessions([]);
-          setCarouselMajorItems([])
+          setCarouselMajorItems([]);
         }
       });
     }
@@ -282,7 +288,7 @@ useEffect(() => {
       carouselMajorItems.length == 1 &&
       carouselLandraceItems.length == 0
     ) {
-      setShow(true)
+      setShow(true);
       const newArray = extids.map((element) => `${iso}_${element}`);
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
@@ -292,14 +298,16 @@ useEffect(() => {
       const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
 
       axios.get(endopointAccesionsByCrop).then((response) => {
-        setShow(false)
-       const flatMapAccesions= response.data.flatMap((crop) => crop.accessions)
-        if (flatMapAccesions.length>0) {
+        setShow(false);
+        const flatMapAccesions = response.data.flatMap(
+          (crop) => crop.accessions
+        );
+        if (flatMapAccesions.length > 0) {
           setAccessions(flatMapAccesions);
         } else {
           setAccessions([]);
-          setShowg(true)
-          setCarouselMajorItems([])
+          setShowg(true);
+          setCarouselMajorItems([]);
         }
       });
     }
@@ -324,22 +332,7 @@ useEffect(() => {
       setCarouselLandraceItems([]);
     }
   }, [carouselMajorItems]);
-
-  const handleClick = (index, tooltipInfo) => {
-    const newSet = new Set(clickedMarkerIndices);
-    if (newSet.has(index)) {
-      newSet.delete(index);
-      setSelectedMarkers(
-        selectedMarkers.filter((marker) => marker.index !== index)
-      );
-    } else {
-      newSet.add(index);
-      setSelectedMarkers([...selectedMarkers, { index, tooltipInfo }]);
-    }
-    setClickedMarkerIndices(newSet);
-    console.log("marker clicked", index);
-  };
-{carouselLandraceItems?.length>0 &&(console.log(carouselLandraceItems))}
+  
   const convertirA_CSV = (datatoExport) => {
     const cabecera = Object.keys(datatoExport[0]);
     const filas = datatoExport.map((obj) => cabecera.map((key) => obj[key]));
@@ -371,31 +364,35 @@ useEffect(() => {
   const [option1Checked, setOption1Checked] = useState(true);
   const [option2Checked, setOption2Checked] = useState(true);
   const [currentImage, setCurrentImage] = useState(null);
-  useEffect(()=>{
-    {option1Checked == false &&
+  useEffect(() => {
+    {
+      option1Checked == false &&
+        option2Checked == true &&
+        layerr.length > 0 &&
+        setColors(colorsInitialState);
+    }
+  }, [option2Checked, option1Checked]);
+  useEffect(() => {
+    {
+      option1Checked == true &&
+        option2Checked == false &&
+        layerr.length > 0 &&
+        setColors(colorsInitialState);
+    }
+  }, [option2Checked, option1Checked]);
+
+  useEffect(() => {
+    option1Checked == true &&
       option2Checked == true &&
       layerr.length > 0 &&
-      setColors(colorsInitialState)
-    }
-  } ,[option2Checked,option1Checked])
-  useEffect(()=>{
-    {option1Checked == true &&
-      option2Checked == false &&
-      layerr.length > 0 &&
-      setColors(colorsInitialState)
-    }
-  } ,[option2Checked,option1Checked])
-
-useEffect(()=>{
-  option1Checked == true && option2Checked == true && layerr.length>0 &&
-  setColors(colorsInitialState)
-},[option2Checked,option1Checked])
+      setColors(colorsInitialState);
+  }, [option2Checked, option1Checked]);
 
   useEffect(() => {
     // Borra la imagen anterior si existe
     if (currentImage) {
       currentImage.remove();
-      setCurrentImage(null)
+      setCurrentImage(null);
     }
     // Agrega la nueva imagen
     if (image != null) {
@@ -408,14 +405,12 @@ useEffect(()=>{
     // Actualiza el estado con la nueva imagen
     setCurrentImage(image);
   }, [image]);
- 
 
- 
   return (
     <div className="mapDiv mx-0 p-0 " id="mapLayer">
-      <Loader show={show} handleClose={handleClose}/>
+      <Loader show={show} handleClose={handleClose} />
       <RouteError showe={showe} handleClosee={handleClosee} />
-      <NoGaps showg={showg} handleCloseg={handleCloseg}/>
+      <NoGaps showg={showg} handleCloseg={handleCloseg} />
 
       <div
         className="div-filter-map"
@@ -452,7 +447,7 @@ useEffect(()=>{
               </div>
             ))}
         </div>
-       
+
         <div className=" px-4 py-2">
           {carouselLandraceItems && carouselLandraceItems.length > 0 && (
             <h6>Landrace items</h6>
@@ -484,7 +479,6 @@ useEffect(()=>{
         {carouselMajorItems && carouselMajorItems.length > 0 && (
           //<Select options={options} onChange={setSelectedOption}></Select>
           <div className="image-container">
-
             <img
               className="icon"
               src="https://unpkg.com/leaflet@1.2.0/dist/images/layers.png"
@@ -513,13 +507,7 @@ useEffect(()=>{
             </div>
           </div>
         )}
-       
-          
-       
-
       </div>
-      
-     
 
       <MapContainer
         id="mapid"
@@ -539,171 +527,23 @@ useEffect(()=>{
         }}
         zoomControl={false}
       >
-        
-      
-        {option1Checked == true &&
-          option2Checked == false &&
-          accessions &&
-          accessions.length > 0 &&
-          accessions.map((marker, index) =>
-            marker.latitude && marker.longitude ? (
-              <Marker
-                eventHandlers={{
-                  click: (e) => {
-                    handleClick(index, {
-                      Id: marker.id,
-                      AccecionID: marker.accession_id,
-
-                      SpeciesName: marker.species_name,
-                      Ext_id: marker.ext_id,
-                      Crop: marker.crop,
-                      Latitude: marker.latitude,
-                      Longitude: marker.longitude,
-                      Institution: marker.institution_name,
-                      Source: marker.source_database,
-                    });
-                    const newSet = new Set(clickedMarkerIndices);
-                    if (newSet.has(index)) {
-                      newSet.delete(index);
-                    } else {
-                      newSet.add(index);
-                    }
-                    setClickedMarkerIndices(newSet);
-                    console.log("marker clicked", e);
-                  },
-                }}
-                key={index}
-                position={[marker.latitude, marker.longitude]}
-                zIndex={15000 + index}
-                icon={
-                  clickedMarkerIndices.has(index)
-                    ? L.icon({
-                        iconUrl:
-                          "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
-                        iconSize: [20, 20],
-                      })
-                    : customIcon
-                }
-                onMouseOver={(e) => {
-                  e.target.openPopup();
-                }}
-                onMouseOut={(e) => {
-                  e.target.closePopup();
-                }}
-              >
-                <Tooltip direction="top" offset={[0, -30]}>
-                  Institution: {marker.institution_name} <br /> Source:
-                  {marker.source_database} id: {marker.ext_id}
-                  <p>
-                    {" "}
-                    <strong>
-                      click if you want to save this accession for export
-                    </strong>{" "}
-                  </p>
-                </Tooltip>
-              </Marker>
-            ) : null
-          )}
-        {option1Checked == false &&
-          option2Checked == true &&
-          layerr.length > 0 &&
-          layerr.map((layerr, index) => (
-            <WMSTileLayer
-              key={layerr}
-              url="https://isa.ciat.cgiar.org/geoserver2/wms"
-              layers={`gap_analysis:${layerr}`}
-              format="image/png"
-              transparent={true}
-              zIndex={1000 + index}
-              styles={`Gap` + index}
-            />
-          ))}
-          
-          
-        {option1Checked == true && option2Checked == true && (
-          <>
-            {accessions &&
-              accessions.length > 0 &&
-              accessions.map((marker, index) =>
-                marker.latitude && marker.longitude ? (
-                  <Marker
-                    eventHandlers={{
-                      click: (e) => {
-                        handleClick(index, {
-                          Id: marker.id,
-                          AccecionID: marker.accession_id,
-
-                          SpeciesName: marker.species_name,
-                          Ext_id: marker.ext_id,
-                          Crop: marker.crop,
-                          Latitude: marker.latitude,
-                          Longitude: marker.longitude,
-                          Institution: marker.institution_name,
-                          Source: marker.source_database,
-                        });
-                        const newSet = new Set(clickedMarkerIndices);
-                        if (newSet.has(index)) {
-                          newSet.delete(index);
-                        } else {
-                          newSet.add(index);
-                        }
-                        setClickedMarkerIndices(newSet);
-                        console.log("marker clicked", e);
-                        setTimeout(() => {
-                          console.log("tIME");
-                          setIndexStep(11);
-                        }, 200);
-                      },
-                    }}
-                    key={index}
-                    position={[marker.latitude, marker.longitude]}
-                    zIndex={10000 + index}
-                    icon={
-                      clickedMarkerIndices.has(index)
-                        ? L.icon({
-                            iconUrl:
-                              "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
-                            iconSize: [20, 20],
-                          })
-                        : customIcon
-                    }
-                    onMouseOver={(e) => {
-                      e.target.openPopup();
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.closePopup();
-                    }}
-                  >
-                    <Tooltip direction="top" offset={[0, -30]}>
-                      Institution: {marker.institution_name} <br /> Source:
-                      {marker.source_database} id: {marker.ext_id}
-                      <p>
-                        {" "}
-                        <strong>
-                          click if you want to save this accession for export
-                        </strong>{" "}
-                      </p>
-                    </Tooltip>
-                  </Marker>
-                ) : null
-              )}
-            {layerr.length > 0 &&
-              layerr.map((layerr, index) => (
-                <WMSTileLayer
-                  key={layerr}
-                  url="https://isa.ciat.cgiar.org/geoserver2/wms"
-                  layers={`gap_analysis:${layerr}`}
-                  format="image/png"
-                  transparent={true}
-                  zIndex={1000 + index}
-                  styles={`Gap` + index}
-                />
-              ))}
-          </>
-        )}
+        <LayersMarkers
+          option1Checked={option1Checked}
+          option2Checked={option2Checked}
+          accessions={accessions}
+          clickedMarkerIndices={clickedMarkerIndices}
+          setIndexStep={setIndexStep}
+          customIcon={customIcon}
+          layerr={layerr}
+          selectedMarkers={selectedMarkers}
+          setSelectedMarkers={setSelectedMarkers}
+          setClickedMarkerIndices={setClickedMarkerIndices}
+        />
         {placesCoordinates.map((marker, index) => (
           <Marker key={index} position={[marker.latitude, marker.longitude]}>
-            <Popup>{`Destino ${index+1} : ${places[index].charAt(0).toUpperCase() +places[index].slice(1)}`}</Popup>
+            <Popup>{`Destino ${index + 1} : ${
+              places[index].charAt(0).toUpperCase() + places[index].slice(1)
+            }`}</Popup>
           </Marker>
         ))}
         <LayersControl position="topright" className="mt-5">
@@ -721,16 +561,22 @@ useEffect(()=>{
         {/* <ImageOverlay zIndex={1000} url={imageUrl} bounds={imageBounds} /> */}
         <Polyline color="lime" positions={polylineCoords} weight={5} />
       </MapContainer>
-      <MapLegend 
-          option2Checked={option2Checked}
-          carouselLandraceItems={carouselLandraceItems}
-          carouselMajorItems={carouselMajorItems}
-          
-          colors={colors}/>
+      <MapLegend
+        option2Checked={option2Checked}
+        carouselLandraceItems={carouselLandraceItems}
+        carouselMajorItems={carouselMajorItems}
+        colors={colors}
+      />
       {selectedMarkers &&
         selectedMarkers.length > 0 &&
         accessions.length > 0 && (
-          <div className={showRoad ? "div-inferior-derecha-showRoad" : "div-inferior-derecha"}>
+          <div
+            className={
+              showRoad
+                ? "div-inferior-derecha-showRoad"
+                : "div-inferior-derecha"
+            }
+          >
             <Button
               variant="primary"
               className="text-white accession"

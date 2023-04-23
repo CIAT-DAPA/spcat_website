@@ -150,7 +150,6 @@ function FilterLeft({
         .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
         .then((response) => {
           setAllGroupCrop(response.data);
-          console.log(allgroupscrop);
           setLayer(countryIso + "_" + filteredCrops[0].name);
           const groupsArray = response.data[0].groups.map(
             (group) => group.group_name
@@ -167,9 +166,7 @@ function FilterLeft({
 
  
 
-  const gruposencarrousell = allgroupscrop.filter((grupo) =>
-    carouselLandraceItemsNow.includes(grupo.group_name)
-  ); //filre los grupos que estan em el crrousell
+   //filre los grupos que estan em el crrousell
  // const idss = gruposencarrousell.map((obj) => obj.id).join(",");
   // ['Spring', 'Winter']   los grupos
   //console.log(idss)

@@ -35,7 +35,6 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
     const newDestinations = [...destinations];
     newDestinations[index] = event.target.value;
     setDestinations(newDestinations);
-    console.log(newDestinations);
   }
   //h
   function handleAdd() {
@@ -59,7 +58,6 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
     // Aquí podrías enviar la información a un servidor o manejarla de alguna otra forma
     setPlaces(destinations);
     setIndexStep(10);
-    console.log(destinations);
   }
 
   function handleAddToList(index) {
