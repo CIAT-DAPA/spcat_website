@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 /* import {tiff} from 'tiff.js'; */
 import GeoTIFF, { fromUrl, fromUrls, fromArrayBuffer, fromBlob } from "geotiff";
@@ -88,11 +89,14 @@ function FilterLeft({
 
   const [imageCoords, setImageCoords] = useState(null);
   const [dataaa, setDataa] = useState([]);
+  var filep=''
   
   //console.log(countryIso)
+  
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
-    console.log(file)
+    filep=file
+    console.log(filep.name)
 
     // Leer el archivo TIFF
     const reader = new FileReader();
@@ -316,21 +320,24 @@ function FilterLeft({
             ref={fileInputRef}
           />
           <div className="d-flex">
-            <Button
-              variant="primary"
-              className="text-white mb-3 "
-              onClick={() => fileInputRef.current.click()}
-            >
-              <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your gap
-              analysis
-            </Button>
-            {image && (
-              
-              <FontAwesomeIcon
-                className="icons mt-2 ml-2 text-primary"
+            
+            {image ? (
+              <Button
+                variant="primary"
+                className="text-white mb-3"
                 onClick={eraseLayer}
-                icon={faCircleXmark}
-              />
+              >
+                <FontAwesomeIcon icon={faTrashCan} /> Delete your gap analysis
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                className="text-white mb-3"
+                onClick={() => fileInputRef.current.click()}
+              >
+                <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your gap
+                analysis
+              </Button>
             )}
           </div>
         </div>
