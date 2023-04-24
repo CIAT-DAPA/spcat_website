@@ -96,7 +96,6 @@ function FilterLeft({
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
     filep=file
-    console.log(filep.name)
 
     // Leer el archivo TIFF
     const reader = new FileReader();
@@ -104,7 +103,7 @@ function FilterLeft({
       const tiffData = reader.result;
 
       parseGeoraster(tiffData).then((georaster) => {
-        console.log("georaster:", georaster);
+//        console.log("georaster:", georaster);
         /*
             GeoRasterLayer is an extension of GridLayer,
             which means can use GridLayer options like opacity.
@@ -117,7 +116,7 @@ function FilterLeft({
           resolution: 256,
         });
         setImage(layer);
-        console.log("layer:", layer);
+       // console.log("layer:", layer);
 
         /* layer.addTo(map);
 
@@ -127,6 +126,7 @@ function FilterLeft({
     };
     reader.readAsArrayBuffer(file);
   };
+  //console.log(filep.name)
 
   const holi=(e)=>{
     e.target.value=null;
@@ -202,7 +202,6 @@ function FilterLeft({
   //console.log(layer);
   const handleAddToMap = () => {
     if (countryIso.length == 0) {
-      console.log("aun no hay nada");
       setShowc(true);
       setIndexStep(3);
       // alert('Por favor seleccione un país');
@@ -319,16 +318,18 @@ function FilterLeft({
             onClick={holi}
             ref={fileInputRef}
           />
+
           <div className="d-flex">
-            
             {image ? (
-              <Button
-                variant="primary"
-                className="text-white mb-3"
-                onClick={eraseLayer}
-              >
-                <FontAwesomeIcon icon={faTrashCan} /> Delete your gap analysis
-              </Button>
+              <>
+                <Button
+                  variant="primary"
+                  className="text-white mb-3"
+                  onClick={eraseLayer}
+                >
+                  <FontAwesomeIcon icon={faTrashCan} /> Delete your gap analysis
+                </Button>
+              </>
             ) : (
               <Button
                 variant="primary"
