@@ -1,6 +1,10 @@
 import './maplegend.css'
+import { DataContext } from "../../context/context";
+import { useContext } from 'react';
 
 const MapLegend = ({ colors, carouselLandraceItems, carouselMajorItems, option2Checked }) => {
+  const { image } = useContext(DataContext);
+
   return (
     <div className={option2Checked ? 'test ms-2' : 'test ms-2 hide'}>
       {/* Map legend for carouselLandraceItems */}
@@ -23,6 +27,12 @@ const MapLegend = ({ colors, carouselLandraceItems, carouselMajorItems, option2C
                     </li>
                   );
                 })}
+              {image && (
+                <li>
+                  <span style={{ background: "black", opacity: "0.7" }}></span>
+                  Custom Gap
+                </li>
+              )}
             </ul>
           </div>
           <div className="legend-source">
@@ -48,6 +58,33 @@ const MapLegend = ({ colors, carouselLandraceItems, carouselMajorItems, option2C
                     </li>
                   );
                 })}
+              {image && (
+                <li>
+                  <span style={{ background: "black", opacity: "0.7" }}></span>
+                  Custom Gap
+                </li>
+              )}
+            </ul>
+          </div>
+          <div className="legend-source">
+           
+          </div>
+        </div>
+      ) : null}
+
+
+{image && carouselMajorItems.length==0 ?(
+        <div className="my-legend ms-2 p-2">
+          <div className="legend-title ">Custom Gaps</div>
+          <div className="legend-scale">
+            <ul className="legend-labels ms-2">
+              
+              {image && (
+                <li>
+                  <span style={{ background: "black", opacity: "0.7" }}></span>
+                  Custom Gap 
+                </li>
+              )}
             </ul>
           </div>
           <div className="legend-source">

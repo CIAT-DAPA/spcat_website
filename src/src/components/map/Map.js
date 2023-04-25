@@ -54,6 +54,7 @@ function Map({
   //action for modal no gaps
   const [showg, setShowg] = useState(false);
   const { places } = useContext(DataContext);
+  const [pruebita, setPruebita] = useState(false);
 
   const handleCloseg = () => setShowg(false);
   const handleShowg = () => setShowg(true);
@@ -312,10 +313,15 @@ function Map({
     }
   }, [carouselLandraceItems]);
 
-  const customIcon = L.icon({
-    iconUrl: "https://img.icons8.com/ios-glyphs/256/pain-point.png",
-    iconSize: [20, 20], // tamaño del icono
-  });
+  const customIcon = idcrop => {
+    const namecrop = crops.filter(crop => crop.id === idcrop )[0].base_name;
+    console.log(namecrop);
+
+    return L.icon({
+      iconUrl: require(`../../assets/icons/${namecrop}.png`),
+      iconSize: [30, 30], // tamaño del icono
+    });
+  };
 
   const [clickedMarkerIndices, setClickedMarkerIndices] = useState(new Set());
   const [selectedMarkers, setSelectedMarkers] = useState([]);
@@ -331,7 +337,7 @@ function Map({
       setCarouselLandraceItems([]);
     }
   }, [carouselMajorItems]);
-  
+
   /* const convertirA_CSV = (datatoExport) => {
     const cabecera = Object.keys(datatoExport[0]);
     const filas = datatoExport.map((obj) => cabecera.map((key) => obj[key]));
@@ -369,7 +375,7 @@ function Map({
       console.error("No hay datos para exportar");
       return;
     }
-  
+
     const header = Object.keys(data[0]);
     const headerWithoutLastColumn = header.slice(0, -1); // crear un nuevo encabezado sin la última columna
     const rows = data.map((obj) => {
@@ -378,11 +384,12 @@ function Map({
     });
     rows.unshift(headerWithoutLastColumn);
     const csvContent = rows.map((row) => row.join(",")).join("\n");
-    const file = new File([csvContent], fileName, { type: "text/csv;charset=utf-8" });
+    const file = new File([csvContent], fileName, {
+      type: "text/csv;charset=utf-8",
+    });
     saveAs(file);
     setIndexStep(12);
-};
-
+  };
 
   const handleSelectedDownloadClick = () => {
     descargarCSV(datatoExport, "selected_accessions.csv");
@@ -391,9 +398,9 @@ function Map({
   const handleAllDownloadClick = () => {
     descargarCSV(accessions, "all_accessions.csv");
   };
-  
 
-  
+  console.log("la prueba es " + pruebita);
+
   const mapRef = useRef(null);
   useEffect(() => {
     if (accessions.length > 0) {
@@ -407,7 +414,7 @@ function Map({
       }
     }
   }, [accessions]);
- 
+
   const [option1Checked, setOption1Checked] = useState(true);
   const [option2Checked, setOption2Checked] = useState(true);
   const [currentImage, setCurrentImage] = useState(null);
@@ -442,8 +449,10 @@ function Map({
       setCurrentImage(null);
     }
     // Agrega la nueva imagen
+    console.log(image);
     if (image != null) {
       image.options.zIndex = 1000;
+      //image.color = #0000ff
       image.addTo(mapRef.current);
       mapRef.current.flyToBounds(image.getBounds());
       //image._image.style.backfaceVisibility = 'hidden';
@@ -522,37 +531,6 @@ function Map({
               </div>
             ))}
         </div>
-        {carouselMajorItems && carouselMajorItems.length > 0 && (
-          //<Select options={options} onChange={setSelectedOption}></Select>
-          <div className="image-container">
-            <img
-              className="icon"
-              src="https://unpkg.com/leaflet@1.2.0/dist/images/layers.png"
-              alt="jejej"
-            ></img>
-
-            <div className="options">
-              <label>
-                <input
-                  type="checkbox"
-                  name="Markers"
-                  checked={option1Checked}
-                  onChange={(e) => setOption1Checked(e.target.checked)}
-                />
-                Accesions
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="Gap"
-                  checked={option2Checked}
-                  onChange={(e) => setOption2Checked(e.target.checked)}
-                />
-                Gap
-              </label>
-            </div>
-          </div>
-        )}
       </div>
 
       <MapContainer
@@ -602,6 +580,60 @@ function Map({
           <LayersControl.BaseLayer name="Satellite">
             <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
           </LayersControl.BaseLayer>
+          {accessions.length > 1 && (
+            <>
+              <LayersControl.Overlay name="Aceesions" checked={true}>
+                <TileLayer
+                  eventHandlers={{
+                    add: (e) => {
+                      console.log("Added Layer:", e.target);
+                      setOption1Checked(true);
+                    },
+                    remove: (e) => {
+                      console.log("Removed layer:", e.target);
+                      setOption1Checked(false);
+                    },
+                  }}
+                  url=""
+                />
+              </LayersControl.Overlay>
+              <LayersControl.Overlay name="Gap" checked={true}>
+                <TileLayer
+                  url=""
+                  eventHandlers={{
+                    add: (e) => {
+                      console.log("Added Layer:", e.target);
+                      setOption2Checked(true);
+                    },
+                    remove: (e) => {
+                      console.log("Removed layer:", e.target);
+                      setOption2Checked(false);
+                    },
+                  }}
+                />
+              </LayersControl.Overlay>
+            </>
+          )}
+
+          {/*  <LayersControl.Overlay name="Aceesions" 
+          >
+            <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" 
+            />
+          </LayersControl.Overlay>
+          <LayersControl.Overlay name="Gap">
+            <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            eventHandlers={{
+              add: (e) => {
+                console.log("Added Layer:", e.target);
+                setPruebita(true)
+              },
+              remove: (e) => {
+                console.log("Removed layer:", e.target);
+                setPruebita(false)
+              }
+            }} />
+
+          </LayersControl.Overlay> */}
         </LayersControl>
         //{" "}
         {/* <ImageOverlay zIndex={1000} url={imageUrl} bounds={imageBounds} /> */}
@@ -613,45 +645,49 @@ function Map({
         carouselMajorItems={carouselMajorItems}
         colors={colors}
       />
-      {selectedMarkers && selectedMarkers.length === 0 && accessions.length > 0 ? (
-  <div className="div-inferior-derecha">
-    <Button variant="primary" className="text-white accession"
-    onClick={handleAllDownloadClick}>
-      Download all accesions
-      <FontAwesomeIcon
-          className="search-icon"
-          icon={faDownload}
-        ></FontAwesomeIcon>
-    </Button>
-
-    
-  </div>
-) : (
-  selectedMarkers && selectedMarkers.length > 0 && accessions.length > 0 && (
-    <div
-      className={
-        showRoad
-          ? "div-inferior-derecha-showRoad"
-          : "div-inferior-derecha"
-      }
-    >
-      <Button
-        variant="primary"
-        className="text-white accession"
-        type="submit"
-        onClick={handleSelectedDownloadClick}
-        id="button-downloadAccesion"
-      >
-        Download selected accessions
-        <FontAwesomeIcon
-          className="search-icon"
-          icon={faDownload}
-        ></FontAwesomeIcon>
-      </Button>
-    </div>
-  )
-)}
-
+      {selectedMarkers &&
+      selectedMarkers.length === 0 &&
+      accessions.length > 0 ? (
+        <div className="div-inferior-derecha">
+          <Button
+            variant="primary"
+            className="text-white accession"
+            onClick={handleAllDownloadClick}
+          >
+            Download all accessions
+            <FontAwesomeIcon
+              className="search-icon"
+              icon={faDownload}
+            ></FontAwesomeIcon>
+          </Button>
+        </div>
+      ) : (
+        selectedMarkers &&
+        selectedMarkers.length > 0 &&
+        accessions.length > 0 && (
+          <div
+            className={
+              showRoad
+                ? "div-inferior-derecha-showRoad"
+                : "div-inferior-derecha"
+            }
+          >
+            <Button
+              variant="primary"
+              className="text-white accession"
+              type="submit"
+              onClick={handleSelectedDownloadClick}
+              id="button-downloadAccesion"
+            >
+              Download selected accessions
+              <FontAwesomeIcon
+                className="search-icon"
+                icon={faDownload}
+              ></FontAwesomeIcon>
+            </Button>
+          </div>
+        )
+      )}
     </div>
   );
 }
