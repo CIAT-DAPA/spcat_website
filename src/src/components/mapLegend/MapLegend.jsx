@@ -4,7 +4,6 @@ import { useContext } from 'react';
 
 const MapLegend = ({ colors, carouselLandraceItems, carouselMajorItems, option2Checked }) => {
   const { image } = useContext(DataContext);
-
   return (
     <div className={option2Checked ? 'test ms-2' : 'test ms-2 hide'}>
       {/* Map legend for carouselLandraceItems */}
@@ -73,7 +72,7 @@ const MapLegend = ({ colors, carouselLandraceItems, carouselMajorItems, option2C
       ) : null}
 
 
-{image && carouselMajorItems.length==0 ?(
+{image && carouselMajorItems ==null ?(
         <div className="my-legend ms-2 p-2">
           <div className="legend-title ">Custom Gaps</div>
           <div className="legend-scale">

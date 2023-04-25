@@ -125,7 +125,6 @@ setShow(true)
         };
         
         geojson.features.push(lineString);
-        console.log(geojson)
         const duration = response.routes[0].legs.reduce(
           (total, leg) => total + leg.duration.value,
           0
@@ -352,7 +351,6 @@ setShow(true)
             } else if (action === "skip") {
               setTutorialFinished(true);
             }
-            console.log(data);
           }}
           stepIndex={indexStep}
           steps={steps}

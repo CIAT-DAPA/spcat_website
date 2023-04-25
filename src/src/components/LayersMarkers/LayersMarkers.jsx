@@ -46,7 +46,6 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                       handleClick(index, {
                         Id: marker.id,
                         AccecionID: marker.accession_id,
-  
                         SpeciesName: marker.species_name,
                         Ext_id: marker.ext_id,
                         Crop: marker.crop,

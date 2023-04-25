@@ -63,7 +63,6 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
   function handleAddToList(index) {
     const newContext = [...places, destinations[index]];
     setPlaces(newContext);
-    console.log(newContext);
   }
 
 

@@ -315,11 +315,11 @@ function Map({
 
   const customIcon = idcrop => {
     const namecrop = crops.filter(crop => crop.id === idcrop )[0].base_name;
-    console.log(namecrop);
 
     return L.icon({
       iconUrl: require(`../../assets/icons/${namecrop}.png`),
       iconSize: [30, 30], // tamaño del icono
+      className:"drop"
     });
   };
 
@@ -368,7 +368,6 @@ function Map({
     descargarCSV(accessions, "all_accessions.csv");
   };
 
-  console.log("la prueba es " + pruebita);
 
   const mapRef = useRef(null);
   useEffect(() => {
@@ -418,7 +417,6 @@ function Map({
       setCurrentImage(null);
     }
     // Agrega la nueva imagen
-    console.log(image);
     if (image != null) {
       image.options.zIndex = 1000;
       //image.color = #0000ff
@@ -555,11 +553,9 @@ function Map({
                 <TileLayer
                   eventHandlers={{
                     add: (e) => {
-                      console.log("Added Layer:", e.target);
                       setOption1Checked(true);
                     },
                     remove: (e) => {
-                      console.log("Removed layer:", e.target);
                       setOption1Checked(false);
                     },
                   }}
@@ -571,11 +567,9 @@ function Map({
                   url=""
                   eventHandlers={{
                     add: (e) => {
-                      console.log("Added Layer:", e.target);
                       setOption2Checked(true);
                     },
                     remove: (e) => {
-                      console.log("Removed layer:", e.target);
                       setOption2Checked(false);
                     },
                   }}
@@ -617,7 +611,14 @@ function Map({
       {selectedMarkers &&
       selectedMarkers.length === 0 &&
       accessions.length > 0 ? (
-        <div className="div-inferior-derecha">
+        
+        <div
+        className={
+          showRoad
+            ? "div-inferior-derecha-showRoad"
+            : "div-inferior-derecha"
+        }
+      >
           <Button
             variant="primary"
             className="text-white accession"
