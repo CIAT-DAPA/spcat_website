@@ -21,6 +21,7 @@
     "geotiff": "^2.0.7",
     "google-map-react": "^2.2.0",
     "jest-webpack-resolver": "^0.3.0",
+    "jszip": "^3.10.1",
     "leaflet": "^1.9.3",
     "leaflet-geotiff-2": "^1.1.0",
     "leaflet-routing-machine": "^3.2.12",

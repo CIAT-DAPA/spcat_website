@@ -99,7 +99,7 @@ function CheckFilter({
               )
               .map((item, i) => (
                 <tr key={i} onClick={() => handleAddToCarousel(i)}>
-                  <td className="text-center">
+                  <td className="text-left">
                     {(() => {
                       try {
                         return (

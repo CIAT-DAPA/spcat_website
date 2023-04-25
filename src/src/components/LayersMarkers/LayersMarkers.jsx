@@ -30,7 +30,6 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
               setSelectedMarkers([...selectedMarkers, { index, tooltipInfo }]);
             }
             setClickedMarkerIndices(newSet);
-            console.log("marker clicked", index);
           };
         return(
             
@@ -55,6 +54,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                         Longitude: marker.longitude,
                         Institution: marker.institution_name,
                         Source: marker.source_database,
+                        other_attributes:marker.other_attributes
                       });
                       const newSet = new Set(clickedMarkerIndices);
                       if (newSet.has(index)) {
@@ -63,7 +63,6 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                         newSet.add(index);
                       }
                       setClickedMarkerIndices(newSet);
-                      console.log("marker clicked", e);
                     },
                   }}
                   key={index}
@@ -134,6 +133,9 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                             Longitude: marker.longitude,
                             Institution: marker.institution_name,
                             Source: marker.source_database,
+                            other_attributes:marker.other_attributes
+
+
                           });
                           const newSet = new Set(clickedMarkerIndices);
                           if (newSet.has(index)) {
@@ -142,9 +144,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                             newSet.add(index);
                           }
                           setClickedMarkerIndices(newSet);
-                          console.log("markerr clicked", e);
                           setTimeout(() => {
-                            console.log("tIME");
                             setIndexStep(11);
                           }, 200);
                         },

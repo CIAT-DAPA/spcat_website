@@ -6,6 +6,8 @@ import './RouteReport.css'
 import { saveAs } from 'file-saver'; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import JSZip from 'jszip';
+
 
 import {Papa} from 'papaparse'
 const RouteReport = ({show,handleClose}) => {
@@ -21,24 +23,54 @@ const RouteReport = ({show,handleClose}) => {
   const { places } = useContext(DataContext);
   const { dataRoutestoExport } = useContext(DataContext);
   const {elevationProm} = useContext(DataContext);
-
+const {metrics}=useContext(DataContext)
  //console.log(dataRoutestoExport)
 
 
-
- const convertirA_CSV = (dataRoutestoExport) => {
-  const cabecera = Object.keys(dataRoutestoExport[0]);
-  const filas = dataRoutestoExport.map(obj => cabecera.map(key => obj[key]));
+const convertirA_CSV = (metrics) => {
+  const cabecera = Object.keys(metrics[0]);
+  const filas = metrics.map(obj => cabecera.map(key => obj[key]));
   filas.unshift(cabecera);
   return filas.map(fila => fila.join(',')).join('\n');
 }
 
+
 const descargarCSV = () => {
-  const contenidoCSV = convertirA_CSV(dataRoutestoExport);
-  const nombreArchivo = 'routereport.csv';
-  const archivo = new File([contenidoCSV], nombreArchivo, { type: 'text/csv;charset=utf-8' });
-  saveAs(archivo); // Utilizar la función saveAs de FileSaver.js para descargar el archivo
+  const contenidoCSV = convertirA_CSV(metrics);
+  const nombreArchivoCSV = 'routereport.csv';
+  const archivoCSV = new File([contenidoCSV], nombreArchivoCSV, { type: 'text/csv;charset=utf-8' });
+  
+  // Crear el objeto GeoJSON
+  var geojson = {
+    "type": "FeatureCollection",
+    "features": []
+  };
+  dataRoutestoExport.forEach(function(punto) {
+    var feature = {
+      "type": "Feature",
+      "properties": {"distance": punto.Distance, "elevation": punto.Elevation},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [punto.Longitude, punto.Latitude]
+      }
+    };
+    geojson.features.push(feature);
+  });
+  var geojson_str = JSON.stringify(geojson);
+  const nombreArchivoGeoJSON = 'puntos.geojson';
+  const archivoGeoJSON = new File([geojson_str], nombreArchivoGeoJSON, { type: 'application/json' });
+  
+  // Crear el archivo zip
+  var zip = new JSZip();
+  zip.file(nombreArchivoCSV, archivoCSV);
+  zip.file(nombreArchivoGeoJSON, archivoGeoJSON);
+  
+  // Descargar el archivo zip
+  zip.generateAsync({type:"blob"}).then(function(content) {
+    saveAs(content, "archivos.zip");
+  });
 }
+
 
 
 

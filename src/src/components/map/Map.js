@@ -130,7 +130,6 @@ function Map({
           `http://localhost:5000/api/v1/accessionsbyidcrop?id=${cropId}&iso=${iso}`
         )
         .then((response) => {
-          console.log(response.data[0].accessions);
           setShow(false);
           if (response.data[0].accessions.length === 0) {
             setShowg(true);
@@ -333,12 +332,68 @@ function Map({
     }
   }, [carouselMajorItems]);
   
-  const convertirA_CSV = (datatoExport) => {
+  /* const convertirA_CSV = (datatoExport) => {
     const cabecera = Object.keys(datatoExport[0]);
     const filas = datatoExport.map((obj) => cabecera.map((key) => obj[key]));
+    filas.pop(); 
     filas.unshift(cabecera);
     return filas.map((fila) => fila.join(",")).join("\n");
   };
+  const convertirA_CSVt = (accessions) => {
+    const cabecera = Object.keys(accessions[0]);
+    const filas = accessions.map((obj) => cabecera.map((key) => obj[key]));
+    filas.pop(); // Eliminar la última fila
+    filas.unshift(cabecera);
+    return filas.map((fila) => fila.slice(0, -1).join(",")).join("\n"); // Quitar la última columna
+  };
+  const descargarCSV = () => {
+    const contenidoCSV = convertirA_CSV(datatoExport);
+    const nombreArchivo = "accessions.csv";
+    const archivo = new File([contenidoCSV], nombreArchivo, {
+      type: "text/csv;charset=utf-8",
+    });
+    saveAs(archivo); // Utilizar la función saveAs de FileSaver.js para descargar el archivo
+    setIndexStep(12);
+  };
+  const descargarCSVt = () => {
+    const contenidoCSV = convertirA_CSVt(accessions);
+    const nombreArchivo = "accessions.csv";
+    const archivo = new File([contenidoCSV], nombreArchivo, {
+      type: "text/csv;charset=utf-8",
+    });
+    saveAs(archivo); // Utilizar la función saveAs de FileSaver.js para descargar el archivo
+    setIndexStep(12);
+  }; */
+  const descargarCSV = (data, fileName) => {
+    if (!data || data.length === 0) {
+      console.error("No hay datos para exportar");
+      return;
+    }
+  
+    const header = Object.keys(data[0]);
+    const headerWithoutLastColumn = header.slice(0, -1); // crear un nuevo encabezado sin la última columna
+    const rows = data.map((obj) => {
+      const valuesWithoutLastColumn = Object.values(obj).slice(0, -1); // crear un nuevo arreglo de valores sin la última columna
+      return valuesWithoutLastColumn;
+    });
+    rows.unshift(headerWithoutLastColumn);
+    const csvContent = rows.map((row) => row.join(",")).join("\n");
+    const file = new File([csvContent], fileName, { type: "text/csv;charset=utf-8" });
+    saveAs(file);
+    setIndexStep(12);
+};
+
+
+  const handleSelectedDownloadClick = () => {
+    descargarCSV(datatoExport, "selected_accessions.csv");
+  };
+
+  const handleAllDownloadClick = () => {
+    descargarCSV(accessions, "all_accessions.csv");
+  };
+  
+
+  
   const mapRef = useRef(null);
   useEffect(() => {
     if (accessions.length > 0) {
@@ -352,15 +407,7 @@ function Map({
       }
     }
   }, [accessions]);
-  const descargarCSV = () => {
-    const contenidoCSV = convertirA_CSV(datatoExport);
-    const nombreArchivo = "accessions.csv";
-    const archivo = new File([contenidoCSV], nombreArchivo, {
-      type: "text/csv;charset=utf-8",
-    });
-    saveAs(archivo); // Utilizar la función saveAs de FileSaver.js para descargar el archivo
-    setIndexStep(12);
-  };
+ 
   const [option1Checked, setOption1Checked] = useState(true);
   const [option2Checked, setOption2Checked] = useState(true);
   const [currentImage, setCurrentImage] = useState(null);
@@ -405,7 +452,6 @@ function Map({
     // Actualiza el estado con la nueva imagen
     setCurrentImage(image);
   }, [image]);
-
   return (
     <div className="mapDiv mx-0 p-0 " id="mapLayer">
       <Loader show={show} handleClose={handleClose} />
@@ -567,31 +613,45 @@ function Map({
         carouselMajorItems={carouselMajorItems}
         colors={colors}
       />
-      {selectedMarkers &&
-        selectedMarkers.length > 0 &&
-        accessions.length > 0 && (
-          <div
-            className={
-              showRoad
-                ? "div-inferior-derecha-showRoad"
-                : "div-inferior-derecha"
-            }
-          >
-            <Button
-              variant="primary"
-              className="text-white accession"
-              type="submit"
-              onClick={descargarCSV}
-              id="button-downloadAccesion"
-            >
-              Download accessions
-              <FontAwesomeIcon
-                className="search-icon"
-                icon={faDownload}
-              ></FontAwesomeIcon>
-            </Button>
-          </div>
-        )}
+      {selectedMarkers && selectedMarkers.length === 0 && accessions.length > 0 ? (
+  <div className="div-inferior-derecha">
+    <Button variant="primary" className="text-white accession"
+    onClick={handleAllDownloadClick}>
+      Download all accesions
+      <FontAwesomeIcon
+          className="search-icon"
+          icon={faDownload}
+        ></FontAwesomeIcon>
+    </Button>
+
+    
+  </div>
+) : (
+  selectedMarkers && selectedMarkers.length > 0 && accessions.length > 0 && (
+    <div
+      className={
+        showRoad
+          ? "div-inferior-derecha-showRoad"
+          : "div-inferior-derecha"
+      }
+    >
+      <Button
+        variant="primary"
+        className="text-white accession"
+        type="submit"
+        onClick={handleSelectedDownloadClick}
+        id="button-downloadAccesion"
+      >
+        Download selected accessions
+        <FontAwesomeIcon
+          className="search-icon"
+          icon={faDownload}
+        ></FontAwesomeIcon>
+      </Button>
+    </div>
+  )
+)}
+
     </div>
   );
 }

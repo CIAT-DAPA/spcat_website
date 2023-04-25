@@ -18,6 +18,7 @@ function MapTools() {
   const [showe, setShowe] = useState(false);
   const [placesCoordinates, setPlacesCoordinates] = useState([]);
   const [polylineCoords, setPolylineCoords] = useState([]);
+  const {metrics, setMerics}=useContext(DataContext)
 //state for loading
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -93,12 +94,38 @@ setShow(true)
       if (status === google.maps.DirectionsStatus.OK) {
         // Obtener las coordenadas de la ruta
         const route = response.routes[0];
+        const geojson = {
+          type: 'FeatureCollection',
+          features: []
+        };
+        
+
 
         const coordinates = route.overview_path.map((point) => [
           point.lat(),
           point.lng(),
         ]);
-
+        coordinates.forEach((coord) => {
+          geojson.features.push({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: coord,
+            },
+            properties: {},
+          });
+        });
+        const lineString = {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: coordinates,
+          },
+          properties: {},
+        };
+        
+        geojson.features.push(lineString);
+        console.log(geojson)
         const duration = response.routes[0].legs.reduce(
           (total, leg) => total + leg.duration.value,
           0
@@ -170,8 +197,17 @@ setShow(true)
                 Distance: distances[index],
                 PromElevation: promelevation,
                 time: timeString,
+                Url:travel
               }));
-              //console.log(time);
+              const datat =[{
+                averageDistance: distance / 1000,
+                AverageAltitue:promelevation,
+                EstimatedTime: timeString,
+                Url:url
+
+              }];
+              setMerics(datat)
+             
               setDataRoutestoExport(data);
             } else {
               console.error(`Error al obtener la elevación: ${status}`);
@@ -192,7 +228,6 @@ setShow(true)
     });
   }
 }, [places]);
-
   const url = "http://127.0.0.1:5000/api/v1/countries";
   const [response, setResponse] = useState([]);
   useEffect(() => {
