@@ -338,38 +338,7 @@ function Map({
     }
   }, [carouselMajorItems]);
 
-  /* const convertirA_CSV = (datatoExport) => {
-    const cabecera = Object.keys(datatoExport[0]);
-    const filas = datatoExport.map((obj) => cabecera.map((key) => obj[key]));
-    filas.pop(); 
-    filas.unshift(cabecera);
-    return filas.map((fila) => fila.join(",")).join("\n");
-  };
-  const convertirA_CSVt = (accessions) => {
-    const cabecera = Object.keys(accessions[0]);
-    const filas = accessions.map((obj) => cabecera.map((key) => obj[key]));
-    filas.pop(); // Eliminar la última fila
-    filas.unshift(cabecera);
-    return filas.map((fila) => fila.slice(0, -1).join(",")).join("\n"); // Quitar la última columna
-  };
-  const descargarCSV = () => {
-    const contenidoCSV = convertirA_CSV(datatoExport);
-    const nombreArchivo = "accessions.csv";
-    const archivo = new File([contenidoCSV], nombreArchivo, {
-      type: "text/csv;charset=utf-8",
-    });
-    saveAs(archivo); // Utilizar la función saveAs de FileSaver.js para descargar el archivo
-    setIndexStep(12);
-  };
-  const descargarCSVt = () => {
-    const contenidoCSV = convertirA_CSVt(accessions);
-    const nombreArchivo = "accessions.csv";
-    const archivo = new File([contenidoCSV], nombreArchivo, {
-      type: "text/csv;charset=utf-8",
-    });
-    saveAs(archivo); // Utilizar la función saveAs de FileSaver.js para descargar el archivo
-    setIndexStep(12);
-  }; */
+ 
   const descargarCSV = (data, fileName) => {
     if (!data || data.length === 0) {
       console.error("No hay datos para exportar");
