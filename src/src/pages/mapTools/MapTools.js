@@ -276,8 +276,8 @@ function MapTools() {
       <Loader show={show} handleClose={handleClose} />
 
       <Col
-        className="col-5 col-xxl-3 col-xl-4 overflow-auto"
-        style={{ height: "91vh" }}
+        className="col-3 overflow-auto"
+        style={{ height: "90vh" }}
       >
         <FilterLeft
           response={response}
