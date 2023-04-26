@@ -22,7 +22,7 @@ import {
 } from "@react-google-maps/api";
 //import icon from '../../assets/icons/remove.png'
 
-function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
+function FilterRight({showRoad, setShowRoad, indexStep, setIndexStepMap}) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -57,7 +57,7 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
     event.preventDefault();
     // Aquí podrías enviar la información a un servidor o manejarla de alguna otra forma
     setPlaces(destinations);
-    setIndexStep(10);
+    setIndexStepMap(4);
   }
 
   function handleAddToList(index) {
@@ -74,9 +74,6 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
           className="arrow-button"
           onClick={() => {
             setShowRoad(!showRoad);
-            setTimeout(() => {
-              setIndexStep(6);
-            }, 400);
           }}
           aria-controls="example-collapse-text"
           aria-expanded={showRoad}
@@ -152,7 +149,7 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStep}) {
                     onClick={() => {
                       handleAdd();
                       setTimeout(() => {
-                        setIndexStep(8);
+                        setIndexStepMap(2);
                       }, 200);
                     }}
                     icon={faCirclePlus}

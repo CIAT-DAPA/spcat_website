@@ -357,7 +357,7 @@ function Map({
       type: "text/csv;charset=utf-8",
     });
     saveAs(file);
-    setIndexStep(12);
+    setIndexStep(7);
   };
 
   const handleSelectedDownloadClick = () => {

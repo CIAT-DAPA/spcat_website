@@ -144,7 +144,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                           }
                           setClickedMarkerIndices(newSet);
                           setTimeout(() => {
-                            setIndexStep(11);
+                            setIndexStep(6);
                           }, 200);
                         },
                       }}
