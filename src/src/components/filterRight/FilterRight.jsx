@@ -77,7 +77,7 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStepMap}) {
           }}
           aria-controls="example-collapse-text"
           aria-expanded={showRoad}
-          style={{ borderRadius: "50%" }}
+          style={{ borderRadius: "50%", right: showRoad ?'-18px' :'0px'}}
           id="button-route"
         >
           <FontAwesomeIcon

@@ -86,7 +86,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                           Species name: {marker.species_name} <br />
                           Institution: {marker.institution_name} <br />
                           Source: {marker.source_database} <br />
-                          Id: {marker.ext_id} <br />
+                          Id: {marker.accession_id} <br />
                           <br />
                           <strong>
                             click if you want to save this accession for export
@@ -122,7 +122,6 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                             handleClick(index, {
                               Id: marker.id,
                               AccecionID: marker.accession_id,
-
                               SpeciesName: marker.species_name,
                               Ext_id: marker.ext_id,
                               Crop: marker.crop,
@@ -167,7 +166,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                           Species name: {marker.species_name} <br />
                           Institution: {marker.institution_name} <br />
                           Source: {marker.source_database} <br />
-                          Id: {marker.ext_id} <br />
+                          Id: {marker.accession_id} <br />
                           <br />
                           <strong>
                             click if you want to save this accession for export

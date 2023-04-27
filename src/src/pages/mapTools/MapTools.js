@@ -11,6 +11,7 @@ import Joyride from "react-joyride";
 import { DataContext } from "../../context/context";
 import RouteError from "../../components/routeError/RouteError";
 import Loader from "../../components/loader/Loader";
+import { async } from "regenerator-runtime";
 const google = window.google;
 
 function MapTools() {
@@ -33,7 +34,6 @@ function MapTools() {
   const { dataRoutestoExport, setDataRoutestoExport } = useContext(DataContext);
   const { distanBetween, setDistanceBetween } = useContext(DataContext);
 
-  
   const { travelTime, setTravelTime } = useContext(DataContext);
   const { travel, setTravel } = useContext(DataContext);
   const { pointDistance, setPointDistance } = useContext(DataContext);
@@ -74,13 +74,42 @@ function MapTools() {
         });
       };
 
-      Promise.all(places.map((city) => getCoordsForCity(city)))
-        .then((coordsArray) => {
-          setPlacesCoordinates(coordsArray);
-        })
-        .catch((error) => {
-          console.error(error);
+      Promise.resolve()
+  .then(() => Promise.all(
+    places.map((city) => getCoordsForCity(city))
+  ))
+  .then((coordsArray) => {
+    console.log(coordsArray)
+    setPlacesCoordinates(coordsArray);
+    //getElevations(coordsArray)
+    const promises = coordsArray.map((location) =>
+      new Promise((resolve, reject) => {
+        const latLng = new google.maps.LatLng(location.latitude, location.longitude);
+        const request = { locations: [latLng] };
+        const elevator = new google.maps.ElevationService();
+        elevator.getElevationForLocations(request, (results, status) => {
+          if (status === "OK" && results[0]) {
+            resolve(results[0].elevation);
+          } else {
+            reject(new Error(`Error al obtener la elevación para ${latLng}: ${status}`));
+          }
         });
+      })
+    );
+    Promise.all(promises)
+      .then((elevations) => {
+        setElevationsPoints(elevations);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+
+
+        
       //  console.log(placesCoordinates)
       const request = {
         origin: puntos[0].location,
@@ -94,14 +123,11 @@ function MapTools() {
         if (status === google.maps.DirectionsStatus.OK) {
           // Obtener las coordenadas de la ruta
           const route = response.routes[0];
-          setDistanceBetween(route.legs.map((dat)=>(dat.distance.value)) 
-            
-          )
+          setDistanceBetween(route.legs.map((dat) => dat.distance.value));
           const geojson = {
             type: "FeatureCollection",
             features: [],
           };
-          console.log(route)
           const coordinates = route.overview_path.map((point) => [
             point.lat(),
             point.lng(),
@@ -167,6 +193,7 @@ function MapTools() {
 
           setPointDistance(distances);
           //console.log(coordenadasApi)
+          
 
           elevationService.getElevationAlongPath(
             {
@@ -187,7 +214,7 @@ function MapTools() {
                 ).toFixed(2);
                 // console.log(`el promedio es ${promelevation}`);
                 setElevationProm(promelevation);
-                setElevationsPoints(elevations);
+                
 
                 const data = coordenadasApi.map((coordenada, index) => ({
                   Latitude: coordenada.lat,
@@ -228,7 +255,18 @@ function MapTools() {
       });
     }
   }, [places]);
-  console.log(placesCoordinates)
+
+ 
+console.log(elevationsPoints)
+
+  
+
+
+//console.log(elevationsPoints)
+  
+  
+  
+
   const url = "http://127.0.0.1:5000/api/v1/countries";
   const [response, setResponse] = useState([]);
   useEffect(() => {
@@ -281,10 +319,7 @@ function MapTools() {
       <RouteError showe={showe} handleClosee={handleClosee} />
       <Loader show={show} handleClose={handleClose} />
 
-      <Col
-        className="col-3 overflow-auto"
-        style={{ height: "90vh" }}
-      >
+      <Col className="col-3 overflow-auto" style={{ height: "90vh" }}>
         <FilterLeft
           response={response}
           crops={crops}
@@ -309,7 +344,10 @@ function MapTools() {
           statusFail={statusFail}
         ></Map>
       </Col>
-      <Col className="col-auto" style={{ zIndex: "1000" }}>
+      <Col
+        className="col-auto"
+        style={{ zIndex: "1000", padding: 0, height: "91vh" }}
+      >
         <FilterRight
           showRoad={showRoad}
           setShowRoad={setShowRoad}

@@ -72,7 +72,8 @@ const descargarCSV = () => {
 }
 
 
-
+/* console.log(elevationsPoints)
+console.log(places) */
 
 
 
@@ -92,7 +93,7 @@ const descargarCSV = () => {
       type: "line",
     },
     xaxis: {
-      categories: [],
+      categories: places,
       tickAmount: 6,
       
     },
@@ -116,8 +117,6 @@ const descargarCSV = () => {
   }
  
 
-  console.log(places)
-  console.log(distanBetween)
 
 
   const seriest = [
