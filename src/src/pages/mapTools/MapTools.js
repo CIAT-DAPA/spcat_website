@@ -31,7 +31,9 @@ function MapTools() {
   const { elevationsPoints, setElevationsPoints } = useContext(DataContext);
   const { averageDistance, setAverageDistance } = useContext(DataContext);
   const { dataRoutestoExport, setDataRoutestoExport } = useContext(DataContext);
+  const { distanBetween, setDistanceBetween } = useContext(DataContext);
 
+  
   const { travelTime, setTravelTime } = useContext(DataContext);
   const { travel, setTravel } = useContext(DataContext);
   const { pointDistance, setPointDistance } = useContext(DataContext);
@@ -79,7 +81,7 @@ function MapTools() {
         .catch((error) => {
           console.error(error);
         });
-
+      //  console.log(placesCoordinates)
       const request = {
         origin: puntos[0].location,
         destination: puntos[puntos.length - 1].location,
@@ -92,11 +94,14 @@ function MapTools() {
         if (status === google.maps.DirectionsStatus.OK) {
           // Obtener las coordenadas de la ruta
           const route = response.routes[0];
+          setDistanceBetween(route.legs.map((dat)=>(dat.distance.value)) 
+            
+          )
           const geojson = {
             type: "FeatureCollection",
             features: [],
           };
-
+          console.log(route)
           const coordinates = route.overview_path.map((point) => [
             point.lat(),
             point.lng(),
@@ -223,6 +228,7 @@ function MapTools() {
       });
     }
   }, [places]);
+  console.log(placesCoordinates)
   const url = "http://127.0.0.1:5000/api/v1/countries";
   const [response, setResponse] = useState([]);
   useEffect(() => {

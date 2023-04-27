@@ -505,6 +505,7 @@ function Map({
         ref={mapRef}
         center={[14.88, -35, 76]}
         zoom={3}
+        zoomSnap={0.25}
         maxBounds={[
           [90, -180.0],
           [-90, 180.0],
@@ -532,9 +533,8 @@ function Map({
         />
         {placesCoordinates.map((marker, index) => (
           <Marker key={index} position={[marker.latitude, marker.longitude]}>
-            <Popup>{`Destino ${index + 1} : ${
-              places[index].charAt(0).toUpperCase() + places[index].slice(1)
-            }`}</Popup>
+            <Popup>{`Destino ${index +1} ${places[index]}
+            `}</Popup>
           </Marker>
         ))}
         <LayersControl position="topright" className="mt-5">

@@ -21,10 +21,10 @@ const RouteReport = ({show,handleClose}) => {
   const { pointDistance } = useContext(DataContext);
   const { travelTime } = useContext(DataContext);
   const { places } = useContext(DataContext);
+  const { distanBetween } = useContext(DataContext);
   const { dataRoutestoExport } = useContext(DataContext);
   const {elevationProm} = useContext(DataContext);
 const {metrics}=useContext(DataContext)
- //console.log(dataRoutestoExport)
 
 
 const convertirA_CSV = (metrics) => {
@@ -75,6 +75,7 @@ const descargarCSV = () => {
 
 
 
+
   const series = [
     {
       name: "Elevación (metros)",
@@ -115,14 +116,14 @@ const descargarCSV = () => {
   }
  
 
-
-
+  console.log(places)
+  console.log(distanBetween)
 
 
   const seriest = [
     {
-      name: "Elevation (mts)",
-      data: pointDistance,
+      name: `Distance Kms `,
+      data: [0, ...distanBetween.map(distancia => distancia / 1000)],
     },
     
   ];
@@ -135,10 +136,11 @@ const descargarCSV = () => {
       type: "line",
     },
     xaxis: {
-      categories: pointDistance.map((_, index) => `Ubicación ${index + 1}`),
-      tickAmount: 6,
+      categories: places,
+      
       
     },
+    
     yaxis: {
       decimalsInFloat: 2,
     },
