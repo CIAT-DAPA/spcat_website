@@ -58,7 +58,7 @@ function Map({
 
   const handleCloseg = () => setShowg(false);
   const handleShowg = () => setShowg(true);
-
+  
   const handleRemoveFromMajorCarousel = (index) => {
     const itemToRemove = carouselMajorItems.splice(index, 1)[0];
     setCarouselMajorItems([...carouselMajorItems]);
@@ -316,13 +316,10 @@ function Map({
       });
     }
   }, [carouselLandraceItems]);
-console.log(accessions)
-console.log(groups)
+
   const customIcon = (idcrop,idgroup) => {
-    const groupName = groups[0].groups.filter(grou => idgroup === grou.id)[0].group_name
+    const groupName = groups[0]?.groups?.filter(grou => idgroup === grou.id)[0]?.group_name
     
-    console.log(idgroup)
-    console.log(groupName)
     const namecrop = crops.filter(crop => crop.id === idcrop )[0].base_name;
   
     return L.icon({
@@ -558,7 +555,7 @@ console.log(groups)
           </LayersControl.BaseLayer>
           {accessions.length > 1 && (
             <>
-              <LayersControl.Overlay name="Aceesions" checked={true}>
+              <LayersControl.Overlay name="Accessions" checked={true}>
                 <TileLayer
                   eventHandlers={{
                     add: (e) => {

@@ -257,7 +257,6 @@ function MapTools() {
   }, [places]);
 
  
-console.log(elevationsPoints)
 
   
 
