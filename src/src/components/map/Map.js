@@ -102,7 +102,11 @@ function Map({
   const [groups, setGroups] = useState([]);
 
   const [accessions, setAccessions] = useState([]);
+
   const [filteredgroups, setFilteredGroups] = useState([]);
+
+  const [groupstwo, setGroupstwo] = useState([])
+
 
   const [filteredCrops, setFilteredCrops] = useState([]);
   useEffect(() => {
@@ -320,7 +324,7 @@ console.log(groups)
     console.log(idgroup)
     console.log(groupName)
     const namecrop = crops.filter(crop => crop.id === idcrop )[0].base_name;
-
+  
     return L.icon({
       iconUrl: require(`../../assets/icons/${namecrop}.png`),
       iconSize: [30, 30], // tamaño del icono
