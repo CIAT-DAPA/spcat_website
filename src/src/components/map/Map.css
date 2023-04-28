@@ -107,6 +107,24 @@
   z-index: 1000;
 }
 
-.drop {
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7));
+.drop_0 {
+  filter: drop-shadow(0 2px 5px rgba(255, 87, 51, 0.7));
+}
+.drop_1 {
+  filter: drop-shadow(0 2px 5px rgba(139, 120, 230, 0.7));
+}
+.drop_2 {
+  filter: drop-shadow(0 2px 5px rgba(255, 195, 0, 0.5));
+}
+.drop_3 {
+  filter: drop-shadow(0 2px 5px rgba(0, 191, 255, 0.7));
+}
+.drop_4 {
+  filter: drop-shadow(0 2px 5px rgba(255, 105, 180, 0.7));
+}
+.drop_5 {
+  filter: drop-shadow(0 2px 5px rgba(30, 144, 255, 0.7));
+}
+.drop_6 {
+  filter: drop-shadow(0 2px 5px rgba(0, 128, 0, 0.7));
 }

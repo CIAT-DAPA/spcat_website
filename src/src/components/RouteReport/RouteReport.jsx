@@ -57,7 +57,7 @@ const descargarCSV = () => {
     geojson.features.push(feature);
   });
   var geojson_str = JSON.stringify(geojson);
-  const nombreArchivoGeoJSON = 'puntos.geojson';
+  const nombreArchivoGeoJSON = 'points.geojson';
   const archivoGeoJSON = new File([geojson_str], nombreArchivoGeoJSON, { type: 'application/json' });
   
   // Crear el archivo zip
@@ -67,7 +67,7 @@ const descargarCSV = () => {
   
   // Descargar el archivo zip
   zip.generateAsync({type:"blob"}).then(function(content) {
-    saveAs(content, "archivos.zip");
+    saveAs(content, "files.zip");
   });
 }
 

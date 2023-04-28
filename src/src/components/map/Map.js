@@ -312,14 +312,19 @@ function Map({
       });
     }
   }, [carouselLandraceItems]);
-
-  const customIcon = idcrop => {
+console.log(accessions)
+console.log(groups)
+  const customIcon = (idcrop,idgroup) => {
+    const groupName = groups[0].groups.filter(grou => idgroup === grou.id)[0].group_name
+    
+    console.log(idgroup)
+    console.log(groupName)
     const namecrop = crops.filter(crop => crop.id === idcrop )[0].base_name;
 
     return L.icon({
       iconUrl: require(`../../assets/icons/${namecrop}.png`),
       iconSize: [30, 30], // tamaño del icono
-      className:"drop"
+      className: carouselLandraceItems?.length>1 && `drop_${carouselLandraceItems.indexOf(groupName)}`
     });
   };
 

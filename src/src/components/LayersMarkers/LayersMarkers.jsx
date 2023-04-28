@@ -73,7 +73,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                               "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
                             iconSize: [20, 20],
                           })
-                        : customIcon(marker.crop)
+                        : customIcon(marker.crop,marker.landrace_group)
                     }
                     onMouseOver={(e) => {
                       e.target.openPopup();
@@ -153,7 +153,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                                   "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
                                 iconSize: [20, 20],
                               })
-                            : customIcon(marker.crop)
+                            : customIcon(marker.crop,marker.landrace_group)
                         }
                         onMouseOver={(e) => {
                           e.target.openPopup();
