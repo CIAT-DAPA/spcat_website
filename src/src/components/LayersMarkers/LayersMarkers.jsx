@@ -36,7 +36,6 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
             }
             setClickedMarkerIndices(newSet);
           };
-          console.log(accesionsInput)
         return (
           <>
             {option1Checked == true &&

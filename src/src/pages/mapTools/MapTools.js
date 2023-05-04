@@ -42,7 +42,12 @@ function MapTools() {
   const handleClosee = () => {
     setShowe(false);
   }; // estado para controlar la visualización del Modal
-
+useEffect(()=>{
+  if(places.length==0){
+    setPlacesCoordinates([])
+    setPolylineCoords([])
+  }
+},[places])
   useEffect(() => {
     if (places.length > 0) {
       const directionsService = new google.maps.DirectionsService();

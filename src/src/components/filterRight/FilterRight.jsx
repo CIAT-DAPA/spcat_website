@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark, faEraser } from "@fortawesome/free-solid-svg-icons";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
@@ -64,7 +64,10 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStepMap}) {
     const newContext = [...places, destinations[index]];
     setPlaces(newContext);
   }
-
+const cleanRoute=()=>{
+  setDestinations([""])
+  setPlaces([])
+}
 
 
   return (
@@ -174,7 +177,27 @@ function FilterRight({showRoad, setShowRoad, indexStep, setIndexStepMap}) {
                     icon={faMagnifyingGlass}
                   ></FontAwesomeIcon>
                 </Button>
+               
               </div>
+              <div className="text-center mt-3">
+                {places?.length>0&&(
+                  <Button
+                  variant="primary"
+                  className="text-white"
+                  
+                  id="button-getRoute"
+                  onClick={cleanRoute}
+                >
+                  Clean Route
+                  <FontAwesomeIcon
+                    className="search-icon"
+                    icon={faEraser}
+                  ></FontAwesomeIcon>
+                </Button>
+                )}
+              
+              </div>
+             
               <div className="text-center mt-3">
                 {travel.length > 0 && (
                   <Button
