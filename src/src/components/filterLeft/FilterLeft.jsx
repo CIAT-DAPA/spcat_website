@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import Papa from 'papaparse';
 
 /* import {tiff} from 'tiff.js'; */
 import GeoTIFF, { fromUrl, fromUrls, fromArrayBuffer, fromBlob } from "geotiff";
@@ -45,6 +46,7 @@ function FilterLeft({
   }, [crops]);
 
   const { iso, setIso } = useContext(DataContext);
+  const{accesionsInput,setAccesionsInput}=useContext(DataContext);
   const [shouldAddToMap, setShouldAddToMap] = useState(false);
   const [carouselMajorItemsNow, setCarouselMajorItemsNow] = useState([]); //items del carusel en el momento
   const [carouselLandraceItemsNow, setCarouselLandraceItemsNow] =
@@ -52,6 +54,7 @@ function FilterLeft({
   const [countryIso, setCountryIso] = useState(""); //iso del pais seleccionado
   const [shouldReset, setShouldReset] = useState(false);
   const fileInputRef = useRef(null);
+  const fileInputRefA = useRef(null);
   const [filteredCrops, setFilteredCrops] = useState([]); //cultivos ssleciionados
 
   const [groupNames, setGroupNames] = useState([]);
@@ -128,7 +131,7 @@ function FilterLeft({
   };
   //console.log(filep.name)
 
-  const holi=(e)=>{
+  const clearInput=(e)=>{
     e.target.value=null;
   }
 
@@ -215,9 +218,24 @@ function FilterLeft({
     setImage(null);
     
   };
+  const eraseAccesion = () => {
+    setAccesionsInput(null);
+    
+  };
 
   const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
+  const [data, setData] = useState(null);
 
+  const handleFileInputChangee = (e) => {
+    const file = e.target.files[0];
+
+    Papa.parse(file, {
+      header: true,
+      complete: function(results) {
+        setAccesionsInput(results.data);
+      }
+    });
+  };
   return (
     <>
       <CountryModal showc={showc} handleClosec={handleClosec} />
@@ -315,15 +333,24 @@ function FilterLeft({
             id="file-input"
             style={{ display: "none" }}
             onChange={handleFileInputChange}
-            onClick={holi}
+            onClick={clearInput}
             ref={fileInputRef}
           />
-
+           <input
+            multiple
+            type="file"
+            accept=".csv"
+            id="file-input"
+            ref={fileInputRefA}
+            style={{ display: "none" }}
+            onChange={handleFileInputChangee}
+            onClick={clearInput}
+          />
           <div className="d-flex">
             {image ? (
               <>
                 <Button
-                  variant="primary"
+                  variant="danger"
                   className="text-white mb-3"
                   onClick={eraseLayer}
                 >
@@ -341,6 +368,28 @@ function FilterLeft({
               </Button>
             )}
           </div>
+          <div className="d-flex">
+          {accesionsInput?.length>0 ? (
+              <>
+                <Button
+                  variant="danger"
+                  className="text-white mb-3"
+                  onClick={eraseAccesion}
+                >
+                  <FontAwesomeIcon icon={faTrashCan} /> Delete your accesions
+                </Button>
+              </>
+            ) : (
+              <Button
+              variant="primary"
+              className="text-white mb-3"
+              onClick={() => fileInputRefA.current.click()}
+            >
+              <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your accesions
+            </Button>
+            )}
+          </div>
+          
         </div>
       </Container>
     </>

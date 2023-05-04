@@ -9,6 +9,8 @@ import {
   } from "react-leaflet";
 import L from "leaflet";
 import './LayersMarkers'
+import { useContext } from "react";
+import { DataContext } from "../../context/context";
 
 const LayersMarkers=({option1Checked,option2Checked,accessions,
     clickedMarkerIndices,
@@ -18,7 +20,10 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
     selectedMarkers,
     setSelectedMarkers,
     layerr})=>{
+      const { accesionsInput } = useContext(DataContext);
+
         const handleClick = (index, tooltipInfo) => {
+
             const newSet = new Set(clickedMarkerIndices);
             if (newSet.has(index)) {
               newSet.delete(index);
@@ -31,6 +36,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
             }
             setClickedMarkerIndices(newSet);
           };
+          console.log(accesionsInput)
         return (
           <>
             {option1Checked == true &&
@@ -73,7 +79,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                               "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
                             iconSize: [20, 20],
                           })
-                        : customIcon(marker.crop,marker.landrace_group)
+                        : customIcon(marker.crop, marker.landrace_group)
                     }
                     onMouseOver={(e) => {
                       e.target.openPopup();
@@ -83,15 +89,15 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                     }}
                   >
                     <Tooltip direction="top" offset={[0, -30]}>
-                          Species name: {marker.species_name} <br />
-                          Institution: {marker.institution_name} <br />
-                          Source: {marker.source_database} <br />
-                          Id: {marker.accession_id} <br />
-                          <br />
-                          <strong>
-                            click if you want to save this accession for export
-                          </strong>{" "}
-                        </Tooltip>
+                      Species name: {marker.species_name} <br />
+                      Institution: {marker.institution_name} <br />
+                      Source: {marker.source_database} <br />
+                      Id: {marker.accession_id} <br />
+                      <br />
+                      <strong>
+                        click if you want to save this accession for export
+                      </strong>{" "}
+                    </Tooltip>
                   </Marker>
                 ) : null
               )}
@@ -153,7 +159,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                                   "https://cdn-icons-png.flaticon.com/512/5610/5610944.png",
                                 iconSize: [20, 20],
                               })
-                            : customIcon(marker.crop,marker.landrace_group)
+                            : customIcon(marker.crop, marker.landrace_group)
                         }
                         onMouseOver={(e) => {
                           e.target.openPopup();
@@ -189,6 +195,21 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                   ))}
               </>
             )}
+            {accesionsInput &&
+              accesionsInput.length > 0 &&
+              accesionsInput.map((accesion) => (
+                <Marker
+                  key={accesion.id}
+                  position={[accesion.latitude, accesion.longitude]}
+                >
+                  <Tooltip direction="top" offset={[0, -30]}>
+                  Species name: {accesion.species_name} <br />
+                  Institution: {accesion.institution_name} <br />
+                  Source: {accesion.source_database} <br />
+                  Id: {accesion.accession_id} <br />
+                  </Tooltip>
+                </Marker>
+              ))}
           </>
         );
         

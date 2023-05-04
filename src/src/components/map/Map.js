@@ -54,6 +54,7 @@ function Map({
   //action for modal no gaps
   const [showg, setShowg] = useState(false);
   const { places } = useContext(DataContext);
+  const { accesionsInput } = useContext(DataContext);
   const [pruebita, setPruebita] = useState(false);
 
   const handleCloseg = () => setShowg(false);
@@ -388,6 +389,19 @@ function Map({
       }
     }
   }, [accessions]);
+
+  useEffect(() => {
+    if (accesionsInput?.length > 0) {
+      const latLngs = accesionsInput.map((coordenada) => [
+        coordenada.latitude,
+        coordenada.longitude,
+      ]);
+      const bounds = L.latLngBounds(latLngs);
+      if (mapRef.current) {
+        mapRef.current.flyToBounds(bounds);
+      }
+    }
+  }, [accesionsInput]);
 
   const [option1Checked, setOption1Checked] = useState(true);
   const [option2Checked, setOption2Checked] = useState(true);
