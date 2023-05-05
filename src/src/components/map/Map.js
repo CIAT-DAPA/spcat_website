@@ -335,10 +335,10 @@ function Map({
   const [datatoExport, setDataToExport] = useState([]);
   useEffect(() => {
     if (selectedMarkers.length > 0) {
+      console.log(selectedMarkers)
       setDataToExport(selectedMarkers.map((dat) => dat.tooltipInfo));
     }
   }, [selectedMarkers]);
-
   useEffect(() => {
     if (carouselMajorItems && carouselMajorItems.length == 0) {
       setCarouselLandraceItems([]);
@@ -597,29 +597,8 @@ function Map({
               </LayersControl.Overlay>
             </>
           )}
-
-          {/*  <LayersControl.Overlay name="Aceesions" 
-          >
-            <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" 
-            />
-          </LayersControl.Overlay>
-          <LayersControl.Overlay name="Gap">
-            <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-            eventHandlers={{
-              add: (e) => {
-                console.log("Added Layer:", e.target);
-                setPruebita(true)
-              },
-              remove: (e) => {
-                console.log("Removed layer:", e.target);
-                setPruebita(false)
-              }
-            }} />
-
-          </LayersControl.Overlay> */}
         </LayersControl>
         //{" "}
-        {/* <ImageOverlay zIndex={1000} url={imageUrl} bounds={imageBounds} /> */}
         <Polyline color="lime" positions={polylineCoords} weight={5} />
       </MapContainer>
       <MapLegend

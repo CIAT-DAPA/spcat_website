@@ -13,7 +13,7 @@ function CountryModal({showc,handleClosec}) {
 
         <Modal.Footer>
          
-          <Button variant="primary" onClick={handleClosec}>
+          <Button variant="primary text-white" onClick={handleClosec}>
             OK
           </Button>
         </Modal.Footer>

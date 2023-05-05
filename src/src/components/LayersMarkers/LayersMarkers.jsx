@@ -48,15 +48,17 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                     eventHandlers={{
                       click: (e) => {
                         handleClick(index, {
-                          Id: marker.id,
-                          AccecionID: marker.accession_id,
-                          SpeciesName: marker.species_name,
-                          Ext_id: marker.ext_id,
-                          Crop: marker.crop,
-                          Latitude: marker.latitude,
-                          Longitude: marker.longitude,
-                          Institution: marker.institution_name,
-                          Source: marker.source_database,
+                          id: marker.id,
+                          species_name: marker.species_name,
+                          ext_id: marker.ext_id,
+                          crop: marker.crop,
+                          landrace_group:marker.landrace_group,
+                          country:marker.country,
+                          institution_name: marker.institution_name,
+                          source_database: marker.source_database,
+                          latitude: marker.latitude,
+                          longitude: marker.longitude,
+                          accession_id: marker.accession_id,
                           other_attributes: marker.other_attributes,
                         });
                         const newSet = new Set(clickedMarkerIndices);
@@ -125,15 +127,17 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                         eventHandlers={{
                           click: (e) => {
                             handleClick(index, {
-                              Id: marker.id,
-                              AccecionID: marker.accession_id,
-                              SpeciesName: marker.species_name,
-                              Ext_id: marker.ext_id,
-                              Crop: marker.crop,
-                              Latitude: marker.latitude,
-                              Longitude: marker.longitude,
-                              Institution: marker.institution_name,
-                              Source: marker.source_database,
+                              id: marker.id,
+                              species_name: marker.species_name,
+                              ext_id: marker.ext_id,
+                              crop: marker.crop,
+                              landrace_group:marker.landrace_group,
+                              country:marker.country,
+                              institution_name: marker.institution_name,
+                              source_database: marker.source_database,
+                              latitude: marker.latitude,
+                              longitude: marker.longitude,
+                              accession_id: marker.accession_id,
                               other_attributes: marker.other_attributes,
                             });
                             const newSet = new Set(clickedMarkerIndices);

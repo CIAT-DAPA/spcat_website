@@ -24,6 +24,7 @@ import CheckFilter from "../checkFilter/CheckFilter";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState, useEffect, useContext } from "react";
 import CountryModal from "../modalcountry/modalc";
+import ModalFileError from "../modalfile/ModalFileError";
 import axios from "axios";
 import { DataContext } from "../../context/context";
 import { layerGroup } from "leaflet";
@@ -63,8 +64,13 @@ function FilterLeft({
   const [accesionDataByCrop, setAccesionDataByCrop] = useState([]);
   const [layer, setLayer] = useState([]);
   const { image, setImage } = useContext(DataContext);
+  var filep=''
+  const [showc, setShowc] = useState(false);
+   // estado para controlar la visualización del Modal
 
-  const [showc, setShowc] = useState(false); // estado para controlar la visualización del Modal
+  const [showF, setShowF] = useState(false);
+  const handleCloseF = () => setShowF(false);
+  const handleShowF = () => setShowF(true);
 
   const handleClosec = () => {
     setShowc(false);
@@ -88,11 +94,11 @@ function FilterLeft({
       setIndexStep(1);
     }, 200);
   };
- 
+ console.log(showF)
 
   const [imageCoords, setImageCoords] = useState(null);
-  const [dataaa, setDataa] = useState([]);
-  var filep=''
+  const[titleModal,setTitlemodal]=useState('')
+  const [textModal, setTextModal] = useState('');
   
   //console.log(countryIso)
   
@@ -222,16 +228,33 @@ function FilterLeft({
     setAccesionsInput(null);
     
   };
-
+  
   const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
   const [data, setData] = useState(null);
 
   const handleFileInputChangee = (e) => {
     const file = e.target.files[0];
+    console.log(file.name)
+    if (!file.name.endsWith('.csv')) {
+      setTitlemodal('you have not selected a file in CSV format')
+      setTextModal('You must select a file in csv format')
+      setShowF(true)
+      return;
+    }
 
     Papa.parse(file, {
       header: true,
       complete: function(results) {
+      const requiredHeaders = ['id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id'];
+      const fileHeaders = Object.keys(results.data[0]);
+      console.log(file)
+      if (!requiredHeaders.every((header) => fileHeaders.includes(header))) {
+        setTitlemodal('Invalid columns in csv file')
+        setTextModal(`please check your file, the columns should be arranged like this: id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id `)
+        setShowF(true)
+        return;
+      }
+
         setAccesionsInput(results.data);
       }
     });
@@ -239,6 +262,7 @@ function FilterLeft({
   return (
     <>
       <CountryModal showc={showc} handleClosec={handleClosec} />
+      <ModalFileError show={showF} handleClose={handleCloseF} titleModal={titleModal} textModal={textModal}></ModalFileError>
 
       <Container className="mt-3">
         <Row className="align-items-center mb-3" id="select-country">
