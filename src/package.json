@@ -29,6 +29,7 @@
     "react-apexcharts": "^1.4.0",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
+    "react-google-places-autocomplete": "^4.0.1",
     "react-joyride": "^2.5.3",
     "react-leaflet": "^4.2.0",
     "react-papaparse": "^4.1.0",
