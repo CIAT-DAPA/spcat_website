@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import './FilterLeft.css'
 import Papa from 'papaparse';
 
 /* import {tiff} from 'tiff.js'; */
@@ -392,7 +393,7 @@ function FilterLeft({
               </Button>
             )}
           </div>
-          <div className="d-flex">
+          <div className="d-flex aling-items-center">
           {accesionsInput?.length>0 ? (
               <>
                 <Button
@@ -404,13 +405,23 @@ function FilterLeft({
                 </Button>
               </>
             ) : (
-              <Button
+              <>
+              
+            <Button
               variant="primary"
-              className="text-white mb-3"
+              className="text-white "
               onClick={() => fileInputRefA.current.click()}
             >
               <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your accesions
             </Button>
+            <OverlayTrigger
+              placement="top"
+              overlay={renderTooltip("Info: your CSV file must have the following columns:  id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map.")}
+            >
+              <span className="badge rounded-pill bg-primary me-1 h-100 info-t ">i</span>
+            </OverlayTrigger>
+              </>
+             
             )}
           </div>
           
