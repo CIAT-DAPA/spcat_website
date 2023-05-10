@@ -46,7 +46,7 @@ jobs:
       - uses: actions/checkout@main
 
       - name: Merge pre_deploy -> main
-        uses: devmasx/merge-branch@main
+        uses: devmasx/merge-branch@master
         with:
           type: now
           head_to_merge: ${{ github.ref }}
