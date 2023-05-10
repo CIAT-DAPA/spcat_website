@@ -26,9 +26,12 @@ jobs:
         with:
           node-version: 18
       - name: Install packages
-        run: npm --prefix ./src/src install
-      - name: Run tests
-        run: npm --prefix ./src/src test
+        run: |
+          cd ./src
+          ls
+          npm install
+          npm test
+       
 
 # ------- END FRONT PROCCESS -------- #
 
