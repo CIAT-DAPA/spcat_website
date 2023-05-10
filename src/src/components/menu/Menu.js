@@ -9,7 +9,7 @@ function Menu() {
     return (
         <Navbar variant="dark" collapseOnSelect expand="lg" className='menu' >
             <Container className='py-1'>
-                <Link className="navbar-brand" to="/">LGA dashboard</Link>
+                <Link className="navbar-brand" to="/">SPCAT</Link>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse className='justify-content-end' id="responsive-navbar-nav">
                     <Nav className="justify-content-end">

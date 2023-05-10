@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark, faEraser } from "@fortawesome/free-solid-svg-icons";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { faCar } from "@fortawesome/free-solid-svg-icons";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { GooglePlacesAutocomplete } from "react-google-places-autocomplete";
 import {
   faCircle,
   faGripLinesVertical,
@@ -20,26 +21,25 @@ import {
   GoogleMap,
   Autocomplete,
 } from "@react-google-maps/api";
+import { initOnLoad } from "apexcharts";
 //import icon from '../../assets/icons/remove.png'
 
-function FilterRight() {
+function FilterRight({ showRoad, setShowRoad, indexStep, setIndexStepMap }) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const { context, setContext } = useContext(DataContext);
-  const [isVisible, setIsVisible] = useState(false);
+  const { places, setPlaces } = useContext(DataContext);
   const { travel } = useContext(DataContext);
-
+  const [resetKey, setResetKey] = useState(0);
 
   const [destinations, setDestinations] = useState([""]);
-  const [places, setPlaces] = useState("");
 
   function handleChange(event, index) {
     const newDestinations = [...destinations];
     newDestinations[index] = event.target.value;
     setDestinations(newDestinations);
-    console.log(newDestinations);
   }
+
   //h
   function handleAdd() {
     setDestinations([...destinations, ""]);
@@ -49,56 +49,99 @@ function FilterRight() {
     const newDestinations = [...destinations];
     newDestinations.splice(index, 1);
     setDestinations(newDestinations);
+    const newSelectedPlaces = [...selectedPlaces];
+    newSelectedPlaces.splice(index, 1);
+    setSelectedPlaces(newSelectedPlaces);
   }
-
-  const handleAutocompleteChange = (event, value, index) => {
-    const newDestinations = [...destinations];
-    newDestinations[index] = value;
-    setDestinations(newDestinations);
-  };
+  console.log(destinations);
+  
 
   function handleSubmit(event) {
     event.preventDefault();
     // Aquí podrías enviar la información a un servidor o manejarla de alguna otra forma
-    setContext(destinations);
     setPlaces(destinations);
-    console.log(destinations);
+    setIndexStepMap(4);
   }
 
   function handleAddToList(index) {
-    const newContext = [...context, destinations[index]];
-    setContext(newContext);
-    console.log(newContext);
+    const newContext = [...places, destinations[index]];
+    setPlaces(newContext);
   }
+  
+  const cleanRoute = () => {
+    setSelectedPlace(['']);
+    setSelectedPlaces([]);
+    setDestinations([""]);
+    setPlaces([]);
+  };
+  const [selectedPlace, setSelectedPlace] = useState([]);
+  const [initialAutoComplete, setInitialAutoComplete] = useState(null);
 
-  let key = "AIzaSyARbwF61yXA-0aEOfeDYanC-IpgfxMQL-w";
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: key,
-    libraries: ["places"],
-  });
-  if (!isLoaded) {
-    return <div>no carga</div>;
+  const [autoComplete, setautoComplete] = useState(null);
+  useEffect(() => {
+    if (autoComplete && !initialAutoComplete) {
+      setInitialAutoComplete(autoComplete);
+    }
+  }, [autoComplete, initialAutoComplete]);
+  const onLoad = (autoComplete) => {
+    setInitialAutoComplete(autoComplete)
+    console.log("autocomplete: ", autoComplete);
+
+    setautoComplete(autoComplete);
+  };
+  console.log(initialAutoComplete)
+
+
+  console.log(destinations);
+
+  const [selectedPlaces, setSelectedPlaces] = useState([]);
+
+const handlePlaceSelect = (place, index) => {
+  if (autoComplete !== null) {
+    console.log(autoComplete.getPlace());
+
+    const selectedPlace = autoComplete.getPlace().formatted_address;
+    const newDestinations = [...destinations];
+
+    if (newDestinations[index]) {
+      newDestinations[index] = selectedPlace;
+    } else {
+      newDestinations.push(selectedPlace);
+    }
+
+    setDestinations(newDestinations);
+  } else {
+    console.log('Autocomplete is not loaded yet!');
   }
+};
+
+console.log(destinations);
+
 
   return (
     <>
       <div className="right-container">
         <Button
           className="arrow-button"
-          onClick={() => setIsVisible(!isVisible)}
+          onClick={() => {
+            setShowRoad(!showRoad);
+          }}
           aria-controls="example-collapse-text"
-          aria-expanded={isVisible}
-          style={{borderRadius:"50%"}}
+          aria-expanded={showRoad}
+          style={{ borderRadius: "50%", right: showRoad ? "-18px" : "0px" }}
+          id="button-route"
         >
           <FontAwesomeIcon
             icon={faCaretDown}
-            className={`text-light ${isVisible ? "rotate-270" : "rotate-90"}`}
+            className={`text-light ${showRoad ? "rotate-270" : "rotate-90"}`}
           />
         </Button>
       </div>
 
-      <div style={{ minHeight: "150px", height: "100%", backgroundColor:'white' }}>
-        <Collapse in={isVisible} dimension="width">
+      <div
+        style={{ minHeight: "150px", height: "100%", backgroundColor: "white" }}
+      >
+        <Collapse in={showRoad} dimension="width">
           <div id="example-collapse-text" className="pe-3">
             <div className="title-icon-container">
               <h5 className="route-title">Route</h5>
@@ -111,7 +154,11 @@ function FilterRight() {
             </div>
             <form onSubmit={handleSubmit}>
               {destinations.map((destination, index) => (
-                <Row key={index} className="row-destino">
+                <Row
+                  key={index}
+                  className="row-destino"
+                  id={`textare-city${index + 1}`}
+                >
                   <Col className="d-flex flex-column justify-content-end me-0 px-0 ms-4">
                     <FontAwesomeIcon
                       onClick={handleAddToList}
@@ -126,13 +173,22 @@ function FilterRight() {
                     />
                   </Col>
                   <Col className="mx-0 px-0">
-                    <input
-                      className="input"
-                      type="text"
-                      value={destination}
-                      onChange={(event) => handleChange(event, index)}
-                      placeholder={`Destino #${index + 1}`}
-                    />
+                    <Autocomplete
+                      onPlaceChanged={(place) =>
+                        handlePlaceSelect(place, index)
+                      }
+                      onLoad={onLoad}
+                      index={index} 
+                    >
+                      <input
+                        className="input"
+                        type="text"
+                        onChange={(event) => handleChange(event, index)}
+                        placeholder={`Destination #${index + 1}`}
+                        onClick={() => console.log("holla")}
+                        value={destination}
+                      />
+                    </Autocomplete>
                   </Col>
 
                   {destinations.length > 1 && (
@@ -150,12 +206,18 @@ function FilterRight() {
                 <Col className="icons me-0  ms-4 col-1 align-self-center">
                   <FontAwesomeIcon
                     className="text-success "
-                    onClick={handleAdd}
+                    onClick={() => {
+                      handleAdd();
+                      setTimeout(() => {
+                        setIndexStepMap(2);
+                      }, 200);
+                    }}
                     icon={faCirclePlus}
+                    id="button-addDestination"
                   />
                 </Col>
                 <Col className="p-destino ms-0 pt-2">
-                  <p className="">Agregar Destino</p>
+                  <p className="">Add destination</p>
                 </Col>
               </Row>
 
@@ -164,34 +226,49 @@ function FilterRight() {
                   variant="primary"
                   className="text-white"
                   type="submit"
+                  id="button-getRoute"
                 >
-                  Buscar ruta
+                  Get route
                   <FontAwesomeIcon
                     className="search-icon"
                     icon={faMagnifyingGlass}
                   ></FontAwesomeIcon>
                 </Button>
-
-                
               </div>
               <div className="text-center mt-3">
-  {travel.length>0 &&
-    <Button 
-      variant="primary"
-      className="text-white"
-      type="submit"
-      href={travel}
-      target='_blank'
-    >
-      Navegar a Destino
-      <FontAwesomeIcon
-        className="search-icon"
-        icon={faCar}
-      ></FontAwesomeIcon>
-    </Button>
-  }
- 
-</div>
+                {places?.length > 0 && (
+                  <Button
+                    variant="primary"
+                    className="text-white"
+                    id="button-getRoute"
+                    onClick={cleanRoute}
+                  >
+                    Clean Route
+                    <FontAwesomeIcon
+                      className="search-icon"
+                      icon={faEraser}
+                    ></FontAwesomeIcon>
+                  </Button>
+                )}
+              </div>
+
+              <div className="text-center mt-3">
+                {travel.length > 0 && (
+                  <Button
+                    variant="primary"
+                    className="text-white"
+                    type="submit"
+                    href={travel}
+                    target="_blank"
+                  >
+                    Navigate to destination
+                    <FontAwesomeIcon
+                      className="search-icon"
+                      icon={faCar}
+                    ></FontAwesomeIcon>
+                  </Button>
+                )}
+              </div>
             </form>
           </div>
         </Collapse>

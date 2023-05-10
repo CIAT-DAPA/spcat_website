@@ -1,6 +1,14 @@
-import { React, useState, useEffect, useContext } from "react";
-import { CloseButton } from "react-bootstrap";
+import { React, useState, useEffect, useContext, useRef, Control } from "react";
+import { CloseButton, Button, Form } from "react-bootstrap";
 import { DataContext } from "../../context/context";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import RouteError from "../routeError/RouteError";
+import { saveAs } from "file-saver";
+import MapLegend from "../mapLegend/MapLegend";
+import Loader from "../loader/Loader";
+import NoGaps from "../nogapsmodal/NoGaps";
+import LayersMarkers from "../LayersMarkers/LayersMarkers";
 import {
   MapContainer,
   TileLayer,
@@ -10,242 +18,454 @@ import {
   Marker,
   Popup,
   Polyline,
+  Tooltip,
   useMap,
   useMapEvents,
+  ImageOverlay,
 } from "react-leaflet";
 import "./Map.css";
 import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import L from "leaflet";
 import axios from "axios";
-import icon from "../../assets/icons/banana.png";
-const { BaseLayer } = LayersControl;
+
+//const { BaseLayer } = LayersControl;
 function Map({
   carouselMajorItems,
   setCarouselMajorItems,
   carouselLandraceItems,
   setCarouselLandraceItems,
+  indexStep,
+  setIndexStep,
+  crops,
+  placesCoordinates,
+  polylineCoords,
+  showRoad,
 }) {
+  const [showe, setShowe] = useState(false); // estado para controlar la visualización del Modal
+
+  const handleClosee = () => {
+    setShowe(false);
+  };
+  //actions for modal loading
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  //action for modal no gaps
+  const [showg, setShowg] = useState(false);
+  const { places } = useContext(DataContext);
+  const { accesionsInput } = useContext(DataContext);
+  const [pruebita, setPruebita] = useState(false);
+
+  const handleCloseg = () => setShowg(false);
+  const handleShowg = () => setShowg(true);
+  
   const handleRemoveFromMajorCarousel = (index) => {
     const itemToRemove = carouselMajorItems.splice(index, 1)[0];
     setCarouselMajorItems([...carouselMajorItems]);
+    const colorToRemove = colors[index];
+    const newcolores = [...colors.slice(0, index), ...colors.slice(index + 1)];
+    setColors(newcolores);
   };
-
+  const colorsInitialState = [
+    "#FF5733", // Naranja
+    "#8B78E6", // Morado
+    "#FFC300", // Amarillo brillante
+    "#00BFFF", // Azul claro
+    "#FF69B4", // Rosa
+    "#1E90FF", // Azul brillante
+    "#008000", // Verde claro
+  ];
+  const [colors, setColors] = useState(colorsInitialState);
+  useEffect(() => {
+    if (carouselLandraceItems?.length === 0) {
+      setColors(colorsInitialState);
+    }
+  }, [carouselLandraceItems]);
+  useEffect(() => {
+    if (carouselMajorItems?.length === 0) {
+      setColors(colorsInitialState);
+    }
+  }, [carouselMajorItems]);
   const handleRemoveFromLandraceCarousel = (index) => {
     const itemToRemove = carouselLandraceItems.splice(index, 1)[0];
+    const colorToRemove = colors[index];
+    const newcolores = [...colors.slice(0, index), ...colors.slice(index + 1)];
+    setColors(newcolores);
+
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
+  const { iso } = useContext(DataContext);
+  const { image } = useContext(DataContext);
 
-  
-  const google = window.google;
-  const { context } = useContext(DataContext);
-  const { data } = useContext(DataContext);
-  const { elevationsg, setElevationsg } = useContext(DataContext);
-  const { distance, setDistance } = useContext(DataContext);
-  const { time, setTime } = useContext(DataContext);
-  const { travel, setTravel } = useContext(DataContext);
-  const { elevationProm, setElevationProm} = useContext(DataContext);
-  const [distances, setDistances] = useState([]);
+  const [layerr, setLayerr] = useState([]);
 
-  const { layerc } = useContext(DataContext);
-  const [prueba, setPrueba] = useState([]);
-  const [lugares, setLugares] = useState([]);
-  const [wmsTileLayer, setWMSTileLayer] = useState(null);
-  const[elevations,setElevations]=useState([])
+  const [groups, setGroups] = useState([]);
+
+  const [accessions, setAccessions] = useState([]);
+
+  const [filteredgroups, setFilteredGroups] = useState([]);
+
+  const [groupstwo, setGroupstwo] = useState([])
+
+
+  const [filteredCrops, setFilteredCrops] = useState([]);
   useEffect(() => {
-    // Aquí puedes hacer cualquier acción que necesites cada vez que cambie layerc
-    // En este caso, no haremos nada especial
-  }, [layerc]);
+    if (carouselMajorItems !== null) {
+      const filteredData = crops.filter((item) =>
+        carouselMajorItems.includes(item.app_name)
+      );
+      setFilteredCrops(filteredData);
+    }
+  }, [crops, carouselMajorItems]);
 
-  console.log(data);
-  // Array con las ciudades
-  /* useEffect(() => {
-    // Actualiza el estado de wmsTileLayer cuando layer cambia
-    setWMSTileLayer(
-      <WMSTileLayer 
-        url="http://localhost:8080/geoserver/otrico/wms"
-        layers={`otrico:${layerc}`}
-        format="image/png"
-        transparent={true}
-      />
-    );
-  }, [layerc]); */
+  useEffect(() => {
+    if (
+      carouselMajorItems !== null &&
+      carouselMajorItems.length === 1 &&
+      carouselLandraceItems.length == 0
+    ) {
+      setShow(true);
+      const cropId = filteredCrops[0].id;
+      setSelectedMarkers([]);
+      setClickedMarkerIndices(new Set());
+      setLayerr([`${iso}_${filteredCrops[0].ext_id}`]);
 
-  let url = "https://maps.googleapis.com/maps/api/directions/json?";
-
-
-// Agregar un evento load al objeto window
-window.addEventListener("load", () => {
-  // Crear un objeto DirectionsService
-  
-});
-useEffect(()=>{
-  if(context.length>0){
-    const directionsService = new google.maps.DirectionsService();
-    const elevationService = new google.maps.ElevationService();
-    const puntos=  context.map(punto => ({location: punto}));
-      // Crear una solicitud de dirección
-      
-      const request = {
-        origin: puntos[0].location,
-        destination: puntos[puntos.length - 1].location,
-        travelMode: google.maps.TravelMode.DRIVING,
-        waypoints: puntos.slice(1, -1),
-      };
-
-      // Enviar la solicitud de dirección a la API de Google Maps
-      directionsService.route(request, (response, status) => {
-        if (status === google.maps.DirectionsStatus.OK) {
-          // Obtener las coordenadas de la ruta
-          const route = response.routes[0];
-          
-          const coordinates = route.overview_path.map(point => [point.lat(), point.lng()]);
-   
-          const duration = response.routes[0].legs.reduce(
-            (total, leg) => total + leg.duration.value,
-            0
-          );
-          const hours = Math.floor(duration / 3600);
-          const minutes = Math.floor((duration % 3600) / 60);
-          const url = `https://www.google.com/maps/dir/?api=1&origin=${puntos[0].location}&destination=${puntos[puntos.length - 1].location}&waypoints=${puntos.slice(1, -1).map(punto => punto.location).join('|')}&travelmode=driving`;
-          setTravel(url)
-          const coordenadasApi = coordinates.map((coordenadas) => {
-            return {
-              lat: coordenadas[0],
-              lng: coordenadas[1]
-            };
-          });
-          console.log(coordenadasApi)
-          console.log(`Tiempo total de viaje: ${hours} horas y ${minutes} minutos`);
-          setTime([hours,minutes])
-          console.log(url)
-          const distance = route.legs.reduce((acc, leg) => acc + leg.distance.value, 0);
-          setDistance(distance/1000)
-          console.log(`Distancia total: ${distance/1000} km`);  
-          const distances = [];
-          for (let i = 0; i < coordenadasApi.length - 1; i++) {
-            const from = new google.maps.LatLng(coordenadasApi[i]);
-            const to = new google.maps.LatLng(coordenadasApi[i + 1]);
-            const distance = google.maps.geometry.spherical.computeDistanceBetween(
-              from,
-              to
-            );
-            distances.push(distance);
+      axios
+        .get(
+          `http://localhost:5000/api/v1/accessionsbyidcrop?id=${cropId}&iso=${iso}`
+        )
+        .then((response) => {
+          setShow(false);
+          if (response.data[0].accessions.length === 0) {
+            setShowg(true);
+            setCarouselMajorItems([]);
+          } else {
+            setAccessions(response.data.flatMap((crop) => crop.accessions));
           }
-          console.log(distances);
-          setDistances(distances);
+        })
 
-          elevationService.getElevationAlongPath(
-            {
-              path: coordenadasApi,
-              samples: 256
-            },
-            (results, status) => {
-              if (status === google.maps.ElevationStatus.OK) {
-                // Obtener las elevaciones de los puntos de la ruta
-                console.log(results)
-                const elevations = results.map(result => result.elevation);
-                // Las elevaciones están en metros
-                const promelevation = (elevations.reduce((acumulador, numero) => acumulador + numero, 0)/elevations.length).toFixed(2);
-                console.log(`el promedio es ${promelevation}`)
-                setElevationProm(promelevation)
-                setElevationsg(elevations)
-              } else {
-                console.error(`Error al obtener la elevación: ${status}`);
-              }
-            }
-          );
-    
-          // Las coordenadas están en formato [latitud, longitud]
+        .catch((error) => {
+          console.log(error);
+        });
+    } else if (carouselMajorItems != null && carouselMajorItems.length == 0) {
+      setAccessions([]);
+    }
+  }, [filteredCrops]);
 
-          setLugares(coordinates);
+  useEffect(() => {
+    if (
+      carouselLandraceItems !== null &&
+      carouselLandraceItems.length > 0 &&
+      carouselMajorItems.length > 0
+    ) {
+      setShow(true);
+      setSelectedMarkers([]);
+      setClickedMarkerIndices(new Set());
+      const cropId = filteredCrops[0].id;
+
+      axios
+        .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
+        .then((response) => {
+          setShow(false);
+          setGroups(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+    }
+  }, [filteredCrops]);
+  useEffect(() => {
+    if (carouselLandraceItems != null && groups[0]?.groups != null) {
+      setSelectedMarkers([]);
+      setClickedMarkerIndices(new Set());
+      const filteredgroups = groups[0]?.groups
+        .map((obj) =>
+          carouselLandraceItems.includes(obj.group_name) ? obj : null
+        )
+        .filter((obj) => obj !== null);
+      setFilteredGroups(filteredgroups);
+    }
+  }, [carouselLandraceItems, groups]);
+
+  const idsgroups = filteredgroups.map((obj) => obj.id).join(",");
+  const extidsgroup = filteredgroups
+    .filter((obj) => carouselLandraceItems.includes(obj.group_name))
+    .sort(
+      (a, b) =>
+        carouselLandraceItems.indexOf(a.group_name) -
+        carouselLandraceItems.indexOf(b.group_name)
+    )
+    .map((obj) => obj.ext_id);
+
+  useEffect(() => {
+    if (carouselLandraceItems != null && carouselLandraceItems.length > 0) {
+      setShow(true);
+      setAccessions([]);
+      //let hola= filteredgroups.ma
+      const newArray = extidsgroup.map((element) => `${iso}_${element}`);
+      setSelectedMarkers([]);
+      setClickedMarkerIndices(new Set());
+      setLayerr(newArray);
+      axios
+        .get(
+          `http://localhost:5000/api/v1/accessionsbyidgroup?id=${idsgroups}&iso=${iso}`
+        )
+        .then((response) => {
+          setShow(false);
+          if (response.data[0].accessions.length === 0) {
+            setShowg(true);
+            setCarouselMajorItems([]);
+          } else {
+            setAccessions(response.data.flatMap((crop) => crop.accessions));
+          }
+        })
+        .catch((error) => {});
+    } else if (
+      carouselLandraceItems != null &&
+      carouselLandraceItems.length == 0
+    ) {
+      setAccessions([]);
+    }
+  }, [filteredgroups]);
+  const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
+  const extids = filteredCrops
+    .filter((obj) => carouselMajorItems.includes(obj.app_name))
+    .sort(
+      (a, b) =>
+        carouselMajorItems.indexOf(a.app_name) -
+        carouselMajorItems.indexOf(b.app_name)
+    )
+    .map((obj) => obj.ext_id);
+  filteredCrops
+    .map((obj) => obj.ext_id)
+    .join(",")
+    .split(",");
+
+  useEffect(() => {
+    if (carouselMajorItems === null || carouselMajorItems.length == 0) {
+      setLayerr([]);
+    }
+  }, [carouselMajorItems]);
+
+  useEffect(() => {
+    if (carouselLandraceItems === null || carouselLandraceItems.length == 0) {
+      setLayerr([]);
+    }
+  }, [carouselLandraceItems]);
+
+  useEffect(() => {
+    if (
+      carouselMajorItems !== null &&
+      carouselMajorItems.length > 1 &&
+      carouselLandraceItems.length == 0
+    ) {
+      setShow(true);
+      const newArray = extids.map((element) => `${iso}_${element}`);
+      setSelectedMarkers([]);
+      setClickedMarkerIndices(new Set());
+      setLayerr(newArray);
+      setAccessions([]);
+      const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
+
+      axios.get(endopointAccesionsByCrop).then((response) => {
+        setShow(false);
+
+        const flatMapAccesons = response.data.flatMap(
+          (crop) => crop.accessions
+        );
+        // 4. Manejar la respuesta de la solicitud HTTP
+        if (flatMapAccesons.length > 0) {
+          setAccessions(flatMapAccesons);
         } else {
-          console.error(`Error al obtener la dirección: ${status}`);
+          setShowg(true);
+          setAccessions([]);
+          setCarouselMajorItems([]);
         }
       });
-  }
-  
-},[context])
-console.log(elevations)
-
-  const [ubicaciones, setUbicaciones] = useState([]);
-  // Iteramos sobre el array de ciudades y obtenemos las coordenadas de cada una
-  /* const response = await fetch(`${baseURLCategories}${genre}${opts}`, ); */
-  useEffect(() => {
-    if (context.length > 0) {
-      context.forEach(function (ciudad) {
-        // Creamos una consulta para obtener las coordenadas de la ciudad
-        let query = {
-          address: ciudad,
-          key: "AIzaSyARbwF61yXA-0aEOfeDYanC-IpgfxMQL-w",
-        };
-        // Hacemos la petición a la API de Geocodificación de Google Maps
-        axios
-          .get("https://maps.googleapis.com/maps/api/geocode/json", {
-            params: query,
-          })
-          .then(function (response) {
-            // Obtenemos las coordenadas de la ciudad
-            let location = response.data.results[0].geometry.location;
-            // Agregamos las coordenadas a la lista de ubicaciones
-            setUbicaciones((prevUbicaciones) => [
-              ...prevUbicaciones,
-              { lat: location.lat, lng: location.lng },
-            ]);
-
-            // Si ya hemos obtenido las coordenadas de todas las ciudades, construimos la consulta para obtener la ruta
-            if (ubicaciones.length === context.length) {
-              let query = {
-                origin: ubicaciones[0],
-                destination: ubicaciones[ubicaciones.length - 1],
-                waypoints: ubicaciones
-                  .slice(1, ubicaciones.length - 1)
-                  .join("|"),
-                key: "AIzaSyARbwF61yXA-0aEOfeDYanC-IpgfxMQL-w",
-              };
-              // Hacemos la petición a la API de Direcciones de Google Maps
-              axios
-                .get(url, { params: query })
-                .then(function (response) {
-                  // Obtenemos los pasos de la ruta y los imprimimos
-                  let pasos = response.data.routes[0].legs[0].steps;
-                  pasos.forEach(function (paso) {
-                    console.log(paso.html_instructions);
-                  });
-                })
-                .catch(function (error) {
-                  console.log("Error al obtener la ruta: " + error.message);
-                });
-            }
-          })
-          .catch(function (error) {
-            console.log(
-              "Error al obtener las coordenadas de " +
-                ciudad +
-                ": " +
-                error.message
-            );
-          });
-      });
-    } else {
-      console.log("aun no hay nada");
     }
-  }, [context]);
+  }, [filteredCrops]);
 
-  const customIcon = L.icon({
-    iconUrl: "https://img.icons8.com/material-outlined/256/marker.png",
-    iconSize: [35, 35], // tamaño del icono
-  });
+  useEffect(() => {
+    if (
+      carouselMajorItems !== null &&
+      carouselMajorItems.length == 1 &&
+      carouselLandraceItems.length == 0
+    ) {
+      setShow(true);
+      const newArray = extids.map((element) => `${iso}_${element}`);
+      setSelectedMarkers([]);
+      setClickedMarkerIndices(new Set());
+      setLayerr(newArray);
+      setAccessions([]);
 
-  console.log(layerc);
-  const accessionsArreglo = prueba.map((objeto) => objeto.accessions);
+      const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
 
+      axios.get(endopointAccesionsByCrop).then((response) => {
+        setShow(false);
+        const flatMapAccesions = response.data.flatMap(
+          (crop) => crop.accessions
+        );
+        if (flatMapAccesions.length > 0) {
+          setAccessions(flatMapAccesions);
+        } else {
+          setAccessions([]);
+          setShowg(true);
+          setCarouselMajorItems([]);
+        }
+      });
+    }
+  }, [carouselLandraceItems]);
+
+  const customIcon = (idcrop,idgroup) => {
+    const groupName = groups[0]?.groups?.filter(grou => idgroup === grou.id)[0]?.group_name
+    
+    const namecrop = crops.filter(crop => crop.id === idcrop )[0].base_name;
+  
+    return L.icon({
+      iconUrl: require(`../../assets/icons/${namecrop}.png`),
+      iconSize: [30, 30], // tamaño del icono
+      className: carouselLandraceItems?.length>1 && `drop_${carouselLandraceItems.indexOf(groupName)}`
+    });
+  };
+
+  const [clickedMarkerIndices, setClickedMarkerIndices] = useState(new Set());
+  const [selectedMarkers, setSelectedMarkers] = useState([]);
+  const [datatoExport, setDataToExport] = useState([]);
+  useEffect(() => {
+    if (selectedMarkers.length > 0) {
+      console.log(selectedMarkers)
+      setDataToExport(selectedMarkers.map((dat) => dat.tooltipInfo));
+    }
+  }, [selectedMarkers]);
+  useEffect(() => {
+    if (carouselMajorItems && carouselMajorItems.length == 0) {
+      setCarouselLandraceItems([]);
+    }
+  }, [carouselMajorItems]);
+
+ 
+  const descargarCSV = (data, fileName) => {
+    if (!data || data.length === 0) {
+      console.error("No hay datos para exportar");
+      return;
+    }
+
+    const header = Object.keys(data[0]);
+    const headerWithoutLastColumn = header.slice(0, -1); // crear un nuevo encabezado sin la última columna
+    const rows = data.map((obj) => {
+      const valuesWithoutLastColumn = Object.values(obj).slice(0, -1); // crear un nuevo arreglo de valores sin la última columna
+      return valuesWithoutLastColumn;
+    });
+    rows.unshift(headerWithoutLastColumn);
+    const csvContent = rows.map((row) => row.join(",")).join("\n");
+    const file = new File([csvContent], fileName, {
+      type: "text/csv;charset=utf-8",
+    });
+    saveAs(file);
+    setIndexStep(7);
+  };
+
+  const handleSelectedDownloadClick = () => {
+    descargarCSV(datatoExport, "selected_accessions.csv");
+  };
+
+  const handleAllDownloadClick = () => {
+    descargarCSV(accessions, "all_accessions.csv");
+  };
+
+
+  const mapRef = useRef(null);
+  useEffect(() => {
+    if (accessions.length > 0) {
+      const latLngs = accessions.map((coordenada) => [
+        coordenada.latitude,
+        coordenada.longitude + 5,
+      ]);
+      const bounds = L.latLngBounds(latLngs);
+      if (mapRef.current) {
+        mapRef.current.flyToBounds(bounds, { padding: [250, 250] });
+      }
+    }
+  }, [accessions]);
+
+  useEffect(() => {
+    if (accesionsInput?.length > 0) {
+      const latLngs = accesionsInput.map((coordenada) => [
+        coordenada.latitude,
+        coordenada.longitude,
+      ]);
+      const bounds = L.latLngBounds(latLngs);
+      if (mapRef.current) {
+        mapRef.current.flyToBounds(bounds);
+      }
+    }
+  }, [accesionsInput]);
+
+  const [option1Checked, setOption1Checked] = useState(true);
+  const [option2Checked, setOption2Checked] = useState(true);
+  const [currentImage, setCurrentImage] = useState(null);
+  useEffect(() => {
+    {
+      option1Checked == false &&
+        option2Checked == true &&
+        layerr.length > 0 &&
+        setColors(colorsInitialState);
+    }
+  }, [option2Checked, option1Checked]);
+  useEffect(() => {
+    {
+      option1Checked == true &&
+        option2Checked == false &&
+        layerr.length > 0 &&
+        setColors(colorsInitialState);
+    }
+  }, [option2Checked, option1Checked]);
+
+  useEffect(() => {
+    option1Checked == true &&
+      option2Checked == true &&
+      layerr.length > 0 &&
+      setColors(colorsInitialState);
+  }, [option2Checked, option1Checked]);
+
+  useEffect(() => {
+    // Borra la imagen anterior si existe
+    if (currentImage) {
+      currentImage.remove();
+      setCurrentImage(null);
+    }
+    // Agrega la nueva imagen
+    if (image != null) {
+      image.options.zIndex = 1000;
+      //image.color = #0000ff
+      image.addTo(mapRef.current);
+      mapRef.current.flyToBounds(image.getBounds());
+      //image._image.style.backfaceVisibility = 'hidden';
+    }
+
+    // Actualiza el estado con la nueva imagen
+    setCurrentImage(image);
+  }, [image]);
   return (
-    <div className="mapDiv mx-0 p-0">
-      <div className="div-filter-map" style={{backgroundColor:'transparent', zIndex:'1000', position:'relative'}}>
+    <div className="mapDiv mx-0 p-0 " id="mapLayer">
+      <Loader show={show} handleClose={handleClose} />
+      <RouteError showe={showe} handleClosee={handleClosee} />
+      <NoGaps showg={showg} handleCloseg={handleCloseg} />
+
+      <div
+        className="div-filter-map"
+        style={{
+          backgroundColor: "transparent",
+          zIndex: "1000",
+          position: "relative",
+          width: "fit-content",
+        }}
+      >
         <div className="px-4 py-2">
           {carouselMajorItems && carouselMajorItems.length > 0 && (
-            <h6>Major items</h6>
+            <h6>Major crops</h6>
           )}
           {carouselMajorItems &&
             carouselMajorItems.map((item, i) => (
@@ -256,7 +476,9 @@ console.log(elevations)
               >
                 <img
                   alt=""
-                  src="https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/banana.png"
+                  src={require(`../../assets/icons/${item
+                    .split(" ")[0]
+                    .toLowerCase()}.png`)}
                   width="20"
                 />{" "}
                 {item}
@@ -279,11 +501,15 @@ console.log(elevations)
                 key={i}
                 onClick={() => handleRemoveFromLandraceCarousel(i)}
               >
-                <img
-                  alt=""
-                  src="https://ciat.shinyapps.io/LGA_dashboard/_w_ff143018/crops_icons/banana.png"
-                  width="20"
-                />{" "}
+                {carouselMajorItems.length > 0 && (
+                  <img
+                    alt=""
+                    src={require(`../../assets/icons/${carouselMajorItems[0]
+                      .split(" ")[0]
+                      .toLowerCase()}.png`)}
+                    width="20"
+                  />
+                )}
                 {item}
                 <CloseButton
                   disabled
@@ -296,68 +522,141 @@ console.log(elevations)
 
       <MapContainer
         id="mapid"
+        ref={mapRef}
         center={[14.88, -35, 76]}
         zoom={3}
+        zoomSnap={0.25}
         maxBounds={[
           [90, -180.0],
           [-90, 180.0],
         ]}
         scrollWheelZoom={true}
-        style={{ height: "100%", width: "100%", position:'fixed', top: '58px' }}
+        style={{
+          height: "100%",
+          width: "100%",
+          position: "fixed",
+          top: "58px",
+        }}
         zoomControl={false}
       >
-        {data &&
-          data.length > 0 &&
-          data.map((marker, index) =>
-            marker.latitude && marker.longitude ? (
-              <Marker
-                key={index}
-                position={[marker.latitude, marker.longitude]}
-                icon={customIcon}
-              >
-                <Popup>
-                  Institution: {marker.institution_name} <br /> Source:{" "}
-                  {marker.source_database}
-                </Popup>
-              </Marker>
-            ) : null
-          )}
-
-        {/* {accessionsArreglo && accessionsArreglo.length > 0 && accessionsArreglo[0].map((marker, index) => (
-  (marker.latitude && marker.longitude) ? (
-    <Marker key={index} position={[marker.latitude, marker.longitude]} icon={customIcon}>
-      <Popup>Institution: {marker.institution_name} <br /> Source: {marker.source_database}</Popup>
-    </Marker>
-  ) : null
-))} */}
-
-        {ubicaciones.map((marker, index) => (
-          <Marker key={index} position={[marker.lat, marker.lng]}>
-            <Popup>
-              Institution: <br /> Source:{" "}
-            </Popup>
+        <LayersMarkers
+          option1Checked={option1Checked}
+          option2Checked={option2Checked}
+          accessions={accessions}
+          clickedMarkerIndices={clickedMarkerIndices}
+          setIndexStep={setIndexStep}
+          customIcon={customIcon}
+          layerr={layerr}
+          selectedMarkers={selectedMarkers}
+          setSelectedMarkers={setSelectedMarkers}
+          setClickedMarkerIndices={setClickedMarkerIndices}
+        />
+        {placesCoordinates.map((marker, index) => (
+          <Marker key={index} position={[marker.latitude, marker.longitude]}>
+            <Popup>{`Destino ${index +1} ${places[index]}
+            `}</Popup>
           </Marker>
         ))}
-
-        <ZoomControl position="topright"></ZoomControl>
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-        {layerc && (
-  <WMSTileLayer 
-    key={`layer-${layerc}`}
-    url="https://isa.ciat.cgiar.org/geoserver2/gap_analysis/wms"
-    layers={`gap_analysis:${layerc}`}
-    format="image/png"
-    transparent={true}
-  />
-)}
-<Polyline color="lime" positions={lugares} weight={5} />
-{/* <Marker  position={[4.71096, -74.07221000000001]}>
-            <Popup>
-              Institution: <br /> Source:{" "}
-            </Popup>
-          </Marker> */}
+        <LayersControl position="topright" className="mt-5">
+          <LayersControl.BaseLayer checked name="Normal">
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="Relief">
+            <TileLayer url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png" />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="Satellite">
+            <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
+          </LayersControl.BaseLayer>
+          {accessions.length > 1 && (
+            <>
+              <LayersControl.Overlay name="Accessions" checked={true}>
+                <TileLayer
+                  eventHandlers={{
+                    add: (e) => {
+                      setOption1Checked(true);
+                    },
+                    remove: (e) => {
+                      setOption1Checked(false);
+                    },
+                  }}
+                  url=""
+                />
+              </LayersControl.Overlay>
+              <LayersControl.Overlay name="Gap" checked={true}>
+                <TileLayer
+                  url=""
+                  eventHandlers={{
+                    add: (e) => {
+                      setOption2Checked(true);
+                    },
+                    remove: (e) => {
+                      setOption2Checked(false);
+                    },
+                  }}
+                />
+              </LayersControl.Overlay>
+            </>
+          )}
+        </LayersControl>
+        //{" "}
+        <Polyline color="lime" positions={polylineCoords} weight={5} />
       </MapContainer>
+      <MapLegend
+        option2Checked={option2Checked}
+        carouselLandraceItems={carouselLandraceItems}
+        carouselMajorItems={carouselMajorItems}
+        colors={colors}
+      />
+      {selectedMarkers &&
+      selectedMarkers.length === 0 &&
+      accessions.length > 0 ? (
+        
+        <div
+        className={
+          showRoad
+            ? "div-inferior-derecha-showRoad"
+            : "div-inferior-derecha"
+        }
+      >
+          <Button
+            variant="primary"
+            className="text-white accession"
+            onClick={handleAllDownloadClick}
+          >
+            Download all accessions
+            <FontAwesomeIcon
+              className="search-icon"
+              icon={faDownload}
+            ></FontAwesomeIcon>
+          </Button>
+        </div>
+      ) : (
+        selectedMarkers &&
+        selectedMarkers.length > 0 &&
+        accessions.length > 0 && (
+          <div
+            className={
+              showRoad
+                ? "div-inferior-derecha-showRoad"
+                : "div-inferior-derecha"
+            }
+          >
+            <Button
+              variant="primary"
+              className="text-white accession"
+              type="submit"
+              onClick={handleSelectedDownloadClick}
+              id="button-downloadAccesion"
+            >
+              Download selected accessions
+              <FontAwesomeIcon
+                className="search-icon"
+                icon={faDownload}
+              ></FontAwesomeIcon>
+            </Button>
+          </div>
+        )
+      )}
     </div>
   );
 }

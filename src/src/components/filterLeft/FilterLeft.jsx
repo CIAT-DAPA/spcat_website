@@ -1,4 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import './FilterLeft.css'
+import Papa from 'papaparse';
+
+/* import {tiff} from 'tiff.js'; */
+import GeoTIFF, { fromUrl, fromUrls, fromArrayBuffer, fromBlob } from "geotiff";
+
+import GeoRasterLayer from "georaster-layer-for-leaflet";
+import parseGeoraster from "georaster";
+
+import L from "leaflet";
+//import * as GeoTIFF from 'geotiff/src/main';
 import {
   Row,
   Form,
@@ -11,6 +24,8 @@ import {
 import CheckFilter from "../checkFilter/CheckFilter";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState, useEffect, useContext } from "react";
+import CountryModal from "../modalcountry/modalc";
+import ModalFileError from "../modalfile/ModalFileError";
 import axios from "axios";
 import { DataContext } from "../../context/context";
 import { layerGroup } from "leaflet";
@@ -19,6 +34,10 @@ function FilterLeft({
   setCarouselLandraceItems,
   response,
   crops,
+  toggleImageVisibility,
+  imageVisible,
+  indexStep,
+  setIndexStep,
 }) {
   const [majorCrops, setMajorCrops] = useState([]);
   useEffect(() => {
@@ -28,9 +47,8 @@ function FilterLeft({
     }
   }, [crops]);
 
-  const { data, setData } = useContext(DataContext);
-  const { layerc, setLayerc } = useContext(DataContext);
-
+  const { iso, setIso } = useContext(DataContext);
+  const{accesionsInput,setAccesionsInput}=useContext(DataContext);
   const [shouldAddToMap, setShouldAddToMap] = useState(false);
   const [carouselMajorItemsNow, setCarouselMajorItemsNow] = useState([]); //items del carusel en el momento
   const [carouselLandraceItemsNow, setCarouselLandraceItemsNow] =
@@ -38,6 +56,7 @@ function FilterLeft({
   const [countryIso, setCountryIso] = useState(""); //iso del pais seleccionado
   const [shouldReset, setShouldReset] = useState(false);
   const fileInputRef = useRef(null);
+  const fileInputRefA = useRef(null);
   const [filteredCrops, setFilteredCrops] = useState([]); //cultivos ssleciionados
 
   const [groupNames, setGroupNames] = useState([]);
@@ -45,6 +64,18 @@ function FilterLeft({
   const [accessionData, setAccessionData] = useState([]);
   const [accesionDataByCrop, setAccesionDataByCrop] = useState([]);
   const [layer, setLayer] = useState([]);
+  const { image, setImage } = useContext(DataContext);
+  var filep=''
+  const [showc, setShowc] = useState(false);
+   // estado para controlar la visualización del Modal
+
+  const [showF, setShowF] = useState(false);
+  const handleCloseF = () => setShowF(false);
+  const handleShowF = () => setShowF(true);
+
+  const handleClosec = () => {
+    setShowc(false);
+  }; // función para ocultar el Modal
 
   const handleDataMajorCropChange = (newData) => {
     setCarouselMajorItemsNow(newData);
@@ -59,22 +90,65 @@ function FilterLeft({
       (country) => country.name === e.target.value
     );
     setCountryIso(selectedCountry.iso_2);
+    setIso(selectedCountry.iso_2);
+    setTimeout(() => {
+      setIndexStep(1);
+    }, 200);
   };
+ console.log(showF)
 
+  const [imageCoords, setImageCoords] = useState(null);
+  const[titleModal,setTitlemodal]=useState('')
+  const [textModal, setTextModal] = useState('');
+  
   //console.log(countryIso)
+  
   const handleFileInputChange = (event) => {
-    const selectedFile = event.target.files[0];
-    // acciones con el archivo subido
-    //console.log(selectedFile);
+    const file = event.target.files[0];
+    filep=file
+
+    // Leer el archivo TIFF
+    const reader = new FileReader();
+    reader.onload = () => {
+      const tiffData = reader.result;
+
+      parseGeoraster(tiffData).then((georaster) => {
+//        console.log("georaster:", georaster);
+        /*
+            GeoRasterLayer is an extension of GridLayer,
+            which means can use GridLayer options like opacity.
+            Just make sure to include the georaster option!
+            http://leafletjs.com/reference-1.2.0.html#gridlayer
+        */
+        var layer = new GeoRasterLayer({
+          georaster: georaster,
+          opacity: 0.7,
+          resolution: 256,
+        });
+        setImage(layer);
+       // console.log("layer:", layer);
+
+        /* layer.addTo(map);
+
+        map.fitBounds(layer.getBounds());
+        document.getElementById("overlay").style.display = "none"; */
+      });
+    };
+    reader.readAsArrayBuffer(file);
   };
+  //console.log(filep.name)
+
+  const clearInput=(e)=>{
+    e.target.value=null;
+  }
 
   if (shouldAddToMap) {
     setCarouselMajorItems(carouselMajorItemsNow);
     setCarouselLandraceItems(carouselLandraceItemsNow);
     setShouldAddToMap(false);
   }
-  console.log(carouselLandraceItemsNow);
-
+  //console.log(carouselLandraceItemsNow);
+  //console.log(countryIso)
   useEffect(() => {
     const filteredData = crops.filter((item) =>
       carouselMajorItemsNow.includes(item.app_name)
@@ -83,17 +157,18 @@ function FilterLeft({
   }, [crops, carouselMajorItemsNow]);
 
   //console.log(filteredCrops)
-  console.log(filteredCrops);
   useEffect(() => {
     if (filteredCrops.length === 1) {
       const cropId = filteredCrops[0].id;
       axios
-        .get(`http://localhost:5000/api/v1/groupsbyids?id=${cropId}`)
+        .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
         .then((response) => {
           setAllGroupCrop(response.data);
           setLayer(countryIso + "_" + filteredCrops[0].name);
-          const groupNames = response.data.map((group) => group.group_name);
-          setGroupNames(groupNames);
+          const groupsArray = response.data[0].groups.map(
+            (group) => group.group_name
+          );
+          setGroupNames(groupsArray);
         })
         .catch((error) => {
           console.log(error);
@@ -103,18 +178,20 @@ function FilterLeft({
     }
   }, [filteredCrops]);
 
-  //console.log(layer)
-  console.log(allgroupscrop);
+ 
 
-  const gruposencarrousell = allgroupscrop.filter((grupo) =>
-    carouselLandraceItemsNow.includes(grupo.group_name)
-  ); //filre los grupos que estan em el crrousell
-  const idss = gruposencarrousell.map((obj) => obj.id).join(",");
-  console.log(idss);
+   //filre los grupos que estan em el crrousell
+ // const idss = gruposencarrousell.map((obj) => obj.id).join(",");
   // ['Spring', 'Winter']   los grupos
-
-  useEffect(() => {
+  //console.log(idss)
+ /*  useEffect(() => {
     if (idss.length > 0) {
+      setLayer([]);
+      const nuevoEstado = carouselLandraceItemsNow.map(
+        (elemento) => `${layer}_${elemento}`
+      );
+      setLayer(nuevoEstado);
+      console.log(layer);
       const endpointaccesions = `http://localhost:5000/api/v1/accessionsbyidgroup?id=${idss}`;
       axios
         .get(endpointaccesions)
@@ -126,121 +203,231 @@ function FilterLeft({
           console.log("Error en la solicitud HTTP:", error);
         });
     }
-  }, [idss]);
+  }, [idss]); */
 
-  console.log(countryIso);
-  console.log(layer);
   const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
-  console.log(idsCropss);
 
-  useEffect(() => {
-    if (idsCropss.length > 1) {
-      setAccessionData([]);
-      setData([]);
-      console.log(data);
-      const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}`;
-      axios.get(endopointAccesionsByCrop).then((response) => {
-        // 4. Manejar la respuesta de la solicitud HTTP
-        //setAccesionDataByCrop(response.data)
-        console.log(response);
-        if (response.data[0]?.accessions) {
-          console.log(response.data.length);
 
-          setAccessionData(response.data.flatMap((crop) => crop.accessions));
-        } else {
-          console.log(response.data.length);
-          console.log("unooo");
-          setAccessionData(response.data);
-        }
-      });
-    }
-  }, [idsCropss]);
 
-  console.log(accessionData);
-  //console.log(layer)
+  //console.log(layer);
   const handleAddToMap = () => {
+    if (countryIso.length == 0) {
+      setShowc(true);
+      setIndexStep(3);
+      // alert('Por favor seleccione un país');
+      return;
+    }
+    setIndexStep(4);
     setShouldReset(!shouldReset);
     setShouldAddToMap(true);
-    setData(accessionData);
-    setLayerc(layer);
   };
+  const eraseLayer = () => {
+    setImage(null);
+    
+  };
+  const eraseAccesion = () => {
+    setAccesionsInput(null);
+    
+  };
+  
+  const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
+  const [data, setData] = useState(null);
 
-  if (filteredCrops.length == 0) {
-    console.log("se vacio esto");
-  }
+  const handleFileInputChangee = (e) => {
+    const file = e.target.files[0];
+    console.log(file.name)
+    if (!file.name.endsWith('.csv')) {
+      setTitlemodal('you have not selected a file in CSV format')
+      setTextModal('You must select a file in csv format')
+      setShowF(true)
+      return;
+    }
 
-  const renderTooltip = (props) => (
-    <Tooltip >{props}</Tooltip>
-  );
+    Papa.parse(file, {
+      header: true,
+      complete: function(results) {
+      const requiredHeaders = ['id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id'];
+      const fileHeaders = Object.keys(results.data[0]);
+      console.log(file)
+      if (!requiredHeaders.every((header) => fileHeaders.includes(header))) {
+        setTitlemodal('Invalid columns in csv file')
+        setTextModal(`please check your file, the columns should be arranged like this: id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id `)
+        setShowF(true)
+        return;
+      }
 
+        setAccesionsInput(results.data);
+      }
+    });
+  };
   return (
-    <Container className="mt-3">
-      <Row className="align-items-center mb-3">
-        <Col className="col-4 d-flex align-items-center">
-          Country{" "}
-          <OverlayTrigger placement="top" overlay={renderTooltip("Step 1: Select your country")}>
-            <span class="badge rounded-pill bg-primary ms-1">Step 1</span>
-          </OverlayTrigger>
-        </Col>
-        <Col>
-          <Form.Select
-            aria-label="Default select example"
-            onChange={handleCountryChange}
-          >
-            {response.map((country) => (
-              <option key={country.id} value={country.name}>
-                {country.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Col>
-      </Row>
+    <>
+      <CountryModal showc={showc} handleClosec={handleClosec} />
+      <ModalFileError show={showF} handleClose={handleCloseF} titleModal={titleModal} textModal={textModal}></ModalFileError>
 
-      {majorCrops && (
-        <CheckFilter
-          title="Major Crops"
-          toolTipTitle="Step 2"
-          toolTipDescription="Step 2: Select your crops"
-          onDataChange={handleDataMajorCropChange}
-          onChange={shouldReset}
-          crop={majorCrops}
-        ></CheckFilter>
-      )}
-      {carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (
+      <Container className="mt-3">
+        <Row className="align-items-center mb-3" id="select-country">
+          <Col className="col-5 d-flex align-items-center">
+            <OverlayTrigger
+              placement="top"
+              overlay={renderTooltip("Step 1: Select your country")}
+            >
+              <span className="badge rounded-pill bg-primary me-1">Step 1</span>
+            </OverlayTrigger>
+            Country
+          </Col>
+          <Col>
+            <Form.Select
+              aria-label="Default select example"
+              onChange={handleCountryChange}
+            >
+              <option value="">Select country</option>
+              {response.map((country) => (
+                <>
+                  <option key={country.id} value={country.name}>
+                    {country.name}
+                  </option>
+                </>
+              ))}
+            </Form.Select>
+          </Col>
+        </Row>
+
+        {majorCrops && (
+          <CheckFilter
+            title="Major Crops"
+            toolTipTitle="Step 2"
+            toolTipDescription="Step 2: Select your crops"
+            onDataChange={handleDataMajorCropChange}
+            onChange={shouldReset}
+            crop={majorCrops}
+            idOnboarding="select-majorCrop"
+            indexStep={indexStep}
+            setIndexStep={setIndexStep}
+          ></CheckFilter>
+        )}
+
+        {carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (
+          <CheckFilter
+            title="Landrace Crops"
+            toolTipTitle="Step 3"
+            toolTipDescription="Step 3: Select your landrace crops"
+            onDataChange={handleDataLandraceCropChange}
+            itemm={carouselMajorItemsNow}
+            onChange={shouldReset}
+            crop={groupNames}
+            idOnboarding="select-landraceCrop"
+            indexStep={indexStep}
+            setIndexStep={setIndexStep}
+          ></CheckFilter>
+        )}
+        {carouselMajorItemsNow &&
+          (carouselMajorItemsNow.length > 1 ||
+            carouselMajorItemsNow.length < 1) && (
+            <CheckFilter
+              title="Landrace Crops"
+              toolTipTitle="Step 3"
+              toolTipDescription="Step 3: Select your landrace crops"
+              onDataChange={handleDataLandraceCropChange}
+              onChange={shouldReset}
+              crop={[]}
+              idOnboarding="select-landraceCrop"
+            ></CheckFilter>
+          )}
+        {/*  {carouselMajorItemsNow && carouselMajorItemsNow.length ==0 && (
         <CheckFilter
           title="Landrace Crops"
-          toolTipTitle="Step 3"
-          toolTipDescription="Step 3: Select your landrace crops"
           onDataChange={handleDataLandraceCropChange}
           onChange={shouldReset}
-          crop={groupNames}
+          crop={[]}
         ></CheckFilter>
-      )}
-      <div className="d-flex flex-column align-items-center gap-2 mt-3">
-        <Button
-          variant="primary"
-          className="w-50 text-white"
-          onClick={handleAddToMap}
-        >
-          Add to map
-        </Button>
-        <input
-          type="file"
-          id="file-input"
-          style={{ display: "none" }}
-          onChange={handleFileInputChange}
-          ref={fileInputRef}
-        />
-        <Button
-          variant="primary"
-          className="text-white mb-3"
-          onClick={() => fileInputRef.current.click()}
-        >
-          <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your gap
-          analysis
-        </Button>
-      </div>
-    </Container>
+      )} */}
+        <div className="d-flex flex-column align-items-center gap-2 mt-3">
+          <Button
+            variant="primary"
+            className="w-50 text-white"
+            onClick={handleAddToMap}
+            id="button-addToMap"
+          >
+            Add to map
+          </Button>
+          <input
+            multiple
+            type="file"
+            accept=".tif"
+            id="file-input"
+            style={{ display: "none" }}
+            onChange={handleFileInputChange}
+            onClick={clearInput}
+            ref={fileInputRef}
+          />
+           <input
+            multiple
+            type="file"
+            accept=".csv"
+            id="file-input"
+            ref={fileInputRefA}
+            style={{ display: "none" }}
+            onChange={handleFileInputChangee}
+            onClick={clearInput}
+          />
+          <div className="d-flex">
+            {image ? (
+              <>
+                <Button
+                  variant="danger"
+                  className="text-white mb-3"
+                  onClick={eraseLayer}
+                >
+                  <FontAwesomeIcon icon={faTrashCan} /> Delete your gap analysis
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="primary"
+                className="text-white mb-3"
+                onClick={() => fileInputRef.current.click()}
+              >
+                <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your gap
+                analysis
+              </Button>
+            )}
+          </div>
+          <div className="d-flex aling-items-center">
+          {accesionsInput?.length>0 ? (
+              <>
+                <Button
+                  variant="danger"
+                  className="text-white mb-3"
+                  onClick={eraseAccesion}
+                >
+                  <FontAwesomeIcon icon={faTrashCan} /> Delete your accesions
+                </Button>
+              </>
+            ) : (
+              <>
+              
+            <Button
+              variant="primary"
+              className="text-white "
+              onClick={() => fileInputRefA.current.click()}
+            >
+              <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your accesions
+            </Button>
+            <OverlayTrigger
+              placement="top"
+              overlay={renderTooltip("Info: your CSV file must have the following columns:  id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map.")}
+            >
+              <span className="badge rounded-pill bg-primary me-1 h-100 info-t ">i</span>
+            </OverlayTrigger>
+              </>
+             
+            )}
+          </div>
+          
+        </div>
+      </Container>
+    </>
   );
 }
 
