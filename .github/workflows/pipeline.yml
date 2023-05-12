@@ -71,11 +71,18 @@ jobs:
           node-version: 18
     # Front Zip
     - name: Install packages
-      run: npm --prefix ./src/src install
-    - name: Run build
-      run: npm --prefix ./src/src run build
+      run: |
+          cd ./src
+          ls
+          npm install
+          npm run build
+
     - name: Zip artifact front for deployment
-      run: zip releaseFront.zip ./src/src/build/* -r
+      run: |
+          cd src/src/build
+          ls
+          zip releaseFront.zip ./* -r
+          
     # Upload Artifacts
     - name: Upload Front artifact for deployment job
       uses: actions/upload-artifact@v3
