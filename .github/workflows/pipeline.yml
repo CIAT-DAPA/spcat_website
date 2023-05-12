@@ -83,7 +83,6 @@ jobs:
           ls
           zip releaseFront.zip ./* -r
           ls
-          ls
           
     # Upload Artifacts
     - name: Upload Front artifact for deployment job
