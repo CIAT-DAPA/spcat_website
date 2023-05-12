@@ -76,7 +76,7 @@ jobs:
           npm install
           npm run build
           
-    - name: Zip artifact front for deployment
+    - name: Zip artifact
       run: |
           zip releaseFront.zip ./build/* -r          
     # Upload Artifacts
