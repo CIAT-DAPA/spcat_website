@@ -82,7 +82,6 @@ jobs:
           cd ./src/build
           ls
           zip releaseFront.zip ./* -r
-          ls
           
     # Upload Artifacts
     - name: Upload Front artifact for deployment job
@@ -116,15 +115,13 @@ jobs:
         prerelease: false
     # Upload Assets to release
     - name: Upload Release Asset Front
-      run: |
-          ls  
       id: upload-front-release-asset 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: .build/releaseFront.zip
+        asset_path: ./src/build/releaseFront.zip
         asset_name: releaseFront.zip
         asset_content_type: application/zip
 
