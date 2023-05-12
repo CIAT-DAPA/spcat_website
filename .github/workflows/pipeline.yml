@@ -76,12 +76,12 @@ jobs:
           ls
           npm install
           npm run build
-
+          
     - name: Zip artifact front for deployment
       run: |
           cd ./src/build
           ls
-          zip releaseFront.zip ./* -r          
+          zip releaseFront.zip ./src/build/* -r          
     # Upload Artifacts
     - name: Upload Front artifact for deployment job
       uses: actions/upload-artifact@v3
