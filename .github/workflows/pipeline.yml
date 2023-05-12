@@ -79,7 +79,7 @@ jobs:
 
     - name: Zip artifact front for deployment
       run: |
-          cd src/src/build
+          cd ./src/build
           ls
           zip releaseFront.zip ./* -r
           
