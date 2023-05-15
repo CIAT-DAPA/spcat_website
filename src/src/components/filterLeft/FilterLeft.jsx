@@ -95,7 +95,6 @@ function FilterLeft({
       setIndexStep(1);
     }, 200);
   };
- console.log(showF)
 
   const [imageCoords, setImageCoords] = useState(null);
   const[titleModal,setTitlemodal]=useState('')
@@ -113,13 +112,7 @@ function FilterLeft({
       const tiffData = reader.result;
 
       parseGeoraster(tiffData).then((georaster) => {
-//        console.log("georaster:", georaster);
-        /*
-            GeoRasterLayer is an extension of GridLayer,
-            which means can use GridLayer options like opacity.
-            Just make sure to include the georaster option!
-            http://leafletjs.com/reference-1.2.0.html#gridlayer
-        */
+//    
         var layer = new GeoRasterLayer({
           georaster: georaster,
           opacity: 0.7,
@@ -178,38 +171,15 @@ function FilterLeft({
     }
   }, [filteredCrops]);
 
- 
 
-   //filre los grupos que estan em el crrousell
- // const idss = gruposencarrousell.map((obj) => obj.id).join(",");
-  // ['Spring', 'Winter']   los grupos
-  //console.log(idss)
- /*  useEffect(() => {
-    if (idss.length > 0) {
-      setLayer([]);
-      const nuevoEstado = carouselLandraceItemsNow.map(
-        (elemento) => `${layer}_${elemento}`
-      );
-      setLayer(nuevoEstado);
-      console.log(layer);
-      const endpointaccesions = `http://localhost:5000/api/v1/accessionsbyidgroup?id=${idss}`;
-      axios
-        .get(endpointaccesions)
-        .then((response) => {
-          // 4. Manejar la respuesta de la solicitud HTTP
-          setAccessionData(response.data);
-        })
-        .catch((error) => {
-          console.log("Error en la solicitud HTTP:", error);
-        });
-    }
-  }, [idss]); */
 
   const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
+  const handleRedirect = () => {
+    window.open('https://www.google.com', '_blank');
+  };
 
-
-
-  //console.log(layer);
+  //const overlayInfo = "Info: your CSV file must have the following columns: 'id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id'. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map. For more information, <a href='https://www.example.com'>click here</a>."
+const overlayInfo= <p>Info: your CSV file must have the following columns: 'id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id'. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map. you can find an example by clicking </p>
   const handleAddToMap = () => {
     if (countryIso.length == 0) {
       setShowc(true);
@@ -235,7 +205,6 @@ function FilterLeft({
 
   const handleFileInputChangee = (e) => {
     const file = e.target.files[0];
-    console.log(file.name)
     if (!file.name.endsWith('.csv')) {
       setTitlemodal('you have not selected a file in CSV format')
       setTextModal('You must select a file in csv format')
@@ -248,7 +217,6 @@ function FilterLeft({
       complete: function(results) {
       const requiredHeaders = ['id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id'];
       const fileHeaders = Object.keys(results.data[0]);
-      console.log(file)
       if (!requiredHeaders.every((header) => fileHeaders.includes(header))) {
         setTitlemodal('Invalid columns in csv file')
         setTextModal(`please check your file, the columns should be arranged like this: id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id `)
@@ -416,9 +384,9 @@ function FilterLeft({
             </Button>
             <OverlayTrigger
               placement="top"
-              overlay={renderTooltip("Info: your CSV file must have the following columns:  id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map.")}
+              overlay={renderTooltip(overlayInfo)}
             >
-              <span className="badge rounded-pill bg-primary me-1 h-100 info-t ">i</span>
+              <span onClick={handleRedirect} className="badge rounded-pill bg-primary me-1 h-100 info-t info ">i</span>
             </OverlayTrigger>
               </>
              
