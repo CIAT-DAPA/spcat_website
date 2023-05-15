@@ -3,6 +3,7 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import './FilterLeft.css'
 import Papa from 'papaparse';
+import Configuration from "../../conf/Configuration";
 
 /* import {tiff} from 'tiff.js'; */
 import GeoTIFF, { fromUrl, fromUrls, fromArrayBuffer, fromBlob } from "geotiff";
@@ -154,7 +155,7 @@ function FilterLeft({
     if (filteredCrops.length === 1) {
       const cropId = filteredCrops[0].id;
       axios
-        .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
+        .get(`${Configuration.get_url_api_base()}groups?id=${cropId}`)
         .then((response) => {
           setAllGroupCrop(response.data);
           setLayer(countryIso + "_" + filteredCrops[0].name);
@@ -175,11 +176,11 @@ function FilterLeft({
 
   const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
   const handleRedirect = () => {
-    window.open('https://www.google.com', '_blank');
+    window.open('https://github.com/CIAT-DAPA/spcat_website/raw/develop/src/src/data/example.csv', '_blank');
   };
 
-  //const overlayInfo = "Info: your CSV file must have the following columns: 'id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id'. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map. For more information, <a href='https://www.example.com'>click here</a>."
-const overlayInfo= <p>Info: your CSV file must have the following columns: 'id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id'. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map. you can find an example by clicking </p>
+const overlayInfo = "Info: your CSV file must have the following columns: 'id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id'. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map. You can find an example by clicking in this info button"
+//const overlayInfo= <p>Info: your CSV file must have the following columns: 'id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id'. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map. you can find an example by clicking in this info button  </p>
   const handleAddToMap = () => {
     if (countryIso.length == 0) {
       setShowc(true);
