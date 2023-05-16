@@ -11,6 +11,7 @@ import L from "leaflet";
 import './LayersMarkers'
 import { useContext } from "react";
 import { DataContext } from "../../context/context";
+import Configuration from "../../conf/Configuration";
 
 const LayersMarkers=({option1Checked,option2Checked,accessions,
     clickedMarkerIndices,
@@ -108,8 +109,8 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
               layerr.map((layerr, index) => (
                 <WMSTileLayer
                   key={layerr}
-                  url="https://isa.ciat.cgiar.org/geoserver2/wms"
-                  layers={`gap_analysis:${layerr}`}
+                  url={Configuration.get_geoserver_url()+Configuration.get_geoserver_service()}
+                  layers={`${Configuration.get_gap_worspace()}:${layerr}`}
                   format="image/png"
                   transparent={true}
                   zIndex={1000 + index}
@@ -188,8 +189,8 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                   layerr.map((layerr, index) => (
                     <WMSTileLayer
                       key={layerr}
-                      url="https://isa.ciat.cgiar.org/geoserver2/wms"
-                      layers={`gap_analysis:${layerr}`}
+                      url={Configuration.get_geoserver_url()+Configuration.get_geoserver_service()}
+                      layers={`${Configuration.get_gap_worspace()}:${layerr}`}
                       format="image/png"
                       transparent={true}
                       zIndex={1000 + index}

@@ -26,13 +26,12 @@ function CheckFilter({
   const [searchValue, setSearchValue] = useState("");
   const [basaName, setBaseName] = useState([]);
 
-  const handleAddToCarousel = (index) => {
-    const itemToAdd = tableItems.splice(index, 1)[0];
-    setCarouselItems([...carouselItems, itemToAdd]);
-    setTableItems([...tableItems]);
+  const handleAddToCarousel = (item) => {
+    const filteredItems = tableItems.filter((tableItem) => tableItem !== item);
+    setCarouselItems([...carouselItems, item]);
+    setTableItems(filteredItems);
     if (title === "Major Crops") setIndexStep(2);
     else if (title === "Landrace Crops") setIndexStep(3);
-    ///////////////
   };
 
   const handleRemoveFromCarousel = (index) => {
@@ -92,43 +91,43 @@ function CheckFilter({
         style={{ height: "170px" }}
       >
         <table className="table table-responsive table-borderless table-striped table-hover">
-          <tbody>
-            {tableItems
-              .filter((item) =>
-                item.toLowerCase().includes(searchValue.toLowerCase())
-              )
-              .map((item, i) => (
-                <tr key={i} onClick={() => handleAddToCarousel(i)}>
-                  <td className="text-left">
-                    {(() => {
-                      try {
-                        return (
-                          <img
-                            alt=""
-                            src={require(`../../assets/icons/${item
-                              .split(" ")[0]
-                              .toLowerCase()}.png`)}
-                            width="20"
-                          />
-                        );
-                      } catch (err) {
-                        return (
-                          <img
-                            alt=""
-                            src={require(`../../assets/icons/${itemm[0]
-                              .split(" ")[0]
-                              .toLowerCase()}.png`)}
-                            width="20"
-                          />
-                        );
-                      }
-                    })()}{" "}
-                    {item}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+  <tbody>
+    {tableItems
+      .filter((item) =>
+        item.toLowerCase().includes(searchValue.toLowerCase())
+      )
+      .map((item, i) => (
+        <tr key={i} onClick={() => handleAddToCarousel(item)}>
+          <td className="text-left">
+            {(() => {
+              try {
+                return (
+                  <img
+                    alt=""
+                    src={require(`../../assets/icons/${item
+                      .split(" ")[0]
+                      .toLowerCase()}.png`)}
+                    width="20"
+                  />
+                );
+              } catch (err) {
+                return (
+                  <img
+                    alt=""
+                    src={require(`../../assets/icons/${itemm[0]
+                      .split(" ")[0]
+                      .toLowerCase()}.png`)}
+                    width="20"
+                  />
+                );
+              }
+            })()}{" "}
+            {item}
+          </td>
+        </tr>
+      ))}
+  </tbody>
+</table>
       </div>
       <Carousel variant="dark" interval={null} controls={null} className="mt-2">
         {carouselItems
