@@ -53,7 +53,6 @@ function FilterRight({ showRoad, setShowRoad, indexStep, setIndexStepMap }) {
     newSelectedPlaces.splice(index, 1);
     setSelectedPlaces(newSelectedPlaces);
   }
-  console.log(destinations);
   
 
   function handleSubmit(event) {
@@ -85,14 +84,11 @@ function FilterRight({ showRoad, setShowRoad, indexStep, setIndexStepMap }) {
   }, [autoComplete, initialAutoComplete]);
   const onLoad = (autoComplete) => {
     setInitialAutoComplete(autoComplete)
-    console.log("autocomplete: ", autoComplete);
 
     setautoComplete(autoComplete);
   };
-  console.log(initialAutoComplete)
 
 
-  console.log(destinations);
 
   const [selectedPlaces, setSelectedPlaces] = useState([]);
 
@@ -115,7 +111,6 @@ const handlePlaceSelect = (place, index) => {
   }
 };
 
-console.log(destinations);
 
 
   return (

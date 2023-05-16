@@ -12,6 +12,7 @@ import { DataContext } from "../../context/context";
 import RouteError from "../../components/routeError/RouteError";
 import Loader from "../../components/loader/Loader";
 import { async } from "regenerator-runtime";
+import Configuration from "../../conf/Configuration";
 const google = window.google;
 
 function MapTools() {
@@ -271,7 +272,7 @@ useEffect(()=>{
   
   
 
-  const url = "http://127.0.0.1:5000/api/v1/countries";
+  const url = `${Configuration.get_url_api_base()}countries`;
   const [response, setResponse] = useState([]);
   useEffect(() => {
     const getCountries = async () => {
@@ -284,7 +285,7 @@ useEffect(()=>{
     };
     getCountries();
   }, []);
-  const urlCrops = "http://127.0.0.1:5000/api/v1/crops";
+  const urlCrops = `${Configuration.get_url_api_base()}crops`;
   const [crops, setCrops] = useState([]);
   useEffect(() => {
     const getCrops = async () => {

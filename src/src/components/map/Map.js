@@ -9,6 +9,7 @@ import MapLegend from "../mapLegend/MapLegend";
 import Loader from "../loader/Loader";
 import NoGaps from "../nogapsmodal/NoGaps";
 import LayersMarkers from "../LayersMarkers/LayersMarkers";
+import Configuration from "../../conf/Configuration";
 import {
   MapContainer,
   TileLayer,
@@ -133,7 +134,7 @@ function Map({
 
       axios
         .get(
-          `http://localhost:5000/api/v1/accessionsbyidcrop?id=${cropId}&iso=${iso}`
+          `${Configuration.get_url_api_base()}accessionsbyidcrop?id=${cropId}&iso=${iso}`
         )
         .then((response) => {
           setShow(false);
@@ -165,7 +166,7 @@ function Map({
       const cropId = filteredCrops[0].id;
 
       axios
-        .get(`http://localhost:5000/api/v1/groups?id=${cropId}`)
+        .get(`${Configuration.get_url_api_base()}groups?id=${cropId}`)
         .then((response) => {
           setShow(false);
           setGroups(response.data);
@@ -210,7 +211,7 @@ function Map({
       setLayerr(newArray);
       axios
         .get(
-          `http://localhost:5000/api/v1/accessionsbyidgroup?id=${idsgroups}&iso=${iso}`
+          `${Configuration.get_url_api_base()}accessionsbyidgroup?id=${idsgroups}&iso=${iso}`
         )
         .then((response) => {
           setShow(false);
@@ -267,7 +268,7 @@ function Map({
       setClickedMarkerIndices(new Set());
       setLayerr(newArray);
       setAccessions([]);
-      const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
+      const endopointAccesionsByCrop = `${Configuration.get_url_api_base()}accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
 
       axios.get(endopointAccesionsByCrop).then((response) => {
         setShow(false);

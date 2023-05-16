@@ -1,0 +1,4 @@
+id,species_name,ext_id,crop,landrace_group,country,institution_name,source_database,latitude,longitude,accession_id
+6438c99fcd64adbaa98115d5,Cassava,ciat_606_8,643818864563892c77c876a0,643818874563892c77c876ca,CO,institution_name,ciat,5,-74.3,CT_606
+6438c9d8cd64adbaa9811c67,Cassava,ciat_2149_8,643818864563892c77c876a0,643818874563892c77c876ca,CO,institution name,ciat,5.0167,-74.4333,CT_2149
+6438c9a8cd64adbaa98116d5,Cassava,ciat_1369_8,643818864563892c77c876a0,643818874563892c77c876ca,CO,institution name,ciat,4.8,-74.45,CT_1369

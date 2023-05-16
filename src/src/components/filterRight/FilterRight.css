@@ -65,3 +65,6 @@ margin-left: 10px;
 .row-destino{
     --bs-gutter-x:0px !important;
 }
+.info{
+    cursor: pointer;
+}
