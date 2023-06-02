@@ -2,7 +2,7 @@ const GEOSERVER_URL = "https://isa.ciat.cgiar.org/geoserver2/";
 const GEOSERVER_SERVICE = "wms";
 
 const GAP_WORSPACE = "gap_analysis"
-const GAP_API_BASE = "http://localhost:5000/api/v1/"
+const GAP_API_BASE = "http://api.gapanalysistools.org/api/v1/"
 
 class Configuration {
     get_geoserver_url() {
