@@ -80,7 +80,7 @@ pipeline {
                         if [ ! -d build ]; then
                             mkdir ./build
                         fi
-                        curl -LOk https://github.com/CarlosNasayo/spcat_prueba/releases/latest/download/releaseFront.zip
+                        curl -LOk https://github.com/CIAT-DAPA/spcat_website/releases/latest/download/releaseFront.zip
                         unzip releaseFront.zip -d build
                         rm -r  releaseFront.zip
                     '''
