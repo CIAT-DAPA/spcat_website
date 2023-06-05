@@ -14,6 +14,7 @@ function Menu() {
                 <Navbar.Collapse className='justify-content-end' id="responsive-navbar-nav">
                     <Nav className="justify-content-end">
                         <Link className="nav-link" to="/maptools" >Viewer</Link>
+                        <a className="nav-link" href="https://api.gapanalysistools.org/" target="_blank">Api</a>
                         <Link className="nav-link" to="/about" >About</Link>
                     </Nav>
                 </Navbar.Collapse>
