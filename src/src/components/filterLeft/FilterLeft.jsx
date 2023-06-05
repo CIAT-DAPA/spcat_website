@@ -370,7 +370,7 @@ const overlayInfo = "Info: your CSV file must have the following columns: 'id', 
                   className="text-white mb-3"
                   onClick={eraseAccesion}
                 >
-                  <FontAwesomeIcon icon={faTrashCan} /> Delete your accesions
+                  <FontAwesomeIcon icon={faTrashCan} /> Delete your accessions
                 </Button>
               </>
             ) : (
@@ -381,7 +381,7 @@ const overlayInfo = "Info: your CSV file must have the following columns: 'id', 
               className="text-white "
               onClick={() => fileInputRefA.current.click()}
             >
-              <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your accesions
+              <FontAwesomeIcon icon={faArrowUpFromBracket} /> Upload your accessions
             </Button>
             <OverlayTrigger
               placement="top"
