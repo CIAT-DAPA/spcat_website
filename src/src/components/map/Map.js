@@ -107,7 +107,6 @@ function Map({
 
   const [filteredgroups, setFilteredGroups] = useState([]);
 
-  const [groupstwo, setGroupstwo] = useState([])
 
 
   const [filteredCrops, setFilteredCrops] = useState([]);
@@ -204,7 +203,6 @@ function Map({
     if (carouselLandraceItems != null && carouselLandraceItems.length > 0) {
       setShow(true);
       setAccessions([]);
-      //let hola= filteredgroups.ma
       const newArray = extidsgroup.map((element) => `${iso}_${element}`);
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
@@ -301,7 +299,7 @@ function Map({
       setLayerr(newArray);
       setAccessions([]);
 
-      const endopointAccesionsByCrop = `http://localhost:5000/api/v1/accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
+      const endopointAccesionsByCrop = `${Configuration.get_url_api_base()}accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
 
       axios.get(endopointAccesionsByCrop).then((response) => {
         setShow(false);
@@ -440,13 +438,10 @@ function Map({
     // Agrega la nueva imagen
     if (image != null) {
       image.options.zIndex = 1000;
-      //image.color = #0000ff
       image.addTo(mapRef.current);
       mapRef.current.flyToBounds(image.getBounds());
-      //image._image.style.backfaceVisibility = 'hidden';
     }
 
-    // Actualiza el estado con la nueva imagen
     setCurrentImage(image);
   }, [image]);
   return (
