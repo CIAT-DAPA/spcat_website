@@ -56,7 +56,6 @@ function Map({
   const [showg, setShowg] = useState(false);
   const { places } = useContext(DataContext);
   const { accesionsInput } = useContext(DataContext);
-  const [pruebita, setPruebita] = useState(false);
 
   const handleCloseg = () => setShowg(false);
   const handleShowg = () => setShowg(true);
