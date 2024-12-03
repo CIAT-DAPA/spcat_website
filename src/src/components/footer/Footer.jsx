@@ -1,6 +1,6 @@
 import './Footer.css'
 import LogoC from '../../assets/img/Ciat-logo.png'
-import LogoCT from '../../assets/img/crop-trust-logo.png'
+import LogoCT from '../../assets/img/crop-trust-new_logo.png'
 import LogoI from '../../assets/img/Icarda-logo.png'
 const Footer=()=>{
     return(
@@ -19,7 +19,7 @@ const Footer=()=>{
                 </div>
                 <div className='ic col-md-4'>
                 <a href="https://www.icarda.org" target="_blank">
-                <img  className='img-logo'src='https://www.icarda.org/themes/custom/icarda/logo.svg' alt="" />
+                <img  className='img-logo'src={LogoI} alt="" />
                 </a>
                     <p className='text-center'> <strong>ICARDA</strong></p>
                     <p className='text-center'>Rabat,Morocco</p>
@@ -28,7 +28,7 @@ const Footer=()=>{
                     <a href="https://www.croptrust.org" target='_blank'>
                     <img className='img-logo' src={LogoCT} alt="" />
                     </a>
-                    <p className='text-center '> <strong>Crop Thrust</strong></p>
+                    <p className='text-center '> <strong>Crop Trust</strong></p>
                     <p className='text-center'>Bonn,Germany</p>
                 </div>
 
