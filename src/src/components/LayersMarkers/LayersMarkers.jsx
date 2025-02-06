@@ -106,17 +106,24 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
             {option1Checked == false &&
               option2Checked == true &&
               layerr.length > 0 &&
-              layerr.map((layerr, index) => (
-                <WMSTileLayer
-                  key={layerr}
-                  url={Configuration.get_geoserver_url()+Configuration.get_geoserver_service()}
-                  layers={`${Configuration.get_gap_worspace()}:${layerr}`}
-                  format="image/png"
-                  transparent={true}
-                  zIndex={1000 + index}
-                  styles={`Gap` + index}
-                />
-              ))}
+              layerr.map((layerr, index) => {
+              const geoserverUrl = Configuration.get_geoserver_url() + Configuration.get_geoserver_service();
+              const layerName = `${Configuration.get_gap_worspace()}:${layerr}`;
+
+              //console.log("GeoServer URL:", geoserverUrl);
+              //console.log("Loading Layer:", layerName);
+              return (
+                          <WMSTileLayer
+                            key={layerr}
+                            url={geoserverUrl}
+                            layers={layerName}
+                            format="image/png"
+                            transparent={true}
+                            zIndex={1000 + index}
+                            styles={`Gap` + index}
+                          />
+                        );
+                      })}
 
             {option1Checked == true && option2Checked == true && (
               <>
@@ -186,17 +193,23 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                     ) : null
                   )}
                 {layerr.length > 0 &&
-                  layerr.map((layerr, index) => (
+                layerr.map((layerr, index) => {
+                const geoserverUrl = Configuration.get_geoserver_url() + Configuration.get_geoserver_service();
+                const layerName = `${Configuration.get_gap_worspace()}:${layerr}`;
+
+              //console.log("GeoServer URL:", geoserverUrl);
+              //console.log("Loading Layer:", layerName);
+              return (
                     <WMSTileLayer
                       key={layerr}
-                      url={Configuration.get_geoserver_url()+Configuration.get_geoserver_service()}
-                      layers={`${Configuration.get_gap_worspace()}:${layerr}`}
+                      url={geoserverUrl}
+                      layers={layerName}
                       format="image/png"
                       transparent={true}
                       zIndex={1000 + index}
                       styles={`Gap` + index}
-                    />
-                  ))}
+                    /> );
+                  })}
               </>
             )}
             {accesionsInput &&

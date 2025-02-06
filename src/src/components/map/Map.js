@@ -78,7 +78,7 @@ function Map({
   ];
   const [colors, setColors] = useState(colorsInitialState);
   useEffect(() => {
-    if (carouselLandraceItems?.length === 0) {
+    if ((carouselLandraceItems === null || carouselLandraceItems?.length === 0)) {
       setColors(colorsInitialState);
     }
   }, [carouselLandraceItems]);
@@ -96,6 +96,9 @@ function Map({
     setCarouselLandraceItems([...carouselLandraceItems]);
   };
   const { iso } = useContext(DataContext);
+  const { project } = useContext(DataContext);
+  //console.log('project',project)
+  //console.log('iso',iso)
   const { image } = useContext(DataContext);
 
   const [layerr, setLayerr] = useState([]);
@@ -115,6 +118,7 @@ function Map({
         carouselMajorItems.includes(item.app_name)
       );
       setFilteredCrops(filteredData);
+      //console.log(filteredData)
     }
   }, [crops, carouselMajorItems]);
 
@@ -122,18 +126,24 @@ function Map({
     if (
       carouselMajorItems !== null &&
       carouselMajorItems.length === 1 &&
-      carouselLandraceItems.length == 0
+      (carouselLandraceItems == null ||carouselLandraceItems?.length == 0)
     ) {
       setShow(true);
       const cropId = filteredCrops[0].id;
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
-      setLayerr([`${iso}_${filteredCrops[0].ext_id}`]);
+      setLayerr([
+        project === 'bolder' 
+          ? `${project}_${iso}_${filteredCrops[0].ext_id}` 
+          : `${iso}_${filteredCrops[0].ext_id}`
+      ]);
+
+      const endopointAccesionsByCrop = project === 'bolder' 
+      ? `${Configuration.get_url_api_base()}accessionsbyidcropproject?id=${cropId}&iso=${iso}&project=${project}`
+      : `${Configuration.get_url_api_base()}accessionsbyidcrop?id=${cropId}&iso=${iso}`;
 
       axios
-        .get(
-          `${Configuration.get_url_api_base()}accessionsbyidcrop?id=${cropId}&iso=${iso}`
-        )
+        .get(endopointAccesionsByCrop)
         .then((response) => {
           setShow(false);
           if (response.data[0].accessions.length === 0) {
@@ -155,7 +165,7 @@ function Map({
   useEffect(() => {
     if (
       carouselLandraceItems !== null &&
-      carouselLandraceItems.length > 0 &&
+      carouselLandraceItems?.length > 0 &&
       carouselMajorItems.length > 0
     ) {
       setShow(true);
@@ -228,6 +238,7 @@ function Map({
     }
   }, [filteredgroups]);
   const idsCropss = filteredCrops.map((obj) => obj.id).join(",");
+  //console.log(idsCropss)
   const extids = filteredCrops
     .filter((obj) => carouselMajorItems.includes(obj.app_name))
     .sort(
@@ -248,7 +259,7 @@ function Map({
   }, [carouselMajorItems]);
 
   useEffect(() => {
-    if (carouselLandraceItems === null || carouselLandraceItems.length == 0) {
+    if (carouselLandraceItems === null || carouselLandraceItems?.length == 0) {
       setLayerr([]);
     }
   }, [carouselLandraceItems]);
@@ -256,16 +267,20 @@ function Map({
   useEffect(() => {
     if (
       carouselMajorItems !== null &&
-      carouselMajorItems.length > 1 &&
-      carouselLandraceItems.length == 0
+      carouselMajorItems.length > 1 && (carouselLandraceItems === null ||
+      carouselLandraceItems?.length == 0)
     ) {
       setShow(true);
-      const newArray = extids.map((element) => `${iso}_${element}`);
+      const newArray = extids.map((element) =>
+        project === 'bolder' ? `${project}_${iso}_${element}` : `${iso}_${element}`
+      );
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
       setLayerr(newArray);
       setAccessions([]);
-      const endopointAccesionsByCrop = `${Configuration.get_url_api_base()}accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
+      const endopointAccesionsByCrop = project === 'bolder' 
+      ? `${Configuration.get_url_api_base()}accessionsbyidcropproject?id=${idsCropss}&iso=${iso}&project=${project}`
+      : `${Configuration.get_url_api_base()}accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
 
       axios.get(endopointAccesionsByCrop).then((response) => {
         setShow(false);
@@ -288,8 +303,8 @@ function Map({
   useEffect(() => {
     if (
       carouselMajorItems !== null &&
-      carouselMajorItems.length == 1 &&
-      carouselLandraceItems.length == 0
+      carouselMajorItems.length == 1 && (carouselLandraceItems === null ||
+      carouselLandraceItems?.length == 0)
     ) {
       setShow(true);
       const newArray = extids.map((element) => `${iso}_${element}`);
@@ -333,7 +348,7 @@ function Map({
   const [datatoExport, setDataToExport] = useState([]);
   useEffect(() => {
     if (selectedMarkers.length > 0) {
-      console.log(selectedMarkers)
+      //console.log(selectedMarkers)
       setDataToExport(selectedMarkers.map((dat) => dat.tooltipInfo));
     }
   }, [selectedMarkers]);
@@ -486,7 +501,7 @@ function Map({
         </div>
 
         <div className=" px-4 py-2">
-          {carouselLandraceItems && carouselLandraceItems.length > 0 && (
+          {carouselLandraceItems && carouselLandraceItems?.length > 0 && (
             <h6>Landrace items</h6>
           )}
           {carouselLandraceItems &&

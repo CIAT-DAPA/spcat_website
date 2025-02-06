@@ -1,7 +1,20 @@
 export const steps = [
   {
+    title: "Select project",
+    content: "Welcome! Select the project where you want to explore crops and accessions                        ",
+    target: "#select-project",
+    placement: "auto",
+    spotlightClicks: true,
+    disableBeacon: true,
+    disableOverlayClose: true,
+    hideFooter: false,
+    showSkipButton:true,
+    continuous: true,
+    hideCloseButton: true
+  },
+  {
     title: "Select country",
-    content: "Welcome! Select the country where you want to explore crops and accessions",
+    content: "Great! Now, Select the country where you want to explore crops and accessions",
     target: "#select-country",
     placement: "auto",
     spotlightClicks: true,
@@ -9,7 +22,7 @@ export const steps = [
     disableOverlayClose: true,
     hideFooter: false,
     showSkipButton:true,
-    continuous :false,
+    continuous :true,
     hideCloseButton: true
   },
   {
@@ -22,7 +35,7 @@ export const steps = [
     disableOverlayClose: true,
     hideFooter: false,
     showSkipButton:true,
-    continuous :false,
+    continuous :true,
     hideCloseButton: true
   },
   {
@@ -35,7 +48,7 @@ export const steps = [
     disableOverlayClose: true,
     hideFooter: false,
     showSkipButton:true,
-    continuous :false,
+    continuous :true,
     hideCloseButton: true
   },
   {
@@ -48,7 +61,7 @@ export const steps = [
     disableOverlayClose: true,
     hideFooter: false,
     showSkipButton:true,
-    continuous :false,
+    continuous :true,
     hideCloseButton: true
   },
   {
@@ -59,6 +72,7 @@ export const steps = [
     spotlightClicks: true,
     disableBeacon: true,
     disableOverlayClose: true,
+    continuous :true,
     hideCloseButton: true
   },
   {
@@ -71,7 +85,7 @@ export const steps = [
     disableOverlayClose: true,
     hideFooter: false,
     showSkipButton:true,
-    continuous :false,
+    continuous :true,
     hideCloseButton: true
   },
   {
@@ -84,7 +98,7 @@ export const steps = [
     disableOverlayClose: true,
     hideFooter: false,
     showSkipButton:true,
-    continuous :false,
+    continuous :true,
     hideCloseButton: true
   },
 ];
