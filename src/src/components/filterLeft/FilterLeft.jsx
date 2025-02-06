@@ -4,6 +4,7 @@ import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import './FilterLeft.css'
 import Papa from 'papaparse';
 import Configuration from "../../conf/Configuration";
+import config from './config.json';
 
 /* import {tiff} from 'tiff.js'; */
 import GeoTIFF, { fromUrl, fromUrls, fromArrayBuffer, fromBlob } from "geotiff";
@@ -35,19 +36,48 @@ function FilterLeft({
   setCarouselLandraceItems,
   response,
   crops,
+  projects,
   toggleImageVisibility,
   imageVisible,
   indexStep,
   setIndexStep,
 }) {
+  const [showLandraceGroups, setShowLandraceGroups] = useState(false);
+  const [filteredCountries, setFilteredCountries] = useState(response);
+  const { project, setProject } = useContext(DataContext);
+  const [compProject, setCompProject] = useState('');
+  const bolderCountries = response.filter((country) =>
+    config.BOLDER_COUNTRIES.includes(country.name)
+  );
+
+
+  const handleProjectChange = (event) => {
+    const project = event.target.value;
+    setCompProject(project);
+    setProject(project);
+    setFilteredCountries(
+      project === "bolder" ? bolderCountries : response
+    );
+
+    setShowLandraceGroups(project === "lga");
+  };
+
   const [majorCrops, setMajorCrops] = useState([]);
   useEffect(() => {
-    if (crops && crops.length > 0) {
-      const majorCropst = crops.map((crp) => crp.app_name);
-      setMajorCrops([...majorCropst]);
+    if (compProject) {
+      if (config.PROJECT_CROPS[compProject]) {
+        const filteredCrops = crops
+          .filter((crp) => config.PROJECT_CROPS[compProject].includes(crp.app_name))
+          .map((crp) => crp.app_name);
+        setMajorCrops(filteredCrops);
+      } else {
+        setMajorCrops(crops.map((crp) => crp.app_name));
+      }
+    } else {
+      setMajorCrops([]);
     }
-  }, [crops]);
-
+  }, [compProject, crops]);
+  
   const { iso, setIso } = useContext(DataContext);
   const{accesionsInput,setAccesionsInput}=useContext(DataContext);
   const [shouldAddToMap, setShouldAddToMap] = useState(false);
@@ -92,6 +122,7 @@ function FilterLeft({
     );
     setCountryIso(selectedCountry.iso_2);
     setIso(selectedCountry.iso_2);
+    //console.log(selectedCountry.iso_2)
     setTimeout(() => {
       setIndexStep(1);
     }, 200);
@@ -136,11 +167,21 @@ function FilterLeft({
     e.target.value=null;
   }
 
-  if (shouldAddToMap) {
-    setCarouselMajorItems(carouselMajorItemsNow);
-    setCarouselLandraceItems(carouselLandraceItemsNow);
-    setShouldAddToMap(false);
-  }
+  //if (shouldAddToMap) {
+   // console.log("Adding to map...");
+   // setCarouselMajorItems(carouselMajorItemsNow);
+   // setCarouselLandraceItems(carouselLandraceItemsNow);
+    //setShouldAddToMap(false);
+  //}
+
+  useEffect(() => {
+    if (shouldAddToMap) {
+      console.log("Adding to map..."); // Debugging
+      setCarouselMajorItems(carouselMajorItemsNow);
+      setCarouselLandraceItems(carouselLandraceItemsNow);
+      setShouldAddToMap(false);
+    }
+  }, [shouldAddToMap]);
   //console.log(carouselLandraceItemsNow);
   //console.log(countryIso)
   useEffect(() => {
@@ -152,7 +193,7 @@ function FilterLeft({
 
   //console.log(filteredCrops)
   useEffect(() => {
-    if (filteredCrops.length === 1) {
+    if (showLandraceGroups && filteredCrops.length === 1) {
       const cropId = filteredCrops[0].id;
       axios
         .get(`${Configuration.get_url_api_base()}groups?id=${cropId}`)
@@ -235,28 +276,51 @@ const overlayInfo = "Info: your CSV file must have the following columns: 'id', 
       <ModalFileError show={showF} handleClose={handleCloseF} titleModal={titleModal} textModal={textModal}></ModalFileError>
 
       <Container className="mt-3">
+      <Row className="align-items-center mb-3" id="select-project">
+          <Col className="col-5 d-flex align-items-center">
+          <OverlayTrigger
+              placement="top"
+              overlay={renderTooltip("Step 1: Select your project")}
+            >
+              <span className="badge rounded-pill bg-primary me-1">Step 1</span>
+            </OverlayTrigger>
+            Project 
+          </Col>
+          <Col>
+            <Form.Select aria-label="Select Project" 
+              onChange={handleProjectChange}>
+              <option value="">Select Project</option>
+              {projects.map((project) => (
+              <option key={project.id} value={project.ext_id}>
+              {project.name}
+            </option>
+          ))}
+            </Form.Select>
+          </Col>
+        </Row>
+
         <Row className="align-items-center mb-3" id="select-country">
           <Col className="col-5 d-flex align-items-center">
             <OverlayTrigger
               placement="top"
-              overlay={renderTooltip("Step 1: Select your country")}
+              overlay={renderTooltip("Step 2: Select your country")}
             >
-              <span className="badge rounded-pill bg-primary me-1">Step 1</span>
+              <span className="badge rounded-pill bg-primary me-1">Step 2</span>
             </OverlayTrigger>
             Country
           </Col>
           <Col>
             <Form.Select
-              aria-label="Default select example"
+              aria-label="Select Country"
               onChange={handleCountryChange}
             >
-              <option value="">Select country</option>
-              {response.map((country) => (
-                <>
+              <option value="">Select Country</option>
+              {filteredCountries.map((country) => (
+                
                   <option key={country.id} value={country.name}>
                     {country.name}
                   </option>
-                </>
+                
               ))}
             </Form.Select>
           </Col>
@@ -265,8 +329,8 @@ const overlayInfo = "Info: your CSV file must have the following columns: 'id', 
         {majorCrops && (
           <CheckFilter
             title="Major Crops"
-            toolTipTitle="Step 2"
-            toolTipDescription="Step 2: Select your crops"
+            toolTipTitle="Step 3"
+            toolTipDescription="Step 3: Select your crops"
             onDataChange={handleDataMajorCropChange}
             onChange={shouldReset}
             crop={majorCrops}
@@ -276,11 +340,11 @@ const overlayInfo = "Info: your CSV file must have the following columns: 'id', 
           ></CheckFilter>
         )}
 
-        {carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (
+        {showLandraceGroups && carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (
           <CheckFilter
-            title="Landrace Crops"
-            toolTipTitle="Step 3"
-            toolTipDescription="Step 3: Select your landrace crops"
+            title="Landrace Groups"
+            toolTipTitle="Step 4"
+            toolTipDescription="Step 4: Select your landrace groups"
             onDataChange={handleDataLandraceCropChange}
             itemm={carouselMajorItemsNow}
             onChange={shouldReset}
@@ -290,13 +354,13 @@ const overlayInfo = "Info: your CSV file must have the following columns: 'id', 
             setIndexStep={setIndexStep}
           ></CheckFilter>
         )}
-        {carouselMajorItemsNow &&
+        {showLandraceGroups && carouselMajorItemsNow &&
           (carouselMajorItemsNow.length > 1 ||
             carouselMajorItemsNow.length < 1) && (
             <CheckFilter
-              title="Landrace Crops"
-              toolTipTitle="Step 3"
-              toolTipDescription="Step 3: Select your landrace crops"
+              title="Landrace Groups"
+              toolTipTitle="Step 4"
+              toolTipDescription="Step 4: Select your landrace groups"
               onDataChange={handleDataLandraceCropChange}
               onChange={shouldReset}
               crop={[]}

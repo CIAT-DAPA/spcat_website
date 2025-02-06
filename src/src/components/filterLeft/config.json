@@ -1,0 +1,55 @@
+{
+    "BOLDER_COUNTRIES": [
+      "Benin",
+      "Ghana",
+      "Tanzania, United Republic of",
+      "Uganda"
+    ],
+    "PROJECT_CROPS": {
+      "bolder": ["Amaranth (Red)",
+      "Bambara groundnut",
+      "Pumpkin",
+      "White Fonio"
+
+      ],
+      "lga": [
+        "Maize (Africa)", 
+        "Banana", 
+        "Barley (growth class) (alternative)", 
+        "Barley (kernel covering) (preferred)", 
+        "Barley (row number) (alternative)", 
+        "Breadfruit", 
+        "Cassava (environmental clusters) (preferred)", 
+        "Chickpea", 
+        "Common bean", 
+        "Cowpea (characterization clusters)", 
+        "Faba bean", 
+        "Finger millet", 
+        "Grasspea", 
+        "Groundnut", 
+        "Lentil", 
+        "Maize (Latin America)", 
+        "Pea", 
+        "Pearl millet", 
+        "Pigeonpea", 
+        "Potato (Hawkes classification) (alternative)", 
+        "Potato (Spooner classification) (preferred)", 
+        "Rice (Africa - glaberrima)", 
+        "Rice (Asia)", 
+        "Sorghum", 
+        "Sweetpotato", 
+        "Taro", 
+        "Wheat (bread) (environmental clusters) (preferred)", 
+        "Wheat (bread) (genetic clusters) (alternative)", 
+        "Wheat (durum) (environmental clusters) (preferred)", 
+        "Wheat (durum) (genetic clusters) (alternative)", 
+        "Yam (Old World)", 
+        "Yam (New World)"
+      ]
+      
+    }
+  }
+
+
+
+  

@@ -8,6 +8,7 @@ export function DataContextProvider(props){
     const [travel, setTravel]= useState([]);
     const [elevationProm, setElevationProm]= useState([]);
     const [iso, setIso]= useState([]);
+    const [project, setProject]= useState([]);
     const [pointDistance, setPointDistance]= useState([]);
     const [dataRoutestoExport, setDataRoutestoExport]= useState([]);
     const [metrics, setMerics]= useState([]);
@@ -16,7 +17,7 @@ export function DataContextProvider(props){
     const[accesionsInput,setAccesionsInput]=useState(null)
 
     return(
-        <DataContext.Provider value={{places,setPlaces,elevationsPoints, setElevationsPoints,averageDistance, setAverageDistance,travelTime, setTravelTime,travel, setTravel,elevationProm, setElevationProm,iso, setIso,pointDistance, setPointDistance,dataRoutestoExport, setDataRoutestoExport,image, setImage,metrics, setMerics,distanBetween, setDistanceBetween,accesionsInput,setAccesionsInput}} >
+        <DataContext.Provider value={{places,setPlaces,elevationsPoints, setElevationsPoints,averageDistance, setAverageDistance,travelTime, setTravelTime,travel, setTravel,elevationProm, setElevationProm,iso, setIso,project,setProject,pointDistance, setPointDistance,dataRoutestoExport, setDataRoutestoExport,image, setImage,metrics, setMerics,distanBetween, setDistanceBetween,accesionsInput,setAccesionsInput}} >
             {props.children}
             </DataContext.Provider>
     )
