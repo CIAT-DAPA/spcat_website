@@ -85,7 +85,7 @@ useEffect(()=>{
     places.map((city) => getCoordsForCity(city))
   ))
   .then((coordsArray) => {
-    console.log(coordsArray)
+    //console.log(coordsArray)
     setPlacesCoordinates(coordsArray);
     //getElevations(coordsArray)
     const promises = coordsArray.map((location) =>
@@ -299,8 +299,24 @@ useEffect(()=>{
     getCrops();
   }, []);
 
+  const urlProjects = `${Configuration.get_url_api_base()}projects`;
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const getProjects = async () => {
+      try {
+        const response = await axios.get(urlProjects);
+        setProjects(response.data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    getProjects();
+  }, []);
+
   const [carouselMajorItems, setCarouselMajorItems] = useState(null);
-  const [carouselLandraceItems, setCarouselLandraceItems] = useState(null);
+  const [carouselLandraceItems, setCarouselLandraceItems] = useState([]);
   const [showRoad, setShowRoad] = useState(false);
   const [indexStep, setIndexStep] = useState(0);
   const [indexStepMap, setIndexStepMap] = useState(0);
@@ -328,6 +344,7 @@ useEffect(()=>{
         <FilterLeft
           response={response}
           crops={crops}
+          projects={projects}
           setCarouselMajorItems={setCarouselMajorItems}
           setCarouselLandraceItems={setCarouselLandraceItems}
           indexStep={indexStep}
@@ -375,24 +392,20 @@ useEffect(()=>{
               currentIndex++;
               setIndexStep(currentIndex);
             } else if (
-              (index === 5 ||
+              (index === 6 ||
                 index === 0 ||
                 index === 1 ||
                 index === 2 ||
                 index === 3 ||
-                index === 6) &&
+                index === 4 ||
+                index === 5 ||
+                index === 7) &&
               lifecycle === "complete"
-            ) {
-              return;
-            } else if (
-              index === 4 &&
-              lifecycle === "complete" &&
-              action === "next" &&
-              type === "step:after"
             ) {
               currentIndex++;
               setIndexStep(currentIndex);
-            } else if (action === "skip") {
+            } 
+            else if (action === "skip") {
               setTutorialFinished(true);
             }
           }}
@@ -403,10 +416,13 @@ useEffect(()=>{
             options: {
               primaryColor: "#f56038",
               zIndex: 1000,
+              paddingLeft: "50px",
+             
             },
             buttonNext: {
-              display: indexStep !== 4 ? "none" : undefined,
+              display: indexStep === 0 || indexStep === 1 || indexStep === 2 || indexStep === 3 || indexStep === 4 || indexStep === 5 || indexStep === 6 || indexStep === 7 ? "block" : "none", 
             },
+          
           }}
         />
       )}
@@ -421,7 +437,7 @@ useEffect(()=>{
           callback={(data) => {
             const { action, index, status, type, lifecycle } = data;
             let currentIndex = indexStepMap;
-            console.log(data);
+            //console.log(data);
             if (type === "error:target_not_found") {
               currentIndex++;
               setIndexStepMap(currentIndex);
