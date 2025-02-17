@@ -390,18 +390,30 @@ function Map({
 
 
   const mapRef = useRef(null);
-  useEffect(() => {
-    if (accessions.length > 0) {
-      const latLngs = accessions.map((coordenada) => [
-        coordenada.latitude,
-        coordenada.longitude + 5,
-      ]);
-      const bounds = L.latLngBounds(latLngs);
-      if (mapRef.current) {
+
+useEffect(() => {
+  if (accessions.length > 0) {
+    const latLngs = accessions.map((coordenada) => [
+      coordenada.latitude,
+      coordenada.longitude + 5, 
+    ]);
+
+    if (mapRef.current) {
+      if (latLngs.length === 1) {
+       
+        const singlePoint = [
+          accessions[0].latitude,
+          accessions[0].longitude,
+        ];
+        mapRef.current.setView(singlePoint, 6); 
+      } else {
+        
+        const bounds = L.latLngBounds(latLngs);
         mapRef.current.flyToBounds(bounds, { padding: [250, 250] });
       }
     }
-  }, [accessions]);
+  }
+}, [accessions]);
 
   useEffect(() => {
     if (accesionsInput?.length > 0) {
@@ -577,7 +589,7 @@ function Map({
           <LayersControl.BaseLayer name="Satellite">
             <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
           </LayersControl.BaseLayer>
-          {accessions.length > 1 && (
+          {accessions.length > 0 && (
             <>
               <LayersControl.Overlay name="Accessions" checked={true}>
                 <TileLayer
