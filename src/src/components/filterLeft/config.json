@@ -6,12 +6,35 @@
       "Uganda"
     ],
     "PROJECT_CROPS": {
-      "bolder": ["Amaranth (Red)",
+      "bolder": [
+      "Amaranth caudatus",
+      "Amaranth dubius",
+      "Amaranth hypochondriacus",
+      "Amaranth (Red)",
       "Bambara groundnut",
+      "Baobab",
+      "Black Fonio",
+      "Cenchrus caudatus (CWR)",
+      "Cenchrus mezianus (CWR)",
+      "Cenchrus procerus (CWR)",
+      "Cenchrus ramosus (CWR)",
+      "Cenchrus unisetus (CWR)",
+      "Cucurbita moschata",
+      "Cucurbita pepo",
+      "Cowpea",
+      "Eleusine indica (CWR)",
+      "Finger millet",
+      "Jackfruit",
+      "Jutemallow",
+      "Moringa oleifera",
+      "Pearl millet", 
       "Pumpkin",
+      "Sesame",
+      "Sweetberry",
+      "Sweetpotato", 
+      "Turkeyberry",
       "White Fonio"
-
-      ],
+    ],
       "lga": [
         "Maize (Africa)", 
         "Banana", 
