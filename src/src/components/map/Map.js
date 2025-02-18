@@ -147,8 +147,13 @@ function Map({
         .then((response) => {
           setShow(false);
           if (response.data[0].accessions.length === 0) {
+            if (project === 'lga'){
             setShowg(true);
             setCarouselMajorItems([]);
+            }else{
+              setAccessions([])
+            }
+            
           } else {
             setAccessions(response.data.flatMap((crop) => crop.accessions));
           }
@@ -223,8 +228,13 @@ function Map({
         .then((response) => {
           setShow(false);
           if (response.data[0].accessions.length === 0) {
-            setShowg(true);
-            setCarouselMajorItems([]);
+            if (project === 'lga'){
+              setShowg(true);
+              setCarouselMajorItems([]);
+              }else{
+                setAccessions([])
+              }
+            
           } else {
             setAccessions(response.data.flatMap((crop) => crop.accessions));
           }
@@ -292,9 +302,12 @@ function Map({
         if (flatMapAccesons.length > 0) {
           setAccessions(flatMapAccesons);
         } else {
-          setShowg(true);
+          if (project === 'lga'){
+            setShowg(true);
+            setCarouselMajorItems([]);
+            }
           setAccessions([]);
-          setCarouselMajorItems([]);
+          
         }
       });
     }
@@ -324,8 +337,13 @@ function Map({
           setAccessions(flatMapAccesions);
         } else {
           setAccessions([]);
-          setShowg(true);
-          setCarouselMajorItems([]);
+          if (project === 'lga'){
+            setShowg(true);
+            setCarouselMajorItems([]);
+            }else{
+              setAccessions([])
+            }
+          
         }
       });
     }

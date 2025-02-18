@@ -5,13 +5,17 @@ import {
     Marker,
     
     Tooltip,
+
+    useMap
    
   } from "react-leaflet";
 import L from "leaflet";
+import { useEffect } from "react";
 import './LayersMarkers'
 import { useContext } from "react";
 import { DataContext } from "../../context/context";
 import Configuration from "../../conf/Configuration";
+import config from './config.json';
 
 const LayersMarkers=({option1Checked,option2Checked,accessions,
     clickedMarkerIndices,
@@ -37,6 +41,29 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
             }
             setClickedMarkerIndices(newSet);
           };
+
+          const map = useMap();
+          const { iso, project } = useContext(DataContext);
+        
+          useEffect(() => {
+      
+        
+            if (accessions.length === 0 && layerr.length > 0 && project === "bolder") {
+              
+        
+              if (iso && config.COUNTRY_BOUNDS[iso]) {
+                const bounds = L.latLngBounds(config.COUNTRY_BOUNDS[iso]);
+                
+        
+                if (map) {
+                  map.flyToBounds(bounds, { padding: [50, 50] });
+                }
+              } else {
+                console.warn("No bounds found for ISO:", iso);
+              }
+            }
+          }, [accessions, layerr, project, iso, map]);
+          
         return (
           <>
             {option1Checked == true &&
