@@ -46,6 +46,7 @@ function FilterLeft({
   const [filteredCountries, setFilteredCountries] = useState(response);
   const { project, setProject } = useContext(DataContext);
   const [compProject, setCompProject] = useState('');
+  const [majorCrops, setMajorCrops] = useState([]);
   const bolderCountries = response.filter((country) =>
     config.BOLDER_COUNTRIES.includes(country.name)
   );
@@ -60,9 +61,10 @@ function FilterLeft({
     );
 
     setShowLandraceGroups(project === "lga");
+    setMajorCrops([]);
   };
 
-  const [majorCrops, setMajorCrops] = useState([]);
+  
   useEffect(() => {
     if (compProject) {
       if (config.PROJECT_CROPS[compProject]) {
@@ -122,6 +124,11 @@ function FilterLeft({
     );
     setCountryIso(selectedCountry.iso_2);
     setIso(selectedCountry.iso_2);
+
+    if (compProject === "bolder" && selectedCountry) {
+      const countryCrops = config.BOLDER_CROPS[selectedCountry.name] || [];
+      setMajorCrops(countryCrops);
+    }
     //console.log(selectedCountry.iso_2)
     setTimeout(() => {
       setIndexStep(1);
@@ -326,7 +333,7 @@ const overlayInfo = "Info: your CSV file must have the following columns: 'id', 
           </Col>
         </Row>
 
-        {majorCrops && (
+        {majorCrops.length > 0 ? (
           <CheckFilter
             title="Major Crops"
             toolTipTitle="Step 3"
@@ -337,7 +344,19 @@ const overlayInfo = "Info: your CSV file must have the following columns: 'id', 
             idOnboarding="select-majorCrop"
             indexStep={indexStep}
             setIndexStep={setIndexStep}
-          ></CheckFilter>
+          />
+        ) : (
+          <CheckFilter
+            title="Major Crops"
+            toolTipTitle="Step 3"
+            toolTipDescription="No crops available"
+            onDataChange={handleDataMajorCropChange}
+            onChange={shouldReset}
+            crop={[]}
+            idOnboarding="select-majorCrop"
+            indexStep={indexStep}
+            setIndexStep={setIndexStep}
+          />
         )}
 
         {showLandraceGroups && carouselMajorItemsNow && carouselMajorItemsNow.length == 1 && (

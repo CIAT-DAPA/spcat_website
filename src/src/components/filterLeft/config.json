@@ -5,6 +5,14 @@
       "Tanzania, United Republic of",
       "Uganda"
     ],
+
+    "BOLDER_CROPS": {
+      "Benin":["Bambara groundnut","Black Fonio","Jutemallow","Sweetberry","White Fonio"],
+      "Ghana":["Amaranth caudatus","Amaranth dubius","Amaranth (Red)","Amaranth hypochondriacus","Baobab","Sesame","Turkeyberry"],
+      "Tanzania, United Republic of":["Bambara groundnut","Eleusine indica (CWR)","Finger millet","Moringa oleifera","Sweetpotato"],
+      "Uganda":["Cenchrus caudatus (CWR)","Cenchrus mezianus (CWR)", "Cenchrus procerus (CWR)", "Cenchrus ramosus (CWR)","Cenchrus unisetus (CWR)","Cowpea","Cucurbita moschata","Cucurbita pepo","Jackfruit","Pearl millet","Pumpkin"]
+    },
+
     "PROJECT_CROPS": {
       "bolder": [
       "Amaranth caudatus",
