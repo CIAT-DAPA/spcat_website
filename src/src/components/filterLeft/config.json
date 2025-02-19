@@ -8,7 +8,7 @@
 
     "BOLDER_CROPS": {
       "Benin":["Bambara groundnut","Black Fonio","Jutemallow","Sweetberry","White Fonio"],
-      "Ghana":["Amaranth caudatus","Amaranth dubius","Amaranth (Red)","Amaranth hypochondriacus","Baobab","Sesame","Turkeyberry"],
+      "Ghana":["Amaranth caudatus","Amaranth dubius","Amaranth (Red)","Baobab","Sesame","Turkeyberry"],
       "Tanzania, United Republic of":["Bambara groundnut","Eleusine indica (CWR)","Finger millet","Moringa oleifera","Sweetpotato"],
       "Uganda":["Cenchrus caudatus (CWR)","Cenchrus mezianus (CWR)", "Cenchrus procerus (CWR)", "Cenchrus ramosus (CWR)","Cenchrus unisetus (CWR)","Cowpea","Cucurbita moschata","Cucurbita pepo","Jackfruit","Pearl millet","Pumpkin"]
     },
@@ -17,7 +17,6 @@
       "bolder": [
       "Amaranth caudatus",
       "Amaranth dubius",
-      "Amaranth hypochondriacus",
       "Amaranth (Red)",
       "Bambara groundnut",
       "Baobab",
