@@ -1,4 +1,4 @@
-const GEOSERVER_URL = "https://isa.ciat.cgiar.org/geoserver2/";
+const GEOSERVER_URL = "https://geo.gapanalysistools.org/geoserver/";
 const GEOSERVER_SERVICE = "wms";
 
 const GAP_WORSPACE = "gap_analysis"
