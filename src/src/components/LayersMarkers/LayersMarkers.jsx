@@ -48,7 +48,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
           useEffect(() => {
       
         
-            if (accessions.length === 0 && layerr.length > 0 && project === "bolder") {
+            if (accessions.length === 0 && layerr.length > 0 && project !== "lga") {
               
         
               if (iso && config.COUNTRY_BOUNDS[iso]) {
