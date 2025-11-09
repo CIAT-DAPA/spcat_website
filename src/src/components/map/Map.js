@@ -77,6 +77,7 @@ function Map({
     "#008000", // Verde claro
   ];
   const [colors, setColors] = useState(colorsInitialState);
+  
   useEffect(() => {
     if ((carouselLandraceItems === null || carouselLandraceItems?.length === 0)) {
       setColors(colorsInitialState);
@@ -132,16 +133,15 @@ function Map({
       const cropId = filteredCrops[0].id;
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
-      setLayerr([
-        project === 'bolder' 
-          ? `${project}_${iso}_${filteredCrops[0].ext_id}` 
-          : `${iso}_${filteredCrops[0].ext_id}`
-      ]);
+       setLayerr([
+       project !== 'lga'
+         ? `${project}_${iso}_${filteredCrops[0].ext_id}`
+         : `${iso}_${filteredCrops[0].ext_id}`
+     ]);
 
-      const endopointAccesionsByCrop = project === 'bolder' 
+     const endopointAccesionsByCrop = project !== 'lga'
       ? `${Configuration.get_url_api_base()}accessionsbyidcropproject?id=${cropId}&iso=${iso}&project=${project}`
-      : `${Configuration.get_url_api_base()}accessionsbyidcrop?id=${cropId}&iso=${iso}`;
-
+       : `${Configuration.get_url_api_base()}accessionsbyidcrop?id=${cropId}&iso=${iso}`;
       axios
         .get(endopointAccesionsByCrop)
         .then((response) => {
@@ -281,17 +281,16 @@ function Map({
       carouselLandraceItems?.length == 0)
     ) {
       setShow(true);
-      const newArray = extids.map((element) =>
-        project === 'bolder' ? `${project}_${iso}_${element}` : `${iso}_${element}`
-      );
+         const newArray = extids.map((element) =>
+       project !== 'lga' ? `${project}_${iso}_${element}` : `${iso}_${element}`
+     );
       setSelectedMarkers([]);
       setClickedMarkerIndices(new Set());
       setLayerr(newArray);
       setAccessions([]);
-      const endopointAccesionsByCrop = project === 'bolder' 
+       const endopointAccesionsByCrop = project !== 'lga'
       ? `${Configuration.get_url_api_base()}accessionsbyidcropproject?id=${idsCropss}&iso=${iso}&project=${project}`
       : `${Configuration.get_url_api_base()}accessionsbyidcrop?id=${idsCropss}&iso=${iso}`;
-
       axios.get(endopointAccesionsByCrop).then((response) => {
         setShow(false);
 
@@ -563,7 +562,7 @@ useEffect(() => {
       <MapContainer
         id="mapid"
         ref={mapRef}
-        center={[14.88, -35, 76]}
+        center={[14.88, -35.76]}
         zoom={3}
         zoomSnap={0.25}
         maxBounds={[
@@ -598,7 +597,13 @@ useEffect(() => {
           </Marker>
         ))}
         <LayersControl position="topright" className="mt-5">
-          <LayersControl.BaseLayer checked name="Normal">
+
+    <LayersControl.BaseLayer checked name="Gray Canvas">
+    <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}" />
+  </LayersControl.BaseLayer>
+
+
+          <LayersControl.BaseLayer name="Normal">
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           </LayersControl.BaseLayer>
           <LayersControl.BaseLayer name="Relief">
