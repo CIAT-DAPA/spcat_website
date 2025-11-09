@@ -13,6 +13,13 @@
       "Uganda":["Cenchrus caudatus (CWR)","Cenchrus mezianus (CWR)", "Cenchrus procerus (CWR)", "Cenchrus ramosus (CWR)","Cenchrus unisetus (CWR)","Cowpea","Cucurbita moschata","Cucurbita pepo","Jackfruit","Pearl millet","Pumpkin"]
     },
 
+    "PROJECT_COUNTRIES": {
+    "bolder": ["Benin","Ghana","Tanzania, United Republic of","Uganda"],
+    "lga": [],
+    "pdff": ["Colombia","India","Kenya","Nigeria","Zambia"],
+    "boldwp1": ["Ecuador","Morocco","Pakistan"]
+    },
+
     "PROJECT_CROPS": {
       "bolder": [
       "Amaranth caudatus",
@@ -75,9 +82,24 @@
         "Wheat (durum) (genetic clusters) (alternative)", 
         "Yam (Old World)", 
         "Yam (New World)"
-      ]
+      ],
+      "boldwp1":["Brassica juncea","Brassica napus","Brassica rapa","Chickpea","Cucurbita ficifolia","Barley","Medicago truncatula","Rice","Passiflora tripartita","Physalis preuviana","Solanum betaceum","Wheat (Bread)","Wheat (Durum)"]
       
+    },
+
+    "COUNTRY_CROPS_BY_PROJECT": {
+    "bolder": {
+      "Benin":["Bambara groundnut","Black Fonio","Jutemallow","Sweetberry","White Fonio"],
+      "Ghana":["Amaranth caudatus","Amaranth dubius","Amaranth (Red)","Baobab","Sesame","Turkeyberry"],
+      "Tanzania, United Republic of":["Bambara groundnut","Eleusine indica (CWR)","Finger millet","Moringa oleifera","Sweetpotato"],
+      "Uganda":["Cenchrus caudatus (CWR)","Cenchrus mezianus (CWR)", "Cenchrus procerus (CWR)", "Cenchrus ramosus (CWR)","Cenchrus unisetus (CWR)","Cowpea","Cucurbita moschata","Cucurbita pepo","Jackfruit","Pearl millet","Pumpkin"]
+    },
+    "boldwp1": {
+      "Ecuador": ["Cucurbita ficifolia","Passiflora tripartita","Physalis preuviana","Solanum betaceum"],
+      "Morocco": ["Chickpea","Barley","Medicago truncatula","Wheat (Durum)"],
+      "Pakistan": ["Brassica juncea","Brassica napus","Brassica rapa","Chickpea","Rice","Wheat (Bread)"]
     }
+  }
   }
 
 
