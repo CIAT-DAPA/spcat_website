@@ -155,15 +155,29 @@ function FilterLeft({
     const file = event.target.files?.[0];
     if (!file) return;
 
+    const GAP_COLOR = "#e31a1c";
+
     // Read TIFF/GeoTIFF
     const reader = new FileReader();
     reader.onload = () => {
       const tiffData = reader.result;
       parseGeoraster(tiffData).then((georaster) => {
+        const nodata =georaster.noDataValue ?? georaster.nodataValue ?? georaster.nodata ?? null;
+        const EPS = 1e-6;
+
+      const pixelValuesToColorFn = (values) => {
+        const v = values?.[0];
+        if (v == null || Number.isNaN(v)) return null;               // transparent
+        if (nodata != null && v === nodata) return null;              // transparent
+        if (Math.abs(v - 1) <= EPS) return GAP_COLOR;                 // color only class 1
+        return null;                                                  // everything else hidden
+      };
         const layer = new GeoRasterLayer({
           georaster,
           opacity: 0.7,
           resolution: 256,
+          resampleMethod: "nearest",
+          pixelValuesToColorFn,
         });
         setImage(layer);
       });
@@ -229,7 +243,6 @@ function FilterLeft({
         }
 
         const requiredHeaders = [
-          "id",
           "species_name",
           "ext_id",
           "crop",
@@ -252,7 +265,27 @@ function FilterLeft({
           return;
         }
 
-        setAccesionsInput(results.data);
+        const cleaned = results.data
+        .map((r) => {
+          const lat = parseFloat(String(r.latitude).trim());
+          const lon = parseFloat(String(r.longitude).trim());
+          return { ...r, latitude: lat, longitude: lon };
+        })
+        .filter((r) =>
+          Number.isFinite(r.latitude) &&
+          Number.isFinite(r.longitude) &&
+          r.latitude >= -90 && r.latitude <= 90 &&
+          r.longitude >= -180 && r.longitude <= 180
+        );
+
+      if (cleaned.length === 0) {
+        setTitlemodal("No valid rows");
+        setTextModal("No rows with valid latitude/longitude were found.");
+        setShowF(true);
+        return;
+      }
+
+     setAccesionsInput(cleaned);
       },
       error: function () {
         setTitlemodal("CSV parsing error");

@@ -28,7 +28,7 @@ const MapLegend = ({ colors, carouselLandraceItems, carouselMajorItems, option2C
                 })}
               {image && (
                 <li>
-                  <span style={{ background: "black", opacity: "0.7" }}></span>
+                  <span style={{ background: "#e31a1c", opacity: "0.7" }}></span>
                   Custom Gap
                 </li>
               )}
@@ -59,7 +59,7 @@ const MapLegend = ({ colors, carouselLandraceItems, carouselMajorItems, option2C
                 })}
               {image && (
                 <li>
-                  <span style={{ background: "black", opacity: "0.7" }}></span>
+                  <span style={{ background: "#e31a1c", opacity: "0.7" }}></span>
                   Custom Gap
                 </li>
               )}
@@ -80,7 +80,7 @@ const MapLegend = ({ colors, carouselLandraceItems, carouselMajorItems, option2C
               
               {image && (
                 <li>
-                  <span style={{ background: "black", opacity: "0.7" }}></span>
+                  <span style={{ background: "#e31a1c", opacity: "0.7" }}></span>
                   Custom Gap 
                 </li>
               )}
