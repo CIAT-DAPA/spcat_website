@@ -84,7 +84,7 @@
         "Yam (New World)"
       ],
       "boldwp1":["Brassica juncea","Brassica napus","Brassica rapa","Chickpea","Cucurbita ficifolia","Barley","Medicago truncatula","Rice","Passiflora tripartita","Physalis preuviana","Solanum betaceum","Wheat (Bread)","Wheat (Durum)"],
-      "pdff":["Amaranth cruentus","Cowpea","Eleusine coracana","Peach palm","Sechium edule","Sorghum"]
+      "pdff":["Amaranth cruentus","Amaranth dubius","Cowpea","Eleusine coracana","Peach palm","Sechium edule","Sorghum"]
       
     },
 
@@ -103,7 +103,7 @@
      "pdff": {
     
        "Colombia": ["Peach palm","Sechium edule"],
-      "Kenya": ["Amaranth cruentus","Eleusine coracana"],
+      "Kenya": ["Amaranth cruentus","Amaranth dubius","Eleusine coracana"],
       "Zambia": ["Cowpea","Sorghum"]
     }
   }
