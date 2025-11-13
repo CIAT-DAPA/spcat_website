@@ -169,7 +169,7 @@ function FilterLeft({
         const v = values?.[0];
         if (v == null || Number.isNaN(v)) return null;               // transparent
         if (nodata != null && v === nodata) return null;              // transparent
-        if (Math.abs(v - 1) <= EPS) return GAP_COLOR;                 // color only class 1
+        if (Math.abs(v - 3) <= EPS) return GAP_COLOR;                 // color only class 1
         return null;                                                  // everything else hidden
       };
         const layer = new GeoRasterLayer({
@@ -194,7 +194,7 @@ function FilterLeft({
   };
 
   const overlayInfo =
-    "Info: your CSV file must have the following columns: 'id', 'species_name', 'ext_id', 'crop', 'landrace_group', 'country', 'institution_name', 'source_database', 'latitude', 'longitude', 'accession_id'. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map. You can find an example by clicking in this info button";
+    "Info: your CSV file must have the following columns: 'species_name','latitude', 'longitude'. The order is not relevant, but the spelling is, as it will be used to display the accessions on the map. You can find an example by clicking in this info button";
 
   const renderTooltip = (props) => <Tooltip>{props}</Tooltip>;
 
@@ -244,15 +244,15 @@ function FilterLeft({
 
         const requiredHeaders = [
           "species_name",
-          "ext_id",
-          "crop",
-          "landrace_group",
-          "country",
-          "institution_name",
-          "source_database",
+          //"ext_id",
+          //"crop",
+          //"landrace_group",
+          //"country",
+          //"institution_name",
+          //"source_database",
           "latitude",
           "longitude",
-          "accession_id",
+          //"accession_id",
         ];
 
         const ok = requiredHeaders.every((h) => fileHeaders.includes(h));
