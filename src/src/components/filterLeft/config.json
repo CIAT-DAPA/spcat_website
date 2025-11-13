@@ -23,8 +23,8 @@
     "PROJECT_CROPS": {
       "bolder": [
       "Amaranth caudatus",
+      "Amaranth cruentus",
       "Amaranth dubius",
-      "Amaranth (Red)",
       "Bambara groundnut",
       "Baobab",
       "Black Fonio",
@@ -84,14 +84,14 @@
         "Yam (New World)"
       ],
       "boldwp1":["Brassica juncea","Brassica napus","Brassica rapa","Chickpea","Cucurbita ficifolia","Barley","Medicago truncatula","Rice","Passiflora tripartita","Physalis preuviana","Solanum betaceum","Wheat (Bread)","Wheat (Durum)"],
-      "pdff":["Cowpea","Eleusine coracana","Peach palm","Sechium edule","Sorghum"]
+      "pdff":["Amaranth cruentus","Cowpea","Eleusine coracana","Peach palm","Sechium edule","Sorghum"]
       
     },
 
     "COUNTRY_CROPS_BY_PROJECT": {
     "bolder": {
       "Benin":["Bambara groundnut","Black Fonio","Jutemallow","Sweetberry","White Fonio"],
-      "Ghana":["Amaranth caudatus","Amaranth dubius","Amaranth (Red)","Baobab","Sesame","Turkeyberry"],
+      "Ghana":["Amaranth caudatus","Amaranth cruentus","Amaranth dubius","Baobab","Sesame","Turkeyberry"],
       "Tanzania, United Republic of":["Bambara groundnut","Eleusine indica (CWR)","Finger millet","Moringa oleifera","Sweetpotato"],
       "Uganda":["Cenchrus caudatus (CWR)","Cenchrus mezianus (CWR)", "Cenchrus procerus (CWR)", "Cenchrus ramosus (CWR)","Cenchrus unisetus (CWR)","Cowpea","Cucurbita moschata","Cucurbita pepo","Jackfruit","Pearl millet","Pumpkin"]
     },
@@ -103,7 +103,7 @@
      "pdff": {
     
        "Colombia": ["Peach palm","Sechium edule"],
-      "Kenya": ["Eleusine coracana"],
+      "Kenya": ["Amaranth cruentus","Eleusine coracana"],
       "Zambia": ["Cowpea","Sorghum"]
     }
   }
