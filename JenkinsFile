@@ -92,14 +92,14 @@ pipeline {
         stage('setup api google key') {
             steps {
                 script {
-                    sshCommand remote: remote, command: '''
+                    sshCommand remote: remote, command: """
                         # setup the key
-                        api_google='${env.GOOGLE_API_KEY}'
-                        sed -i \"s/keyhere/\$api_google/g\" ./webapp_SPCAT/build/index.html
-                    '''
+                        sed -i 's|keyhere|${GOOGLE_API_KEY}|g' ./webapp_SPCAT/build/index.html
+                    """
                 }
             }
         }
+
 
         stage('Verify and control PM2 service') {
             steps {
