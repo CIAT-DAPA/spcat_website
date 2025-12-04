@@ -9,6 +9,7 @@ pipeline {
         server_host = credentials('host_spcat')
         ssh_key = credentials('spcat_key')
         port_api = credentials('api_spcat_port')
+        GOOGLE_API_KEY = credentials('google_api_key_spcat')
     }
 
     stages {
@@ -93,8 +94,8 @@ pipeline {
                 script {
                     sshCommand remote: remote, command: '''
                         # setup the key
-                        api_google=$(grep -oP "(?<=API_GOOGLE_KEY=).+" ./variables_webapp.txt)
-                        sed -i "s/keyhere/$api_google/g" ./webapp_SPCAT/build/index.html
+                        api_google='${env.GOOGLE_API_KEY}'
+                        sed -i \"s/keyhere/\$api_google/g\" ./webapp_SPCAT/build/index.html
                     '''
                 }
             }
