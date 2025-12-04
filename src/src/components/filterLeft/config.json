@@ -16,7 +16,7 @@
     "PROJECT_COUNTRIES": {
     "bolder": ["Benin","Ghana","Tanzania, United Republic of","Uganda"],
     "lga": [],
-    "pdff": ["Colombia","Kenya","Zambia"],
+    "pdff": ["Colombia","Kenya","Nigeria","Zambia"],
     "boldwp1": ["Ecuador","Morocco","Pakistan"]
     },
 
@@ -102,8 +102,9 @@
     },
      "pdff": {
     
-       "Colombia": ["Peach palm","Sechium edule"],
+      "Colombia": ["Peach palm","Sechium edule"],
       "Kenya": ["Amaranth cruentus","Amaranth dubius","Eleusine coracana"],
+      "Nigeria": ["Black Fonio","Pigeonpea","White Fonio"],
       "Zambia": ["Cowpea","Sorghum"]
     }
   }
