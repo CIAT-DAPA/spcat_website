@@ -23,7 +23,7 @@ const About=()=>{
              <p>4. Thormann, I., Fiorino, E., Halewood, M. & Engels, J. M. M. 2015. Plant genetic resources collections and associated information as a baseline resource for genetic diversity studies: an assessment of the IBPGR-supported collections. Genet. Resour. Crop Evol. 62, 1279–1293.</p>
 
              <h2>Acknowledgements </h2>
-             <p>We acknowledge the support and collaboration of the Global Crop Diversity Trust (GCDT) and the Building Opportunities for Lesser-known Diversity in Edible Resources (BOLDER) initiative.  </p>
+             <p>We acknowledge the support and collaboration of the Global Crop Diversity Trust (GCDT), the Building Opportunities for Lesser-known Diversity in Edible Resources (BOLDER) initiative and the Power of Diversity Funding Facility.  </p>
         </div>
         <Footer/>
         </>
