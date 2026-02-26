@@ -146,6 +146,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                             layers={layerName}
                             format="image/png"
                             transparent={true}
+                            opacity={0.4}
                             zIndex={1000 + index}
                             styles={`Gap` + index}
                           />
@@ -233,6 +234,7 @@ const LayersMarkers=({option1Checked,option2Checked,accessions,
                       layers={layerName}
                       format="image/png"
                       transparent={true}
+                      opacity={0.4}
                       zIndex={1000 + index}
                       styles={`Gap` + index}
                     /> );
